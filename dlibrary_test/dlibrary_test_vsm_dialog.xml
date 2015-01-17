@@ -1,0 +1,37 @@
+<dialog title="DLibrary Test VSM Dialog" help="True">
+    <control>
+        <tab-control>
+            <tab-pane header="First Tab" layout="HORIZONTAL">
+                <control>
+                    <list-browser data-items="items" data-selected-items="selected_items" index="True" width="46">
+                        <column header="Column One" data-value="prop_one"/>
+                        <column header="Column Two" data-value="prop_two"/>
+                    </list-browser>
+                </control>
+                <control>
+                    <group-box>
+                        <control><static-text>SELECTED ITEM(S)</static-text></control>
+                        <control><static-text>Property One</static-text></control>
+                        <control><edit-text data-items="selected_items" data-value="prop_one"/></control>
+                        <control><static-text>Property Two</static-text></control>
+                        <control><edit-text data-items="selected_items" data-value="prop_two"/></control>
+                        <control><separator/></control>
+                        <control><static-text>NEW ITEM</static-text></control>
+                        <control><static-text>Property One</static-text></control>
+                        <control><edit-text data-context="new_item" data-value="prop_one"/></control>
+                        <control><static-text>Property Two</static-text></control>
+                        <control><edit-text data-context="new_item" data-value="prop_two"/></control>
+                        <control><button data-command="add_item">Add New Item</button></control>
+                    </group-box>
+                </control>
+            </tab-pane>
+            <tab-pane header="Second Tab">
+                <control><static-text>SELECTED ITEM(S)</static-text></control>
+                <control>
+                    <list-box data-items="selected_items" data-selected-items="selected_items2" data-value="prop_three"
+                              height="20"/>
+                </control>
+            </tab-pane>
+        </tab-control>
+    </control>
+</dialog>
