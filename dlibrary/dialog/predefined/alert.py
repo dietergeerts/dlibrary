@@ -7,14 +7,10 @@ class AlertType(object):
 
 class Alert(object):
     def __init__(self, type: AlertType, text: str, advice: str=''):
-        self.__type = type
-        self.__text = text
-        self.__advice = advice
+        self.__type = type; self.__text = text; self.__advice = advice
 
     def show(self):
-        {
-            AlertType.CRITICAL: vs.AlertCritical(self.__text, self.__advice),
-            AlertType.WARNING:  vs.AlertInform(self.__text, self.__advice, False),
-            AlertType.INFO:     vs.AlertInform(self.__text, self.__advice, True),
-            AlertType.SUCCESS:  vs.AlrtDialog(self.__text)
-        }.get(self.__type)
+        if   self.__type == AlertType.CRITICAL: vs.AlertCritical(self.__text, self.__advice)
+        elif self.__type == AlertType.WARNING:  vs.AlertInform(self.__text, self.__advice, False)
+        elif self.__type == AlertType.INFO:     vs.AlertInform(self.__text, self.__advice, True)
+        elif self.__type == AlertType.SUCCESS:  vs.AlrtDialog(self.__text)
