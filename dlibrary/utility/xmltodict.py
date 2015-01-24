@@ -2,9 +2,9 @@ from collections import OrderedDict
 import dlibrary.libs.xmltodict as xmltodict
 
 
-def load(path: str, list_elements: set):
+def load(path: str, list_elements: set=None):
     try:
-        with open(path) as file: return __correct(xmltodict.parse(file.read()), list_elements)
+        with open(path) as file: return __correct(xmltodict.parse(file.read()), list_elements or set())
     except FileNotFoundError: raise
     except PermissionError: raise
     except OSError: raise
