@@ -19,7 +19,7 @@ class PlugIn(object, metaclass=SingletonMeta):
     def __get_file_path(self, name: str) -> str:
         exists, path = vs.FindFileInPluginFolder(name)
         if not exists: raise FileNotFoundError
-        else: return path
+        else: return path + name
 
     def load_plugin_file(self, name: str, list_elements: set=None) -> dict:
         try: self.__load_info()
