@@ -1,15 +1,22 @@
-import os
-import pydevd
-
 from dlibrary.dialog.dialog import Dialog
 from dlibrary.dialog.observable import ObservableList, ObservableField
+from dlibrary.utility.exception import VSException
 
+import pydevd
 pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True, suspend=False)
 
 
 def run():
-    dialog = Dialog(os.path.join(os.path.dirname(__file__), 'dlibrary_test_vsm_dialog.xml'), DLibraryTestVsmViewModel())
-    dialog.show()
+    try: dialog = Dialog('Main', DLibraryTestVsmViewModel())
+    except VSException: raise
+    except FileNotFoundError: raise
+    except PermissionError: raise
+    except OSError: raise
+    else: dialog.show()
+
+    # vs.AlertCritical('Could not find dialog file:', dialog_name)
+    # vs.AlertCritical('Insufficient permissions on dialog file:', dialog_name)
+    # vs.AlertCritical('Contents of dialog file is invalid:', dialog_name)
 
 
 class DLibraryTestVsmViewModel(object):

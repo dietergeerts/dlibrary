@@ -1,21 +1,19 @@
-from collections import OrderedDict
 from dlibrary.dialog.control import AbstractDataContext, ControlFactory
+from dlibrary.object.objects.plugin import PlugIn, PlugInFileType
+from dlibrary.utility.exception import VSException
 import vs
 import dlibrary.utility.converter as converter
-import dlibrary.utility.xmltodict as xmltodict
 
 
 class Dialog(AbstractDataContext):
-    def __init__(self, view_file_path: str, data_context: object):
+    def __init__(self, dialog_name: str, data_context: object):
         super().__init__(data_context)
-        self.__valid = False
-        try: view = xmltodict.load(view_file_path, set('control'))
-        except FileNotFoundError: vs.AlertCritical('Could not find dialog file:', view_file_path)
-        except PermissionError: vs.AlertCritical('Insufficient permissions on dialog file:', view_file_path)
-        except OSError: vs.AlertCritical('Contents of dialog file is invalid:', view_file_path)
-        # TODO: Decide if exceptions should be handled here or by the user of Dialog.
+        try: view = PlugIn().load_plugin_file(dialog_name + 'Dialog', set('control'))
+        except VSException: raise
+        except FileNotFoundError: raise
+        except PermissionError: raise
+        except OSError: raise
         else:
-            self.__valid = True
             self.__event_handlers = {}
             self.__dialog_id = vs.CreateLayout(
                 view['dialog']['@title'], converter.str2bool(view['dialog'].get('@help', 'False')),
@@ -24,16 +22,11 @@ class Dialog(AbstractDataContext):
                 self.__dialog_id, self.__get_dialog_control(view['dialog']), self)[0]
             vs.SetFirstLayoutItem(self.__dialog_id, self.__dialog_control.control_id)
 
-    @property
-    def valid(self): return self.__valid
-
     def __get_dialog_control(self, dialog: dict) -> list:
         return [{'group-box': {'@layout': dialog.get('@layout', 'VERTICAL'), 'control': dialog['control']}}]
 
-    def show(self) -> bool:
-        if self.__valid:  # 1 for Ok, 2 for Cancel.
-            return vs.RunLayoutDialog(self.__dialog_id, lambda item, data: self.__dialog_handler(item, data)) == 1
-        else: return False
+    def show(self) -> bool:  # 1 for Ok, 2 for Cancel.
+        return vs.RunLayoutDialog(self.__dialog_id, lambda item, data: self.__dialog_handler(item, data)) == 1
 
     def __dialog_handler(self, item, data):
         if item == 12255: self.__on_setup()
