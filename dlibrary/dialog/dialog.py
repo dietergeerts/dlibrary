@@ -1,24 +1,18 @@
+from collections import OrderedDict
 from dlibrary.dialog.control import AbstractDataContext, ControlFactory
 import vs
-import dlibrary.libs.xmltodict as xml_to_dict
 import dlibrary.utility.converter as converter
-import dlibrary.utility.xmltodict as xml_to_dict_util
+import dlibrary.utility.xmltodict as xmltodict
 
 
 class Dialog(AbstractDataContext):
     def __init__(self, view_file_path: str, data_context: object):
         super().__init__(data_context)
         self.__valid = False
-        try:
-            with open(view_file_path) as file:
-                view = xml_to_dict_util.correct_elements(xml_to_dict.parse(file.read()))
-        except FileNotFoundError:
-            vs.AlertCritical('Could not find dialog file:', view_file_path)
-        except PermissionError:
-            vs.AlertCritical('Insufficient permissions on dialog file:', view_file_path)
-        except OSError:
-            vs.AlertCritical('Contents of dialog file is invalid:', view_file_path)
-        # TODO: Check contents of file with an xml schema.
+        try: view = xmltodict.load(view_file_path, set('control'))
+        except FileNotFoundError: vs.AlertCritical('Could not find dialog file:', view_file_path)
+        except PermissionError: vs.AlertCritical('Insufficient permissions on dialog file:', view_file_path)
+        except OSError: vs.AlertCritical('Contents of dialog file is invalid:', view_file_path)
         # TODO: Decide if exceptions should be handled here or by the user of Dialog.
         else:
             self.__valid = True
