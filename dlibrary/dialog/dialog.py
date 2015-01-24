@@ -1,5 +1,5 @@
 from dlibrary.dialog.control import AbstractDataContext, ControlFactory
-from dlibrary.object.objects.plugin import PlugIn, PlugInFileType
+from dlibrary.object.objects.plugin import PlugIn
 from dlibrary.utility.exception import VSException
 import vs
 import dlibrary.utility.converter as converter
