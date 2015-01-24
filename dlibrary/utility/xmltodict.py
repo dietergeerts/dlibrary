@@ -2,9 +2,9 @@ from collections import OrderedDict
 import dlibrary.libs.xmltodict as xmltodict
 
 
-def load(path: str, list_elements: set=None):
+def load(path: str, list_elements: set):
     try:
-        with open(path) as file: return __correct(xmltodict.parse(file.read()), list_elements or set())
+        with open(path) as file: return __correct(xmltodict.parse(file.read()), list_elements)
     except FileNotFoundError: raise
     except PermissionError: raise
     except OSError: raise
@@ -29,6 +29,6 @@ def __correct(elements: dict, list_elements: set) -> dict:
         if isinstance(elements[name], OrderedDict) and name in list_elements: elements[name] = [elements[name]]
         # An element can be a list if there where multiple, or the actual element itself!
         if isinstance(elements[name], list):
-            for element in elements[name]: __correct(element)
-        else: __correct(elements[name])
+            for element in elements[name]: __correct(element, list_elements)
+        else: __correct(elements[name], list_elements)
     return elements
