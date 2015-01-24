@@ -7,9 +7,14 @@ class AlertType(object):
 
 class Alert(object):
     def __init__(self, type: AlertType, text: str, advice: str=''):
+        self.__type = type
+        self.__text = text
+        self.__advice = advice
+
+    def show(self):
         {
-            AlertType.CRITICAL: vs.AlertCritical(text, advice),
-            AlertType.WARNING:  vs.AlertInform(text, advice, False),
-            AlertType.INFO:     vs.AlertInform(text, advice, True),
-            AlertType.SUCCESS:  vs.AlrtDialog(text)
-        }.get(type)
+            AlertType.CRITICAL: vs.AlertCritical(self.__text, self.__advice),
+            AlertType.WARNING:  vs.AlertInform(self.__text, self.__advice, False),
+            AlertType.INFO:     vs.AlertInform(self.__text, self.__advice, True),
+            AlertType.SUCCESS:  vs.AlrtDialog(self.__text)
+        }.get(self.__type)
