@@ -8,7 +8,7 @@ import dlibrary.utility.converter as converter
 class Dialog(AbstractDataContext):
     def __init__(self, dialog_name: str, data_context: object):
         super().__init__(data_context)
-        try: view = PlugIn().load_plugin_file(dialog_name + 'Dialog', set('control',))
+        try: view = PlugIn().load_plugin_file(dialog_name + 'Dialog', {'control'})
         except VSException: raise
         except FileNotFoundError: raise
         except PermissionError: raise
