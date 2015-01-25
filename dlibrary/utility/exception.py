@@ -1,4 +1,4 @@
-class DException(Exception):
+class DException(BaseException):
     pass
 
 class VSException(DException):
