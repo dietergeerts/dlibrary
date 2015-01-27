@@ -1,7 +1,8 @@
 from dlibrary.dialog.predefined.alert import Alert, AlertType
+from dlibrary.utility.singleton import SingletonMeta
 
 
-class PlugInAlerts(object):
+class PlugInAlerts(object, metaclass=SingletonMeta):
     def __init__(self):
         self.__on_plugin_file_vsexception = None
         self.__on_plugin_file_filenotfounderror = None
