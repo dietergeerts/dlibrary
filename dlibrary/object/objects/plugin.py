@@ -31,7 +31,7 @@ class PlugIn(object, metaclass=SingletonMeta):
         if not exists: raise FileNotFoundError
         else: return path + name
 
-    def __get_drawing_file_path(self, name: str) -> str: return vs.GetFPathName() + name
+    def __get_drawing_file_path(self, name: str) -> str: return vs.GetFPathName()[:-len(vs.GetFName())] + name
 
     def load_plugin_file(self, name: str, list_elements: set=None) -> dict:
         try:
