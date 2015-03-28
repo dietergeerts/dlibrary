@@ -79,6 +79,7 @@ class ObservableList(UserList):
         si = len(self.data)
         super().__iadd__(other)
         if self.__raise_events: self.__list_changed_event.raise_event({}, {si+i: item for i, item in enumerate(other)})
+        return self
 
     def append(self, item):
         index = len(self.data)
@@ -116,3 +117,62 @@ class ObservableList(UserList):
         si = len(self.data)
         super().extend(other)
         if self.__raise_events: self.__list_changed_event.raise_event({}, {si+i: item for i, item in enumerate(other)})
+
+
+class LinkedObservableList(ObservableList):
+    def __init__(self, model_list: list, pack: callable, unpack: callable):
+        super().__init__(pack(model) for model in model_list)
+        self.__model_list = model_list
+        self.__pack = pack
+        self.__unpack = unpack
+
+    def __setitem__(self, i, item):
+        super().__setitem__(i, item)
+        self.__model_list[i] = self.__unpack(item)
+
+    def __delitem__(self, i):
+        super().__delitem__(i)
+        del self.__model_list[i]
+
+    def __iadd__(self, other):
+        if isinstance(other, UserList): self.__model_list += (self.__unpack(item) for item in other.data)
+        elif isinstance(other, type(self.data)): self.__model_list += (self.__unpack(item) for item in other)
+        else: self.__model_list += (self.__unpack(item) for item in list(other))
+        return super().__iadd__(other)
+
+    def __imul__(self, n):
+        self.__model_list *= n
+        return super().__imul__(n)
+
+    def append(self, item):
+        super().append(item)
+        self.__model_list.append(self.__unpack(item))
+
+    def insert(self, i, item):
+        super().insert(i, item)
+        self.__model_list.insert(self.__unpack(item))
+
+    def pop(self, i=-1):
+        self.__model_list.pop(i)
+        return super().pop(i)
+
+    def remove(self, item):
+        super().remove(item)
+        self.__model_list.remove(self.__unpack(item))
+
+    def clear(self):
+        super().clear()
+        self.__model_list.clear()
+
+    def reverse(self):
+        super().reverse();
+        self.__model_list.remove()
+
+    def sort(self, *args, **kwds):
+        super().sort(*args, **kwds)
+        self.__model_list.sort(*args, **kwds)
+
+    def extend(self, other):
+        super().extend(other)
+        if isinstance(other, UserList): self.__model_list.extend(self.__unpack(item) for item in other.data)
+        else: self.__model_list.extend(self.__unpack(item) for item in other)
