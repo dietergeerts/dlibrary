@@ -2,12 +2,10 @@ from collections import OrderedDict
 import dlibrary.libs.xmltodict as xmltodict
 
 
-def load(path: str, list_elements: set):
+def load(path: str, list_elements: set, defaults: dict):
     try:
-        with open(path) as file: return __correct(xmltodict.parse(file.read()), list_elements)
-    except FileNotFoundError: raise
-    except PermissionError: raise
-    except OSError: raise
+        with open(path) as file: return __setDefaults(__correct(xmltodict.parse(file.read()), list_elements), defaults)
+    except (FileNotFoundError, PermissionError, OSError): raise
     # TODO: Check contents of file with an xml schema?
 
 
@@ -31,4 +29,20 @@ def __correct(elements: dict, list_elements: set) -> dict:
         if isinstance(elements[name], list):
             for element in elements[name]: __correct(element, list_elements)
         else: __correct(elements[name], list_elements)
+    return elements
+
+
+def __setDefaults(elements: dict, defaults: dict=None) -> dict:
+    for name in defaults.keys():
+        # The default value could be a dict, with it's own possible defaults.
+        if isinstance(defaults[name], dict):
+            if not name in elements: elements[name] = dict()
+            __setDefaults(elements[name], defaults[name])
+        # The default value could be a list, with a possible dict to set defaults.
+        elif isinstance(defaults[name], list):
+            if not name in elements: elements[name] = []
+            elif len(defaults[name]) == 1:
+                for element in elements[name]: __setDefaults(element, defaults[name][0])
+        # The default value will be a text otherwise.
+        elif not name in elements: elements[name] = defaults[name]
     return elements
