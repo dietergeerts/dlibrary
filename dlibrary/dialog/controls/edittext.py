@@ -1,4 +1,5 @@
 from dlibrary.dialog.control import LayoutEnum, AlignModeEnum, AbstractDataContext, AbstractFieldControl
+from dlibrary.utility import converter
 import vs
 
 
@@ -37,4 +38,4 @@ class EditText(AbstractFieldControl):
 def create(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDataContext) -> EditText:
     return EditText(
         dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''), data['@data-value'],
-        data.get('@data-items', ''), data.get('@width', 20), data.get('@disabled', False))
+        data.get('@data-items', ''), data.get('@width', 20), converter.str2bool(data.get('@disabled', 'False')))
