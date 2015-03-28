@@ -185,10 +185,11 @@ class AbstractFieldControl(AbstractControl):
     def get_align_mode(cls, layout: int) -> int: raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str, data_value: str, data_items: str):
+                 data_context: str, data_value: str, data_items: str, disabled: bool):
         super().__init__(dialog_id, control_id, help_text, data_parent, data_context)
         self.__data_value = data_value
         self.__data_items = data_items
+        self.__disabled = disabled
         self.__event_handlers = {}
         self.__on_item_changed_handlers = {}
         self.__aggregate_value = None
@@ -214,7 +215,7 @@ class AbstractFieldControl(AbstractControl):
     def __field(self, item: object=None) -> ObservableField:
         return getattr(item or self.data_context, self.__data_value)
 
-    def _setup(self): self.__reset()
+    def _setup(self): self.__reset(); vs.EnableTextEdit(self._dialog_id, self.control_id, not self.__disabled)
 
     def _update(self): self.__clear_event_handlers(); self.__reset()
 

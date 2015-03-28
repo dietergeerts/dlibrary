@@ -12,9 +12,8 @@ class EditText(AbstractFieldControl):
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_value: str, data_items: str, width: int, disabled: bool):
-        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_value, data_items)
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_value, data_items, disabled)
         vs.CreateEditText(dialog_id, control_id, self._value, width)
-        vs.EnableTextEdit(dialog_id, control_id, not disabled)
 
     def _set_control_value(self, value): vs.SetItemText(self._dialog_id, self.control_id, value)
 
