@@ -1,12 +1,20 @@
 from collections import OrderedDict
+import os
 import dlibrary.libs.xmltodict as xmltodict
 
 
 def load(path: str, list_elements: set, defaults: dict):
     try:
-        with open(path) as file: return __setDefaults(__correct(xmltodict.parse(file.read()), list_elements), defaults)
+        with open(path) as file: return __set_defaults(__correct(xmltodict.parse(file.read()), list_elements), defaults)
     except (FileNotFoundError, PermissionError, OSError): raise
     # TODO: Check contents of file with an xml schema?
+
+
+def load_or_create_if_not_found(path: str, list_elements: set, defaults: dict):
+    try:
+        if os.path.isfile(path): return load(path, list_elements, defaults)
+        else: return __set_defaults(dict(), defaults)
+    except (FileNotFoundError, PermissionError, OSError): raise
 
 
 def save(elements: dict, path: str): xmltodict.unparse(elements, path)
@@ -32,17 +40,17 @@ def __correct(elements: dict, list_elements: set) -> dict:
     return elements
 
 
-def __setDefaults(elements: dict, defaults: dict=None) -> dict:
+def __set_defaults(elements: dict, defaults: dict=None) -> dict:
     for name in defaults.keys():
         # The default value could be a dict, with it's own possible defaults.
         if isinstance(defaults[name], dict):
             if not name in elements: elements[name] = dict()
-            __setDefaults(elements[name], defaults[name])
+            __set_defaults(elements[name], defaults[name])
         # The default value could be a list, with a possible dict to set defaults.
         elif isinstance(defaults[name], list):
             if not name in elements: elements[name] = []
             elif len(defaults[name]) == 1:
-                for element in elements[name]: __setDefaults(element, defaults[name][0])
+                for element in elements[name]: __set_defaults(element, defaults[name][0])
         # The default value will be a text otherwise.
         elif not name in elements: elements[name] = defaults[name]
     return elements

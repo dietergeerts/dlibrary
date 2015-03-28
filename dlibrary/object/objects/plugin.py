@@ -36,21 +36,19 @@ class PlugIn(object, metaclass=SingletonMeta):
     def load_plugin_file(self, name: str, list_elements: set=None, defaults: dict=None) -> dict:
         try:
             path = self.__get_plugin_file_path(self.__get_plugin_file_name(name))
-            content = xmltodict.load(path, list_elements or set(), defaults or dict())
+            content = xmltodict.load_or_create_if_not_found(path, list_elements or set(), defaults or dict())
         except (VSException, FileNotFoundError, PermissionError, OSError): raise
         else: return content
 
     def save_plugin_file(self, content: dict, name: str):
         try: path = self.__get_plugin_file_path(self.__get_plugin_file_name(name))
-        except VSException: raise
-        except FileNotFoundError: raise
+        except (VSException, FileNotFoundError): raise
         else: xmltodict.save(content, path)
 
     def load_drawing_file(self, list_elements: set=None, defaults: dict=None) -> dict:
         try:
             path = self.__get_drawing_file_path(self.__get_drawing_file_name())
-            if not os.path.isfile(path): content = {'prefs': {}}
-            else: content = xmltodict.load(path, list_elements or set(), defaults or dict())
+            content = xmltodict.load_or_create_if_not_found(path, list_elements or set(), defaults or dict())
         except (VSException, FileNotFoundError, PermissionError, OSError): raise
         else: return content
 
