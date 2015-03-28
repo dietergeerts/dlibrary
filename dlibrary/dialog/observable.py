@@ -16,9 +16,21 @@ class ObservableField(object):
         if self.__value != value:
             old_value = self.__value; self.__value = value
             self.__field_changed_event.raise_event(old_value, value)
+            self._on_value_changed(old_value, value)
 
     @property
     def field_changed_event(self) -> Event: return self.__field_changed_event
+
+    def _on_value_changed(self, old, new): pass
+
+
+class LinkedObservableField(ObservableField):
+    def __init__(self, model: dict, key: str):
+        super().__init__(model[key])
+        self.__model = model
+        self.__key = key
+
+    def _on_value_changed(self, old, new): self.__model[self.__key] = new
 
 
 class ObservableList(UserList):
