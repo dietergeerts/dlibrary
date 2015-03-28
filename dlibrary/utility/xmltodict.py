@@ -19,7 +19,7 @@ def load_or_create_if_not_found(path: str, list_elements: set, defaults: dict):
 
 def save(elements: dict, path: str):
     try:
-        with open(path) as file: xmltodict.unparse(elements, file)
+        with open(path, 'w') as file: xmltodict.unparse(elements, file)
     except (FileNotFoundError, PermissionError, OSError): raise
     # TODO: Check contents of file with an xml schema?
 
