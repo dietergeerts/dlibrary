@@ -88,6 +88,7 @@ class AbstractControl(AbstractDataContext, metaclass=ABCMeta):
         vs.SetHelpText(dialog_id, control_id, help_text)
         self.__data_parent = data_parent
         self.__data_context = data_context
+        self.__last_data_context_field = None  # To be able to un-subscribe when it's changed!
 
     @property
     def _dialog_id(self) -> int: return self.__dialog_id
@@ -115,7 +116,11 @@ class AbstractControl(AbstractDataContext, metaclass=ABCMeta):
     def _update(self): raise NotImplementedError
 
     def __reset(self):
-        if self.__data_context: self.__data_context_field.field_changed_event.subscribe(self.__on_data_context_changed)
+        if self.__data_context:
+            if self.__last_data_context_field:
+                self.__last_data_context_field.field_changed_event.unsubscribe(self.__on_data_context_changed)
+            self.__last_data_context_field = self.__data_context_field
+            self.__data_context_field.field_changed_event.subscribe(self.__on_data_context_changed)
 
     def __on_parent_data_context_changed(self): self._update(); self.__reset(); self.data_context_changed.raise_event()
 

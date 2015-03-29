@@ -1,5 +1,9 @@
 from dlibrary.dialog.dialog import Dialog
-from dlibrary.dialog.observable import ObservableList, ObservableField
+from dlibrary.dialog.observable import ObservableField, LinkedObservableField, ObservableCommand
+from dlibrary.dialog.predefined.alert import Alert
+from dlibrary.dialog.predefined.alert import AlertType
+from dlibrary.dialog.predefined.alerts.alert_plugin import PlugInAlerts
+from dlibrary.dialog.viewmodel import AbstractViewModel, ViewModelList
 from dlibrary.utility.exception import VSException
 
 import pydevd
@@ -7,53 +11,35 @@ pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True
 
 
 def run():
-    try: dialog = Dialog('Main', DLibraryTestVsmViewModel())
-    except VSException: raise
-    except FileNotFoundError: raise
-    except PermissionError: raise
-    except OSError: raise
-    else: dialog.show()
-
-    # vs.AlertCritical('Could not find dialog file:', dialog_name)
-    # vs.AlertCritical('Insufficient permissions on dialog file:', dialog_name)
-    # vs.AlertCritical('Contents of dialog file is invalid:', dialog_name)
-
-
-class DLibraryTestVsmViewModel(object):
-    def __init__(self):
-        item1 = DLibraryTestVsmViewModelItem('one', 'two')
-        item2 = DLibraryTestVsmViewModelItem('three', 'four')
-        item3 = DLibraryTestVsmViewModelItem('five', 'six')
-        self.__items = ObservableList([item1, item2, item3])
-        self.__selected_items = ObservableList([item1])
-        self.__selected_items2 = ObservableList()
-        self.__new_item = ObservableField(DLibraryTestVsmViewModelItem('new', 'new'))
-
-    @property
-    def items(self) -> ObservableList: return self.__items
-
-    @property
-    def selected_items(self) -> ObservableList: return self.__selected_items
-
-    @property
-    def selected_items2(self) -> ObservableList: return self.__selected_items2
-
-    @property
-    def new_item(self) -> ObservableField: return self.__new_item
-
-    def add_item(self):
-        self.__items.append(self.new_item.value)
-        self.new_item.value = DLibraryTestVsmViewModelItem('new2', 'new2')
+    try:
+        items = create_items()
+        dialog = Dialog('Main', DLibraryTestVsmViewModel(items))
+    except VSException:       PlugInAlerts().on_plugin_file_vsexception.show()
+    except FileNotFoundError: PlugInAlerts().on_plugin_file_filenotfounderror.show()
+    except PermissionError:   PlugInAlerts().on_plugin_file_permissionerror.show()
+    except OSError:           PlugInAlerts().on_plugin_file_oserror.show()
+    else:
+        if dialog.show(): Alert(AlertType.INFO, 'You closed the dialog through the OK button').show();
+        else: Alert(AlertType.INFO, 'You closed the dialog through the CANCEL button').show();
+        message = 'The items are now: ' + chr(10)
+        for item in items: message += item['@prop_one'] + ' ' + item['@prop_two'] + ' | '
+        Alert(AlertType.INFO, message).show()
 
 
-class DLibraryTestVsmViewModelItem(object):
-    def __init__(self, prop_one: str, prop_two: str):
-        self.__prop_one = ObservableField(prop_one)
-        self.__prop_one.field_changed_event.subscribe(self.__update_prop_three)
-        self.__prop_two = ObservableField(prop_two)
-        self.__prop_two.field_changed_event.subscribe(self.__update_prop_three)
-        self.__prop_three = ObservableField()
-        self.__update_prop_three('', '')
+def create_items() -> list: return [
+    create_item('Some', 'Action'),
+    create_item('Another', 'Thing'),
+    create_item('One', 'Last')]
+
+
+def create_item(prop_one: str='', prop_two: str='') -> dict: return {'@prop_one': prop_one, '@prop_two': prop_two}
+
+
+class ItemViewModel(AbstractViewModel):
+    def __init__(self, item: dict):
+        super().__init__(item)
+        self.__prop_one = LinkedObservableField(item, '@prop_one')
+        self.__prop_two = LinkedObservableField(item, '@prop_two')
 
     @property
     def prop_one(self) -> ObservableField: return self.__prop_one
@@ -61,7 +47,73 @@ class DLibraryTestVsmViewModelItem(object):
     @property
     def prop_two(self) -> ObservableField: return self.__prop_two
 
-    @property
-    def prop_three(self) -> ObservableField: return self.__prop_three
 
-    def __update_prop_three(self, old, new): self.prop_three.value = self.prop_one.value + ' | ' + self.prop_two.value
+class PredefinedDialogsViewModel(object):
+    def __init__(self):
+        self.__dialog_text = ObservableField()
+        self.__dialog_advice = ObservableField()
+        self.__show_alert_critical = ObservableCommand(
+            lambda: self.__show_alert(AlertType.CRITICAL), self.__can_show_alert, {self.dialog_text})
+        self.__show_alert_warning = ObservableCommand(
+            lambda: self.__show_alert(AlertType.WARNING), self.__can_show_alert, {self.dialog_text})
+        self.__show_alert_info = ObservableCommand(
+            lambda: self.__show_alert(AlertType.INFO), self.__can_show_alert, {self.dialog_text})
+        self.__show_alert_success = ObservableCommand(
+            lambda: self.__show_alert(AlertType.SUCCESS), self.__can_show_alert, {self.dialog_text})
+        self.__show_plugin_alert_vsexception = ObservableCommand(
+            lambda: PlugInAlerts().on_plugin_file_vsexception.show())
+        self.__show_plugin_alert_filenotfounderror = ObservableCommand(
+            lambda: PlugInAlerts().on_plugin_file_filenotfounderror.show())
+        self.__show_plugin_alert_permissionerror = ObservableCommand(
+            lambda: PlugInAlerts().on_plugin_file_permissionerror.show())
+        self.__show_plugin_alert_oserror = ObservableCommand(
+            lambda: PlugInAlerts().on_plugin_file_oserror.show())
+
+    @property
+    def dialog_text(self) -> ObservableField: return self.__dialog_text
+
+    @property
+    def dialog_advice(self) -> ObservableField: return self.__dialog_advice
+
+    @property
+    def show_alert_critical(self) -> ObservableCommand: return self.__show_alert_critical
+
+    @property
+    def show_alert_warning(self) -> ObservableCommand: return self.__show_alert_warning
+
+    @property
+    def show_alert_info(self) -> ObservableCommand: return self.__show_alert_info
+
+    @property
+    def show_alert_success(self) -> ObservableCommand: return self.__show_alert_success
+
+    def __can_show_alert(self): return self.__dialog_text.value is not None and self.__dialog_text.value != ''
+
+    def __show_alert(self, type: AlertType): Alert(type, self.__dialog_text.value, self.__dialog_advice.value).show()
+
+    @property
+    def show_plugin_alert_vsexception(self) -> ObservableCommand: return self.__show_plugin_alert_vsexception
+
+    @property
+    def show_plugin_alert_filenotfounderror(self) -> ObservableCommand: return self.__show_plugin_alert_filenotfounderror
+
+    @property
+    def show_plugin_alert_permissionerror(self) -> ObservableCommand: return self.__show_plugin_alert_permissionerror
+
+    @property
+    def show_plugin_alert_oserrer(self) -> ObservableCommand: return self.__show_plugin_alert_oserror
+
+
+class DLibraryTestVsmViewModel(object):
+    def __init__(self, items: list):
+        self.__list_administration = ObservableField(
+            ViewModelList(items, ItemViewModel, create_item, self.__can_add_item, {'prop_one'}))
+        self.__predefined_dialogs = ObservableField(PredefinedDialogsViewModel())
+
+    @property
+    def list_administration(self) -> ObservableField: return self.__list_administration
+
+    @property
+    def predefined_dialogs(self) -> ObservableField: return self.__predefined_dialogs
+
+    def __can_add_item(self, item): return item['@prop_one'] is not None and item['@prop_one'] != ''

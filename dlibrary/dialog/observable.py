@@ -15,8 +15,8 @@ class ObservableField(object):
     def value(self, value):
         if self.__value != value:
             old_value = self.__value; self.__value = value
-            self.__field_changed_event.raise_event(old_value, value)
             self._on_value_changed(old_value, value)
+            self.__field_changed_event.raise_event(old_value, value)
 
     @property
     def field_changed_event(self) -> Event: return self.__field_changed_event
@@ -165,7 +165,7 @@ class LinkedObservableList(ObservableList):
         self.__model_list.clear()
 
     def reverse(self):
-        super().reverse();
+        super().reverse()
         self.__model_list.remove()
 
     def sort(self, *args, **kwds):
@@ -176,3 +176,30 @@ class LinkedObservableList(ObservableList):
         super().extend(other)
         if isinstance(other, UserList): self.__model_list.extend(self.__unpack(item) for item in other.data)
         else: self.__model_list.extend(self.__unpack(item) for item in other)
+
+
+class ObservableCommand(object):
+    def __init__(self, execute: callable, can_execute: callable=None, dependant_observables: set=None):
+        self.__execute = execute
+        self.__can_execute = can_execute
+        self.__can_execute_changed_event = Event()
+        if can_execute is not None: self.__subscribe_to_dependant_observables(dependant_observables)
+
+    @property
+    def can_execute_changed_event(self) -> Event: return self.__can_execute_changed_event
+
+    def can_execute(self): return self.__can_execute() if self.__can_execute is not None else True
+
+    def execute(self):
+        if self.can_execute(): self.__execute()
+
+    def __subscribe_to_dependant_observables(self, dependant_observables):
+        for observable in dependant_observables:
+            if isinstance(observable, ObservableField):
+                observable.field_changed_event.subscribe(self.__on_observable_changed)
+            elif isinstance(observable, ObservableList):
+                observable.list_changed_event.subscribe(self.__on_observable_changed)
+                observable.list_reordered_event.subscribe(self.__on_observable_changed)
+
+    def __on_observable_changed(self, *args, **kwargs):
+        self.__can_execute_changed_event.raise_event()
