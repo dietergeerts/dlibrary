@@ -12,8 +12,8 @@ class TabPane(AbstractGroupControl):
         return -1
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractControl,
-                 data_context: str, header: str):
-        super().__init__(dialog_id, control_id, help_text, data_parent, data_context)
+                 data_context: str, data_disabled: str, header: str):
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled)
         vs.CreateGroupBox(dialog_id, control_id, header, False)
         vs.CreateTabPane(dialog_id, data_parent.control_id, control_id)
 
@@ -31,6 +31,7 @@ class TabPane(AbstractGroupControl):
 #   <tab-pane
 #       optional: @help -> str
 #       optional: @data-context -> str (property name of parent data-context) -> ObservableField
+#       optional: @data-disabled -> str (property name of data-context) -> ObservableMethod() -> bool
 #       required: @header -> str
 #       optional: @layout -> str (LayoutEnum) || 'VERTICAL'>
 #           required: <control>
@@ -38,8 +39,8 @@ class TabPane(AbstractGroupControl):
 # ----------------------------------------------------------------------------------------------------------------------
 
 def create(dialog_id: int, control_id: int, data: dict, data_parent: AbstractControl) -> TabPane:
-    control = TabPane(
-        dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''), data['@header'])
+    control = TabPane(dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''),
+                      data.get('@data-disabled', ''), data['@header'])
     control.add_controls(
         ControlFactory().create_controls(dialog_id, data['control'], control),
         LayoutEnum.from_string(data.get('@layout', 'VERTICAL')))

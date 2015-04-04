@@ -12,10 +12,10 @@ class ListBox(AbstractListControl):
         return AlignModeEnum.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str, data_items: str, data_selected_items: str, data_value: str, width: int,
-                 height: int):
+                 data_context: str, data_disabled: str, data_items: str, data_selected_items: str, data_value: str,
+                 width: int, height: int):
         super().__init__(dialog_id, control_id, self.__create_help_text(help_text), data_parent, data_context,
-                         data_items, data_selected_items, (data_value,))
+                         data_disabled, data_items, data_selected_items, (data_value,))
         self.__data_value = data_value
         vs.CreateListBoxN(dialog_id, control_id, width, height, True)
 
@@ -67,6 +67,7 @@ class ListBox(AbstractListControl):
 #   <list-box
 #       optional: @help -> str
 #       optional: @data-context -> str (property name of parent data-context) -> ObservableField
+#       optional: @data-disabled -> str (property name of data-context) -> ObservableMethod() -> bool
 #       required: @data-items -> str (property name of data-context) -> ObservableList
 #       required: @data-selected-items -> str (property name of data-context) -> ObservableList
 #       required: @data-value -> str (property name of an item) -> ObservableField
@@ -76,5 +77,6 @@ class ListBox(AbstractListControl):
 
 def create(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDataContext) -> ListBox:
     return ListBox(
-        dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''), data['@data-items'],
-        data['@data-selected-items'], data['@data-value'], data.get('@width', 40), data.get('@height', 40))
+        dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''),
+        data.get('@data-disabled', ''), data['@data-items'], data['@data-selected-items'], data['@data-value'],
+        data.get('@width', 40), data.get('@height', 40))

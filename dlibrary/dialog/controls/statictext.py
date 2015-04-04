@@ -13,7 +13,7 @@ class StaticText(AbstractControl):
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, text: str, width: int, style: int):
-        super().__init__(dialog_id, control_id, help_text, data_parent, data_context)
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled='')
         vs.CreateStyledStatic(dialog_id, control_id, text, width, style)
 
     def _setup(self):

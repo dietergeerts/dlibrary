@@ -12,8 +12,8 @@ class TabControl(AbstractControl):
         return AlignModeEnum.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str):
-        super().__init__(dialog_id, control_id, help_text, data_parent, data_context)
+                 data_context: str, data_disabled):
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled)
         self.__tab_panes = tuple()
         vs.CreateTabControl(dialog_id, control_id)
 
@@ -38,13 +38,15 @@ class TabControl(AbstractControl):
 # ----------------------------------------------------------------------------------------------------------------------
 #   <tab-control
 #       optional: @help -> str
-#       optional: @data-context -> str (property name of parent data-context) -> ObservableField>
+#       optional: @data-context -> str (property name of parent data-context) -> ObservableField
+#       optional: @data-disabled -> str (property name of data-context) -> ObservableMethod() -> bool>
 #           required: <tab-pane>
 #   </tab-control>
 # ----------------------------------------------------------------------------------------------------------------------
 
 def create(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDataContext) -> TabControl:
-    control = TabControl(dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''))
+    control = TabControl(dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''),
+                         data.get('@data-disabled', ''))
     control.add_tab_panes(tuple(ControlFactory().create_control(dialog_id, 'tab-pane', tab_pane, control)
                                 for tab_pane in data['tab-pane']))
     return control

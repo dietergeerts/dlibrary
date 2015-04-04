@@ -2,7 +2,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 import importlib
 
-from dlibrary.dialog.observable import ObservableField, ObservableList
+from dlibrary.dialog.observable import ObservableField, ObservableList, ObservableMethod
 from dlibrary.utility import xmltodict as xml_to_dict_util
 from dlibrary.utility.eventing import Event
 from dlibrary.utility.singleton import SingletonMeta
@@ -98,7 +98,7 @@ class AbstractControl(AbstractDataContext, metaclass=ABCMeta):
         raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str):
+                 data_context: str, data_disabled: str):
         super().__init__(None)
         self.__dialog_id = dialog_id
         self.__control_id = control_id
@@ -106,7 +106,11 @@ class AbstractControl(AbstractDataContext, metaclass=ABCMeta):
         self.__data_parent = data_parent
         self.__data_context = data_context
         self.__data_context_field = None
-        self.__init_data_contexts()
+        """@type: ObservableField"""
+        self.__data_disabled = data_disabled
+        self.__data_disabled_method = None
+        """@type: ObservableMethod"""
+        self.__init_data_contexts_and_observables()
 
     @property
     def _dialog_id(self) -> int:
@@ -130,29 +134,39 @@ class AbstractControl(AbstractDataContext, metaclass=ABCMeta):
         self._setup()
         self._update()
 
-    def __init_data_contexts(self):
+    def __init_data_contexts_and_observables(self):
         self.__data_parent.data_context_changed.subscribe(self.__on_parent_data_context_changed)
-        self.__setup_data_context_field()
+        self.__setup_data_contexts_and_observables()
 
-    def __setup_data_context_field(self):
+    def __setup_data_contexts_and_observables(self):
         if self.__data_context:
             self.__data_context_field = self.__data_parent.getattr(self.__data_context, ObservableField())
             """@type: ObservableField"""
             self.__data_context_field.field_changed_event.subscribe(self.__on_data_context_changed)
+        if self.__data_disabled:
+            self.__data_disabled_method = self.getattr(self.__data_disabled, ObservableMethod(lambda: False))
+            """@type: ObservableMethod"""
+            self.__data_disabled_method.method_changed_event.subscribe(self.__on_data_disabled_method_changed)
+            self.__on_data_disabled_method_changed()
 
-    def __reset_data_context_field(self):
+    def __reset_data_contexts_and_observables(self):
         if self.__data_context:
             self.__data_context_field.field_changed_event.unsubscribe(self.__on_data_context_changed)
-            self.__setup_data_context_field()
+        if self.__data_disabled:
+            self.__data_disabled_method.method_changed_event.unsubscribe(self.__on_data_disabled_method_changed)
+        self.__setup_data_contexts_and_observables()
 
     def __on_parent_data_context_changed(self, *args):
-        self.__reset_data_context_field()
+        self.__reset_data_contexts_and_observables()
         self._update()
         self.data_context_changed.raise_event(*args)
 
     def __on_data_context_changed(self, *args):
         self._update()
         self.data_context_changed.raise_event(*args)
+
+    def __on_data_disabled_method_changed(self):
+        vs.EnableItem(self._dialog_id, self.control_id, not self.__data_disabled_method.apply())
 
     @abstractmethod
     def _setup(self):
@@ -179,8 +193,8 @@ class AbstractGroupControl(AbstractControl, metaclass=ABCMeta):
         raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str):
-        super().__init__(dialog_id, control_id, help_text, data_parent, data_context)
+                 data_context: str, data_disabled: str):
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled)
         self.__controls = tuple()
 
     def add_controls(self, controls: tuple, layout: int):
@@ -235,9 +249,8 @@ class AbstractFieldControl(AbstractControl, metaclass=ABCMeta):
         raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str, data_value: str, data_items: str, disabled: bool):
-        super().__init__(dialog_id, control_id, help_text, data_parent, data_context)
-        self.__disabled = disabled
+                 data_context: str, data_disabled: str, data_value: str, data_items: str):
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled)
         self.__data_value = data_value
         self.__data_items = data_items
         self.__value_observable = None
@@ -266,7 +279,7 @@ class AbstractFieldControl(AbstractControl, metaclass=ABCMeta):
                     self.__item_value_fields[item].value = value
 
     def _setup(self):
-        vs.EnableItem(self._dialog_id, self.control_id, not self.__disabled)
+        pass
 
     def _update(self):
         self.__reset_observables()
@@ -359,8 +372,8 @@ class AbstractListControl(AbstractControl, metaclass=ABCMeta):
         raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str, data_items: str, data_selected_items: str, data_values: tuple):
-        super().__init__(dialog_id, control_id, help_text, data_parent, data_context)
+                 data_context: str, data_disabled: str, data_items: str, data_selected_items: str, data_values: tuple):
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled)
         self.__data_items = data_items
         self.__data_selected_items = data_selected_items
         self.__data_values = data_values

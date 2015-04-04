@@ -37,6 +37,7 @@ class ChoiceItem(object):
 choice1 = ChoiceItem(1, 'one')
 choice2 = ChoiceItem(3, 'three')
 choice3 = ChoiceItem(2, 'two')
+choice4 = ChoiceItem(4, 'four')
 
 
 def create_items() -> list: return [
@@ -45,7 +46,7 @@ def create_items() -> list: return [
     create_item('One', choice3)]
 
 
-def create_item(prop_one: str='', prop_two: object=choice3) -> dict:
+def create_item(prop_one: str='', prop_two: object=choice4) -> dict:
     return {'@prop_one': prop_one, '@prop_two': prop_two}
 
 

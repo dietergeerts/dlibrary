@@ -83,10 +83,11 @@ class ListBrowser(AbstractListControl):
         return AlignModeEnum.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str, data_items: str, data_selected_items: str, index: bool, columns: tuple, width: int,
+                 data_context: str, data_disabled: str, data_items: str, data_selected_items: str, index: bool,
+                 columns: tuple, width: int,
                  height: int):
         super().__init__(dialog_id, control_id, self.__create_help_text(help_text, index), data_parent, data_context,
-                         data_items, data_selected_items, tuple(column.data_value for column in columns))
+                         data_disabled, data_items, data_selected_items, tuple(column.data_value for column in columns))
         self.__index = index
         self.__columns = ((self.__create_index_column(),) + columns) if index else columns
         vs.CreateLB(dialog_id, control_id, width, height)
@@ -292,6 +293,7 @@ class ListBrowser(AbstractListControl):
 #   <list-browser
 #       optional: @help -> str
 #       optional: @data-context -> str (property name of parent data-context) -> ObservableField
+#       optional: @data-disabled -> str (property name of data-context) -> ObservableMethod() -> bool
 #       required: @data-items -> str (property name of data-context) -> ObservableList
 #       required: @data-selected-items -> str (property name of data-context) -> ObservableList
 #       optional: @index -> bool (has index column) || False
@@ -309,8 +311,9 @@ class ListBrowser(AbstractListControl):
 
 def create(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDataContext) -> ListBrowser:
     return ListBrowser(
-        dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''), data['@data-items'],
-        data['@data-selected-items'], converter.str2bool(data.get('@index', 'False')),
+        dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''),
+        data.get('@data-disabled', ''), data['@data-items'], data['@data-selected-items'],
+        converter.str2bool(data.get('@index', 'False')),
         tuple(Column(
             column['@header'], column.get('@width', 120),
             ControlTypeEnum.from_string(column.get('@control-type', 'STATIC')),

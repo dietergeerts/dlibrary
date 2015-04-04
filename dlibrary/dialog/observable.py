@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 from collections import UserList
 from dlibrary.utility.eventing import Event
 
@@ -207,13 +208,48 @@ class LinkedObservableList(ObservableList):
             self.__model_list.extend(self.__unpack(item) for item in other)
 
 
-class ObservableCommand(object):
+class AbstractObservableWithDependencies(object, metaclass=ABCMeta):
+    def __init__(self, dependant_observables: set=None):
+        if dependant_observables is not None:
+            self.__subscribe_to_dependant_observables(dependant_observables)
+
+    def __subscribe_to_dependant_observables(self, dependant_observables: set):
+        for observable in dependant_observables:
+            if isinstance(observable, ObservableField):
+                observable.field_changed_event.subscribe(self._on_dependencies_changed)
+            elif isinstance(observable, ObservableList):
+                observable.list_changed_event.subscribe(self._on_dependencies_changed)
+                observable.list_reordered_event.subscribe(self._on_dependencies_changed)
+
+    @abstractmethod
+    def _on_dependencies_changed(self, *args, **kwargs):
+        raise NotImplementedError
+
+
+class ObservableMethod(AbstractObservableWithDependencies):
+    def __init__(self, method: callable, dependant_observables: set=None):
+        super().__init__(dependant_observables)
+        self.__method = method
+        self.__method_changed_event = Event()
+
+    @property
+    def method_changed_event(self) -> Event:
+        return self.__method_changed_event
+
+    def apply(self, *args):
+        self.__method(*args)
+
+    # noinspection PyUnusedLocal
+    def _on_dependencies_changed(self, *args, **kwargs):
+        self.__method_changed_event.raise_event()
+
+
+class ObservableCommand(AbstractObservableWithDependencies):
     def __init__(self, execute: callable, can_execute: callable=None, dependant_observables: set=None):
+        super().__init__(dependant_observables)
         self.__execute = execute
         self.__can_execute = can_execute
         self.__can_execute_changed_event = Event()
-        if can_execute is not None:
-            self.__subscribe_to_dependant_observables(dependant_observables)
 
     @property
     def can_execute_changed_event(self) -> Event:
@@ -226,14 +262,6 @@ class ObservableCommand(object):
         if self.can_execute():
             self.__execute()
 
-    def __subscribe_to_dependant_observables(self, dependant_observables):
-        for observable in dependant_observables:
-            if isinstance(observable, ObservableField):
-                observable.field_changed_event.subscribe(self.__on_observable_changed)
-            elif isinstance(observable, ObservableList):
-                observable.list_changed_event.subscribe(self.__on_observable_changed)
-                observable.list_reordered_event.subscribe(self.__on_observable_changed)
-
     # noinspection PyUnusedLocal
-    def __on_observable_changed(self, *args, **kwargs):
+    def _on_dependencies_changed(self, *args, **kwargs):
         self.__can_execute_changed_event.raise_event()

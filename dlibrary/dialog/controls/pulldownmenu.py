@@ -1,6 +1,5 @@
 from dlibrary.dialog.control import AbstractFieldControl, LayoutEnum, AlignModeEnum, AbstractDataContext
 from dlibrary.dialog.observable import ObservableList
-from dlibrary.utility import converter
 import vs
 
 
@@ -14,9 +13,10 @@ class PullDownMenu(AbstractFieldControl):
         return AlignModeEnum.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str, data_available_items: str, data_value: str, data_items: str, width: int,
-                 disabled: bool):
-        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_value, data_items, disabled)
+                 data_context: str, data_disabled: str, data_available_items: str, data_value: str, data_items: str,
+                 width: int):
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled, data_value,
+                         data_items)
         self.__data_available_items = data_available_items
         self.__available_items = None
         vs.CreatePullDownMenu(dialog_id, control_id, width)
@@ -48,15 +48,15 @@ class PullDownMenu(AbstractFieldControl):
 #   <pull-down-menu
 #       optional: @help -> str
 #       optional: @data-context -> str (property name of parent data-context) -> ObservableField
+#       optional: @data-disabled -> str (property name of data-context) -> ObservableMethod() -> bool
 #       required: @data-available-items -> str (property name of data-context) -> ObservableList
 #       required: @data-value -> str (property name of data-context or of an item) -> ObservableField
 #       optional: @data-items -> str (property name of data-context) -> ObservableList
-#       optional: @width -> int (in chars) || 20
-#       optional: @disabled -> bool || False/>
+#       optional: @width -> int (in chars) || 20/>
 # ----------------------------------------------------------------------------------------------------------------------
 
 def create(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDataContext) -> PullDownMenu:
     return PullDownMenu(
         dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''),
-        data['@data-available-items'], data['@data-value'], data.get('@data-items', ''), data.get('@width', 20),
-        converter.str2bool(data.get('@disabled', 'False')))
+        data.get('@data-disabled', ''), data['@data-available-items'], data['@data-value'], data.get('@data-items', ''),
+        data.get('@width', 20))
