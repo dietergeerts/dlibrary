@@ -14,13 +14,17 @@
             <control><static-text>Property One</static-text></control>
             <control><edit-text data-items="selected_items" data-value="prop_one" width="30"/></control>
             <control><static-text>Property Two</static-text></control>
-            <control><edit-text data-items="selected_items" data-value="prop_two"/></control>
+            <control>
+              <pull-down-menu data-items="selected_items" data-value="prop_two" data-available-items="available_items"/>
+            </control>
             <control><separator/></control>
             <control><static-text>NEW ITEM</static-text></control>
             <control><static-text>Property One</static-text></control>
             <control><edit-text data-context="new_item" data-value="prop_one"/></control>
             <control><static-text>Property Two</static-text></control>
-            <control><edit-text data-context="new_item" data-value="prop_two"/></control>
+            <control>
+              <pull-down-menu data-context="new_item" data-value="prop_two" data-available-items="available_items"/>
+            </control>
             <control><button data-command="add_item" help="Property One is required!">Add New Item</button></control>
           </group-box>
         </control>

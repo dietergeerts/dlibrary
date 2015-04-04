@@ -1,5 +1,5 @@
 from dlibrary.dialog.dialog import Dialog
-from dlibrary.dialog.observable import ObservableField, LinkedObservableField, ObservableCommand
+from dlibrary.dialog.observable import ObservableField, LinkedObservableField, ObservableCommand, ObservableList
 from dlibrary.dialog.predefined.alert import Alert
 from dlibrary.dialog.predefined.alert import AlertType
 from dlibrary.dialog.predefined.alerts.alert_plugin import PlugInAlerts
@@ -22,17 +22,31 @@ def run():
         if dialog.show(): Alert(AlertType.INFO, 'You closed the dialog through the OK button').show();
         else: Alert(AlertType.INFO, 'You closed the dialog through the CANCEL button').show();
         message = 'The items are now: ' + chr(10)
-        for item in items: message += item['@prop_one'] + ' ' + item['@prop_two'] + ' | '
+        for item in items: message += item['@prop_one'] + ' ' + str(item['@prop_two']) + ' | '
         Alert(AlertType.INFO, message).show()
 
 
+class ChoiceItem(object):
+    def __init__(self, number: int, name: str):
+        self.__number = number
+        self.__name = name
+
+    def __str__(self): return '%s %s' % (str(self.__number), self.__name)
+
+
+choice1 = ChoiceItem(1, 'one')
+choice2 = ChoiceItem(3, 'three')
+choice3 = ChoiceItem(2, 'two')
+
+
 def create_items() -> list: return [
-    create_item('Some', 'Action'),
-    create_item('Another', 'Thing'),
-    create_item('One', 'Last')]
+    create_item('Some', choice1),
+    create_item('Another', choice1),
+    create_item('One', choice3)]
 
 
-def create_item(prop_one: str='', prop_two: str='') -> dict: return {'@prop_one': prop_one, '@prop_two': prop_two}
+def create_item(prop_one: str='', prop_two: object=choice3) -> dict:
+    return {'@prop_one': prop_one, '@prop_two': prop_two}
 
 
 class ItemViewModel(AbstractViewModel):
@@ -106,9 +120,13 @@ class PredefinedDialogsViewModel(object):
 
 class DLibraryTestVsmViewModel(object):
     def __init__(self, items: list):
+        self.__available_items = ObservableList([choice1, choice2, choice3])
         self.__list_administration = ObservableField(
             ViewModelList(items, ItemViewModel, create_item, self.__can_add_item, {'prop_one'}))
         self.__predefined_dialogs = ObservableField(PredefinedDialogsViewModel())
+
+    @property
+    def available_items(self) -> ObservableList: return self.__available_items
 
     @property
     def list_administration(self) -> ObservableField: return self.__list_administration

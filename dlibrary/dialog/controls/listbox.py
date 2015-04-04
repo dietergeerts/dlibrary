@@ -4,10 +4,12 @@ import vs
 
 class ListBox(AbstractListControl):
     @classmethod
-    def can_align(cls, layout: int) -> bool: return True
+    def can_align(cls, layout: int) -> bool:
+        return True
 
     @classmethod
-    def get_align_mode(cls, layout: int) -> int: return AlignModeEnum.RESIZE
+    def get_align_mode(cls, layout: int) -> int:
+        return AlignModeEnum.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_items: str, data_selected_items: str, data_value: str, width: int,
@@ -29,7 +31,7 @@ class ListBox(AbstractListControl):
         self._select_control_item(index, item, item in self._selected_items)
 
     def _add_control_item(self, index: int, item: object):
-        vs.AddChoice(self._dialog_id, self.control_id, self._field(item, self.__data_value).value, index)
+        vs.AddChoice(self._dialog_id, self.control_id, self._get_item_value(item, self.__data_value), index)
 
     def _remove_control_item(self, index: int, item: object):
         vs.RemoveChoice(self._dialog_id, self.control_id, index)
@@ -41,18 +43,24 @@ class ListBox(AbstractListControl):
         vs.SelectChoice(self._dialog_id, self.control_id, index, selected)
 
     def _on_control_event(self, data: int):
-        if data >= 0: self.__on_selection()  # Index of last selected, of last if clicked on white space.
-        elif -6: self.__on_delete_key_pressed()
+        if data >= 0:
+            self.__on_selection()  # Index of last selected, of last if clicked on white space.
+        elif -6:
+            self.__on_delete_key_pressed()
 
     def __on_selection(self):
-        selected_indexes = []; index = -1
+        selected_indexes = []
+        index = -1
         while True:
             index = vs.GetSelectedChoiceIndex(self._dialog_id, self.control_id, index+1)
-            if index != -1: selected_indexes.append(index)
-            if index == -1 or index == len(self._items) - 1: break
+            if index != -1:
+                selected_indexes.append(index)
+            if index == -1 or index == len(self._items) - 1:
+                break
         self._change_selection(tuple(self._items[index] for index in selected_indexes))
 
-    def __on_delete_key_pressed(self): self._delete_selected()
+    def __on_delete_key_pressed(self):
+        self._delete_selected()
 
 
 # ----------------------------------------------------------------------------------------------------------------------

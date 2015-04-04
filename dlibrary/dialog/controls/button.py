@@ -5,10 +5,12 @@ import vs
 
 class Button(AbstractControl):
     @classmethod
-    def can_align(cls, layout: int) -> bool: return True
+    def can_align(cls, layout: int) -> bool:
+        return True
 
     @classmethod
-    def get_align_mode(cls, layout: int) -> int: return AlignModeEnum.SHIFT
+    def get_align_mode(cls, layout: int) -> int:
+        return AlignModeEnum.SHIFT
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_command: str, caption: str):
@@ -17,11 +19,15 @@ class Button(AbstractControl):
         self.__last_data_command_observable = None  # To be able to un-subscribe when it's changed!
         vs.CreatePushButton(dialog_id, control_id, caption)
 
-    def __data_command_observable(self) -> ObservableCommand: return getattr(self.data_context, self.__data_command)
+    def __data_command_observable(self) -> ObservableCommand:
+        return self.getattr(self.__data_command)
 
-    def _setup(self): self._update()
+    def _setup(self):
+        pass
 
-    def _update(self): self.__update_data_command_observable_subscribtion(); self.__on_can_execute_changed()
+    def _update(self):
+        self.__update_data_command_observable_subscribtion()
+        self.__on_can_execute_changed()
 
     def __update_data_command_observable_subscribtion(self):
         if self.__last_data_command_observable:
@@ -32,7 +38,8 @@ class Button(AbstractControl):
     def __on_can_execute_changed(self):
         vs.EnableItem(self._dialog_id, self.control_id, self.__data_command_observable().can_execute())
 
-    def _on_control_event(self, data: int): self.__data_command_observable().execute()
+    def _on_control_event(self, data: int):
+        self.__data_command_observable().execute()
 
 
 # ----------------------------------------------------------------------------------------------------------------------

@@ -6,10 +6,12 @@ class AbstractViewModel(object):
         self.__model = model
 
     @property
-    def model(self) -> object: return self.__model
+    def model(self) -> object:
+        return self.__model
 
 
 class ViewModelList(object):
+    # noinspection PyDefaultArgument
     def __init__(self, model_list: list, abstract_view_model: callable, create_new_model: callable,
                  can_add_new_model: callable=None, can_add_dependent_property_observables: set={}):
         self.__items = LinkedObservableList(model_list, abstract_view_model, lambda view_model: view_model.model)
@@ -24,24 +26,31 @@ class ViewModelList(object):
         self.__setup_new_item()
 
     @property
-    def items(self) -> ObservableList: return self.__items
+    def items(self) -> ObservableList:
+        return self.__items
 
     @property
-    def selected_items(self) -> ObservableList: return self.__selected_items
+    def selected_items(self) -> ObservableList:
+        return self.__selected_items
 
     @property
-    def new_item(self) -> ObservableField: return self.__new_item
+    def new_item(self) -> ObservableField:
+        return self.__new_item
 
     @property
-    def add_item(self) -> ObservableCommand: return self.__add_item
+    def add_item(self) -> ObservableCommand:
+        return self.__add_item
 
     def __can_add_item(self):
         return self.__can_add_new_model(self.new_item.value.model) if self.__can_add_new_model is not None else True
 
-    def __on_add_item(self): self.items.append(self.new_item.value); self.__setup_new_item()
+    def __on_add_item(self):
+        self.items.append(self.new_item.value)
+        self.__setup_new_item()
 
     def __setup_new_item(self):
-        if self.new_item.value: self.__unsubscribe_to_dependencies(self.new_item.value)
+        if self.new_item.value:
+            self.__unsubscribe_to_dependencies(self.new_item.value)
         self.new_item.value = self.__abstract_view_model(self.__create_new_model())
         self.__subscribe_to_dependencies(self.new_item.value)
         self.__on_new_item_dependency_changed()  # To reset check with the new item!
@@ -64,5 +73,6 @@ class ViewModelList(object):
                 observable.list_changed_event.unsubscribe(self.__on_new_item_dependency_changed)
                 observable.list_reordered_event.unsubscribe(self.__on_new_item_dependency_changed)
 
+    # noinspection PyUnusedLocal
     def __on_new_item_dependency_changed(self, *args, **kwargs):
         self.__can_add_dependency.field_changed_event.raise_event()

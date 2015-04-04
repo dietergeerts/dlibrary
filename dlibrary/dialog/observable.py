@@ -1,5 +1,4 @@
 from collections import UserList
-
 from dlibrary.utility.eventing import Event
 
 
@@ -9,19 +8,23 @@ class ObservableField(object):
         self.__field_changed_event = Event()
 
     @property
-    def value(self): return self.__value
+    def value(self):
+        return self.__value
 
     @value.setter
     def value(self, value):
         if self.__value != value:
-            old_value = self.__value; self.__value = value
+            old_value = self.__value
+            self.__value = value
             self._on_value_changed(old_value, value)
             self.__field_changed_event.raise_event(old_value, value)
 
     @property
-    def field_changed_event(self) -> Event: return self.__field_changed_event
+    def field_changed_event(self) -> Event:
+        return self.__field_changed_event
 
-    def _on_value_changed(self, old, new): pass
+    def _on_value_changed(self, old, new):
+        pass
 
 
 class LinkedObservableField(ObservableField):
@@ -30,7 +33,8 @@ class LinkedObservableField(ObservableField):
         self.__model = model
         self.__key = key
 
-    def _on_value_changed(self, old, new): self.__model[self.__key] = new
+    def _on_value_changed(self, old, new):
+        self.__model[self.__key] = new
 
 
 class ObservableList(UserList):
@@ -42,10 +46,12 @@ class ObservableList(UserList):
         self.__list_reordered_event = Event()
 
     @property
-    def list_changed_event(self) -> Event: return self.__list_changed_event
+    def list_changed_event(self) -> Event:
+        return self.__list_changed_event
 
     @property
-    def list_reordered_event(self) -> Event: return self.__list_reordered_event
+    def list_reordered_event(self) -> Event:
+        return self.__list_reordered_event
 
     def suspend_events(self):
         self.__raise_events = False
@@ -53,6 +59,7 @@ class ObservableList(UserList):
 
     def resume_events(self):
         self.__raise_events = True
+        # noinspection PyTypeChecker
         self.__raise_event_if_changed(self.__suspended_state, self.data)
         self.__suspended_state = None
 
@@ -68,55 +75,72 @@ class ObservableList(UserList):
     def __setitem__(self, i, item):
         old_item = self.data[i]
         super().__setitem__(i, item)
-        if self.__raise_events: self.__list_changed_event.raise_event({i: old_item}, {i: item})
+        if self.__raise_events:
+            self.__list_changed_event.raise_event({i: old_item}, {i: item})
 
     def __delitem__(self, i):
         old_item = self.data[i]
         super().__delitem__(i)
-        if self.__raise_events: self.__list_changed_event.raise_event({i: old_item}, {})
+        if self.__raise_events:
+            self.__list_changed_event.raise_event({i: old_item}, {})
 
     def __iadd__(self, other):
         si = len(self.data)
         super().__iadd__(other)
-        if self.__raise_events: self.__list_changed_event.raise_event({}, {si+i: item for i, item in enumerate(other)})
+        if self.__raise_events:
+            self.__list_changed_event.raise_event({}, {si+i: item for i, item in enumerate(other)})
         return self
 
     def append(self, item):
         index = len(self.data)
         super().append(item)
-        if self.__raise_events: self.__list_changed_event.raise_event({}, {index: item})
+        if self.__raise_events:
+            self.__list_changed_event.raise_event({}, {index: item})
 
     def insert(self, i, item):
         super().insert(i, item)
-        if self.__raise_events: self.__list_changed_event.raise_event({}, {i: item})
+        if self.__raise_events:
+            self.__list_changed_event.raise_event({}, {i: item})
 
     def pop(self, i=-1):
         item = super().pop(i)
-        if self.__raise_events: self.__list_changed_event.raise_event({(len(self.data) if i == -1 else i): item}, {})
+        if self.__raise_events:
+            self.__list_changed_event.raise_event({(len(self.data) if i == -1 else i): item}, {})
         return item
 
     def remove(self, item):
         index = self.data.index(item)
         super().remove(item)
-        if self.__raise_events: self.__list_changed_event.raise_event({index: item}, {})
+        if self.__raise_events:
+            self.__list_changed_event.raise_event({index: item}, {})
 
     def clear(self):
         items = list(self.data)
         super().clear()
-        if self.__raise_events: self.__list_changed_event.raise_event({i: item for i, item in enumerate(items)}, {})
+        if self.__raise_events:
+            self.__list_changed_event.raise_event({i: item for i, item in enumerate(items)}, {})
+
+    def index(self, item, *args):
+        try:
+            return super().index(item, *args)
+        except ValueError:
+            return -1
 
     def reverse(self):
         super().reverse()
-        if self.__raise_events: self.__list_reordered_event.raise_event()
+        if self.__raise_events:
+            self.__list_reordered_event.raise_event()
 
     def sort(self, *args, **kwds):
         super().sort(*args, **kwds)
-        if self.__raise_events: self.__list_reordered_event.raise_event()
+        if self.__raise_events:
+            self.__list_reordered_event.raise_event()
 
     def extend(self, other):
         si = len(self.data)
         super().extend(other)
-        if self.__raise_events: self.__list_changed_event.raise_event({}, {si+i: item for i, item in enumerate(other)})
+        if self.__raise_events:
+            self.__list_changed_event.raise_event({}, {si+i: item for i, item in enumerate(other)})
 
 
 class LinkedObservableList(ObservableList):
@@ -135,9 +159,12 @@ class LinkedObservableList(ObservableList):
         del self.__model_list[i]
 
     def __iadd__(self, other):
-        if isinstance(other, UserList): self.__model_list += (self.__unpack(item) for item in other.data)
-        elif isinstance(other, type(self.data)): self.__model_list += (self.__unpack(item) for item in other)
-        else: self.__model_list += (self.__unpack(item) for item in list(other))
+        if isinstance(other, UserList):
+            self.__model_list += (self.__unpack(item) for item in other.data)
+        elif isinstance(other, type(self.data)):
+            self.__model_list += (self.__unpack(item) for item in other)
+        else:
+            self.__model_list += (self.__unpack(item) for item in list(other))
         return super().__iadd__(other)
 
     def __imul__(self, n):
@@ -150,7 +177,7 @@ class LinkedObservableList(ObservableList):
 
     def insert(self, i, item):
         super().insert(i, item)
-        self.__model_list.insert(self.__unpack(item))
+        self.__model_list.insert(i, self.__unpack(item))
 
     def pop(self, i=-1):
         self.__model_list.pop(i)
@@ -166,7 +193,7 @@ class LinkedObservableList(ObservableList):
 
     def reverse(self):
         super().reverse()
-        self.__model_list.remove()
+        self.__model_list.reverse()
 
     def sort(self, *args, **kwds):
         super().sort(*args, **kwds)
@@ -174,8 +201,10 @@ class LinkedObservableList(ObservableList):
 
     def extend(self, other):
         super().extend(other)
-        if isinstance(other, UserList): self.__model_list.extend(self.__unpack(item) for item in other.data)
-        else: self.__model_list.extend(self.__unpack(item) for item in other)
+        if isinstance(other, UserList):
+            self.__model_list.extend(self.__unpack(item) for item in other.data)
+        else:
+            self.__model_list.extend(self.__unpack(item) for item in other)
 
 
 class ObservableCommand(object):
@@ -183,15 +212,19 @@ class ObservableCommand(object):
         self.__execute = execute
         self.__can_execute = can_execute
         self.__can_execute_changed_event = Event()
-        if can_execute is not None: self.__subscribe_to_dependant_observables(dependant_observables)
+        if can_execute is not None:
+            self.__subscribe_to_dependant_observables(dependant_observables)
 
     @property
-    def can_execute_changed_event(self) -> Event: return self.__can_execute_changed_event
+    def can_execute_changed_event(self) -> Event:
+        return self.__can_execute_changed_event
 
-    def can_execute(self): return self.__can_execute() if self.__can_execute is not None else True
+    def can_execute(self):
+        return self.__can_execute() if self.__can_execute is not None else True
 
     def execute(self):
-        if self.can_execute(): self.__execute()
+        if self.can_execute():
+            self.__execute()
 
     def __subscribe_to_dependant_observables(self, dependant_observables):
         for observable in dependant_observables:
@@ -201,5 +234,6 @@ class ObservableCommand(object):
                 observable.list_changed_event.subscribe(self.__on_observable_changed)
                 observable.list_reordered_event.subscribe(self.__on_observable_changed)
 
+    # noinspection PyUnusedLocal
     def __on_observable_changed(self, *args, **kwargs):
         self.__can_execute_changed_event.raise_event()
