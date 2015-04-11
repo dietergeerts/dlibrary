@@ -4,6 +4,7 @@ from dlibrary.dialog.predefined.alert import Alert
 from dlibrary.dialog.predefined.alert import AlertType
 from dlibrary.dialog.predefined.alerts.alert_plugin import PlugInAlerts
 from dlibrary.dialog.viewmodel import AbstractViewModel, ViewModelList
+from dlibrary.resource.definition.definitions.record import RecordDefinitionRepository
 from dlibrary.utility.exception import VSException
 
 import pydevd
@@ -119,12 +120,46 @@ class PredefinedDialogsViewModel(object):
     def show_plugin_alert_oserrer(self) -> ObservableCommand: return self.__show_plugin_alert_oserror
 
 
+class RecordDefinitionsViewModel(object):
+    def __init__(self):
+        self.__record_definitions = ObservableList(RecordDefinitionRepository().get_all())
+        self.__record_definition_fields = ObservableList()
+        self.__selected_record_definition = ObservableField()
+        self.__selected_record_definition.field_changed_event.subscribe(self.__on_selected_record_definition_changed)
+        self.__selected_record_definition_field = ObservableField()
+
+    @property
+    def record_definitions(self) -> ObservableList:
+        return self.__record_definitions
+
+    @property
+    def record_definition_fields(self) -> ObservableList:
+        return self.__record_definition_fields
+
+    @property
+    def selected_record_definition(self) -> ObservableField:
+        return self.__selected_record_definition
+
+    @property
+    def selected_record_definition_field(self) -> ObservableField:
+        return self.__selected_record_definition_field
+
+    # noinspection PyUnusedLocal
+    def __on_selected_record_definition_changed(self, oldValue, newValue):
+        self.selected_record_definition_field.value = None
+        self.record_definition_fields.suspend_events()
+        self.record_definition_fields.clear()
+        self.record_definition_fields.extend(newValue.fields)
+        self.record_definition_fields.resume_events()
+
+
 class DLibraryTestVsmViewModel(object):
     def __init__(self, items: list):
         self.__available_items = ObservableList([choice1, choice2, choice3])
         self.__list_administration = ObservableField(
             ViewModelList(items, ItemViewModel, create_item, self.__can_add_item, {'prop_one'}))
         self.__predefined_dialogs = ObservableField(PredefinedDialogsViewModel())
+        self.__record_definitions = ObservableField(RecordDefinitionsViewModel())
 
     @property
     def available_items(self) -> ObservableList: return self.__available_items
@@ -134,5 +169,8 @@ class DLibraryTestVsmViewModel(object):
 
     @property
     def predefined_dialogs(self) -> ObservableField: return self.__predefined_dialogs
+
+    @property
+    def record_definitions(self) -> ObservableField: return self.__record_definitions
 
     def __can_add_item(self, item): return item['@prop_one'] is not None and item['@prop_one'] != ''
