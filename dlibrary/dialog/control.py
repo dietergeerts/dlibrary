@@ -264,6 +264,10 @@ class AbstractFieldControl(AbstractControl, metaclass=ABCMeta):
         self.__init_observables()
 
     @property
+    def _multi_value_constant(self) -> str:
+        return self.__multi_value_constant
+
+    @property
     def _value(self):
         return self.__value_observable.value if self.__items_observable is None else self.__aggregate_value
 

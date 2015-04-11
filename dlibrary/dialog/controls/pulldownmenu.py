@@ -18,30 +18,117 @@ class PullDownMenu(AbstractFieldControl):
         super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled, data_value,
                          data_items)
         self.__data_available_items = data_available_items
-        self.__available_items = None
+        self.__available_items_observable = None
+        """@type: ObservableList"""
+        self.__item_multi_value = 0
+        self.__item_none_existent = 0
+        self.__item_none_existent_value = None
         vs.CreatePullDownMenu(dialog_id, control_id, width)
+        self.__init_observables()
 
     def _update(self):
-        self.__reset_control()
+        self.__reset_observables()
         super()._update()
 
-    def __reset_control(self):
-        self.__available_items = ObservableList(sorted(  # Make it ObservableList as for index return -1!
-            self.getattr(self.__data_available_items, ObservableList()), key=str))
+    def __init_observables(self):
+        self.__setup_observables()
+
+    def __setup_observables(self):
+        self.__available_items_observable = self.getattr(self.__data_available_items, ObservableList())
+        """@type: ObservableList"""
+        self.__available_items_observable.list_changed_event.subscribe(self.__on_available_items_changed)
+        self.__available_items_observable.list_reordered_event.subscribe(self.__on_available_items_reordered)
+        self.__setup_control()
+
+    def __reset_observables(self):
+        self.__available_items_observable.list_changed_event.unsubscribe(self.__on_available_items_changed)
+        self.__available_items_observable.list_reordered_event.unsubscribe(self.__on_available_items_reordered)
+        self.__clear_control()
+        self.__setup_observables()
+
+    # noinspection PyUnusedLocal
+    def __on_available_items_changed(self, removed: dict, added: dict):
+        for index in sorted(removed.keys(), reverse=True):
+            self.__remove_item(index + self.__item_multi_value + self.__item_none_existent)
+        for index in sorted(added.keys(), reverse=False):
+            self.__add_item(added[index], index + self.__item_multi_value + self.__item_none_existent)
+        self._set_control_value(self._value)
+
+    def __on_available_items_reordered(self):
+        self.__clear_control()
+        self.__setup_control()
+        self._set_control_value(self._value)
+
+    def __setup_control(self):
+        for index, item in enumerate(self.__available_items_observable):
+            self.__add_item(item, index)
+
+    def __clear_control(self):
+        self.__item_multi_value = 0
+        self.__item_none_existent = 0
+        self.__item_none_existent_value = None
         for index in range(vs.GetChoiceCount(self._dialog_id, self.control_id) - 1, -1, -1):
-            vs.RemoveChoice(self._dialog_id, self.control_id, index)
-        for index, item in enumerate(self.__available_items):
-            vs.AddChoice(self._dialog_id, self.control_id, str(item), index)
+            self.__remove_item(index)
+
+    def __add_item(self, item, index):
+        vs.AddChoice(self._dialog_id, self.control_id, str(item), index)
+
+    def __add_item_multi_value(self):
+        self.__item_multi_value = 1
+        self.__add_item(self._multi_value_constant, 0)
+
+    def __add_item_none_existent(self, value):
+        self.__item_none_existent = 1
+        self.__item_none_existent_value = value
+        self.__add_item(str(value) + ' (None existent)', 0)
+
+    def __remove_item(self, index):
+        vs.RemoveChoice(self._dialog_id, self.control_id, index)
+
+    def __remove_item_multi_value(self):
+        self.__item_multi_value = 0
+        self.__remove_item(0)
+
+    def __remove_item_none_existent(self):
+        self.__item_none_existent = 0
+        self.__item_none_existent_value = None
+        self.__remove_item(0)
+
+    def __try_add_special_items(self, new_value):
+        if self.__item_multi_value == 0 and new_value == self._multi_value_constant:
+            self.__add_item_multi_value()
+        elif self.__item_none_existent == 0 and new_value != self._multi_value_constant:
+            self.__add_item_none_existent(new_value)
+
+    def __try_remove_special_items(self, new_value):
+        if self.__item_multi_value == 1 and new_value != self._multi_value_constant:
+            self.__remove_item_multi_value()
+        elif self.__item_none_existent == 1 and new_value != self.__item_none_existent_value:
+            self.__remove_item_none_existent()
 
     def _set_control_value(self, value):
-        vs.SelectChoice(self._dialog_id, self.control_id, self.__available_items.index(value), True)
+        index = self.__available_items_observable.index(value)
+        self.__try_remove_special_items(value)
+        if index == -1 and value is not None:
+            self.__try_add_special_items(value)
+        index += self.__item_multi_value + self.__item_none_existent
+        vs.SelectChoice(self._dialog_id, self.control_id, index, True)
 
     def _get_control_value(self):
         index = vs.GetSelectedChoiceIndex(self._dialog_id, self.control_id, 0)
-        return self.__available_items[index] if index > -1 else None
+        if index > 0 or (self.__item_multi_value == 0 and self.__item_none_existent == 0):
+            return self.__available_items_observable[index - self.__item_multi_value - self.__item_none_existent]
+        elif index == -1:
+            return None
+        elif self.__item_multi_value == 1:
+            return self._multi_value_constant
+        elif self.__item_none_existent == 1:
+            return self.__item_none_existent_value
 
     def _on_control_event(self, data: int):
-        self._value = self._get_control_value()
+        value = self._get_control_value()
+        self.__try_remove_special_items(value)
+        self._value = value
 
 
 # ----------------------------------------------------------------------------------------------------------------------
