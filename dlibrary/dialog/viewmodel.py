@@ -1,4 +1,4 @@
-from dlibrary.dialog.observable import LinkedObservableList, ObservableList, ObservableField, ObservableCommand
+from dlibrary.utility.observable import LinkedObservableList, ObservableList, ObservableField, ObservableCommand
 
 
 class AbstractViewModel(object):

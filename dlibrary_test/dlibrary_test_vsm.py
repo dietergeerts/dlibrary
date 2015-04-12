@@ -1,13 +1,14 @@
+import pydevd
+
 from dlibrary.dialog.dialog import Dialog
-from dlibrary.dialog.observable import ObservableField, LinkedObservableField, ObservableCommand, ObservableList
+from dlibrary.resource.definition.definitions.record import RecordDefinitionResourceList
+from dlibrary.utility.observable import ObservableField, LinkedObservableField, ObservableCommand, ObservableList
 from dlibrary.dialog.predefined.alert import Alert
 from dlibrary.dialog.predefined.alert import AlertType
 from dlibrary.dialog.predefined.alerts.alert_plugin import PlugInAlerts
 from dlibrary.dialog.viewmodel import AbstractViewModel, ViewModelList
-from dlibrary.resource.definition.definitions.record import RecordDefinitionRepository
 from dlibrary.utility.exception import VSException
 
-import pydevd
 pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True, suspend=False)
 
 
@@ -15,15 +16,22 @@ def run():
     try:
         items = create_items()
         dialog = Dialog('Main', DLibraryTestVsmViewModel(items))
-    except VSException:       PlugInAlerts().on_plugin_file_vsexception.show()
-    except FileNotFoundError: PlugInAlerts().on_plugin_file_filenotfounderror.show()
-    except PermissionError:   PlugInAlerts().on_plugin_file_permissionerror.show()
-    except OSError:           PlugInAlerts().on_plugin_file_oserror.show()
+    except VSException:
+        PlugInAlerts().on_plugin_file_vsexception.show()
+    except FileNotFoundError:
+        PlugInAlerts().on_plugin_file_filenotfounderror.show()
+    except PermissionError:
+        PlugInAlerts().on_plugin_file_permissionerror.show()
+    except OSError:
+        PlugInAlerts().on_plugin_file_oserror.show()
     else:
-        if dialog.show(): Alert(AlertType.INFO, 'You closed the dialog through the OK button').show();
-        else: Alert(AlertType.INFO, 'You closed the dialog through the CANCEL button').show();
+        if dialog.show():
+            Alert(AlertType.INFO, 'You closed the dialog through the OK button').show()
+        else:
+            Alert(AlertType.INFO, 'You closed the dialog through the CANCEL button').show()
         message = 'The items are now: ' + chr(10)
-        for item in items: message += item['@prop_one'] + ' ' + str(item['@prop_two']) + ' | '
+        for item in items:
+            message += item['@prop_one'] + ' ' + str(item['@prop_two']) + ' | '
         Alert(AlertType.INFO, message).show()
 
 
@@ -32,7 +40,8 @@ class ChoiceItem(object):
         self.__number = number
         self.__name = name
 
-    def __str__(self): return '%s %s' % (str(self.__number), self.__name)
+    def __str__(self):
+        return '%s %s' % (str(self.__number), self.__name)
 
 
 choice1 = ChoiceItem(1, 'one')
@@ -58,10 +67,12 @@ class ItemViewModel(AbstractViewModel):
         self.__prop_two = LinkedObservableField(item, '@prop_two')
 
     @property
-    def prop_one(self) -> ObservableField: return self.__prop_one
+    def prop_one(self) -> ObservableField:
+        return self.__prop_one
 
     @property
-    def prop_two(self) -> ObservableField: return self.__prop_two
+    def prop_two(self) -> ObservableField:
+        return self.__prop_two
 
 
 class PredefinedDialogsViewModel(object):
@@ -86,43 +97,55 @@ class PredefinedDialogsViewModel(object):
             lambda: PlugInAlerts().on_plugin_file_oserror.show())
 
     @property
-    def dialog_text(self) -> ObservableField: return self.__dialog_text
+    def dialog_text(self) -> ObservableField:
+        return self.__dialog_text
 
     @property
-    def dialog_advice(self) -> ObservableField: return self.__dialog_advice
+    def dialog_advice(self) -> ObservableField:
+        return self.__dialog_advice
 
     @property
-    def show_alert_critical(self) -> ObservableCommand: return self.__show_alert_critical
+    def show_alert_critical(self) -> ObservableCommand:
+        return self.__show_alert_critical
 
     @property
-    def show_alert_warning(self) -> ObservableCommand: return self.__show_alert_warning
+    def show_alert_warning(self) -> ObservableCommand:
+        return self.__show_alert_warning
 
     @property
-    def show_alert_info(self) -> ObservableCommand: return self.__show_alert_info
+    def show_alert_info(self) -> ObservableCommand:
+        return self.__show_alert_info
 
     @property
-    def show_alert_success(self) -> ObservableCommand: return self.__show_alert_success
+    def show_alert_success(self) -> ObservableCommand:
+        return self.__show_alert_success
 
-    def __can_show_alert(self): return self.__dialog_text.value is not None and self.__dialog_text.value != ''
+    def __can_show_alert(self):
+        return self.__dialog_text.value is not None and self.__dialog_text.value != ''
 
-    def __show_alert(self, type: AlertType): Alert(type, self.__dialog_text.value, self.__dialog_advice.value).show()
-
-    @property
-    def show_plugin_alert_vsexception(self) -> ObservableCommand: return self.__show_plugin_alert_vsexception
-
-    @property
-    def show_plugin_alert_filenotfounderror(self) -> ObservableCommand: return self.__show_plugin_alert_filenotfounderror
+    def __show_alert(self, type: AlertType):
+        Alert(type, self.__dialog_text.value, self.__dialog_advice.value).show()
 
     @property
-    def show_plugin_alert_permissionerror(self) -> ObservableCommand: return self.__show_plugin_alert_permissionerror
+    def show_plugin_alert_vsexception(self) -> ObservableCommand:
+        return self.__show_plugin_alert_vsexception
 
     @property
-    def show_plugin_alert_oserrer(self) -> ObservableCommand: return self.__show_plugin_alert_oserror
+    def show_plugin_alert_filenotfounderror(self) -> ObservableCommand:
+        return self.__show_plugin_alert_filenotfounderror
+
+    @property
+    def show_plugin_alert_permissionerror(self) -> ObservableCommand:
+        return self.__show_plugin_alert_permissionerror
+
+    @property
+    def show_plugin_alert_oserrer(self) -> ObservableCommand:
+        return self.__show_plugin_alert_oserror
 
 
 class RecordDefinitionsViewModel(object):
     def __init__(self):
-        self.__record_definitions = ObservableList(RecordDefinitionRepository().get_all())
+        self.__record_definitions = RecordDefinitionResourceList()
         self.__record_definition_fields = ObservableList()
         self.__selected_record_definition = ObservableField()
         self.__selected_record_definition.field_changed_event.subscribe(self.__on_selected_record_definition_changed)
@@ -149,7 +172,9 @@ class RecordDefinitionsViewModel(object):
         self.selected_record_definition_field.value = None
         self.record_definition_fields.suspend_events()
         self.record_definition_fields.clear()
-        self.record_definition_fields.extend(newValue.fields)
+        record_definition = self.__record_definitions.get_resource(newValue)
+        if record_definition is not None:
+            self.record_definition_fields.extend(record_definition.fields)
         self.record_definition_fields.resume_events()
 
 
@@ -162,15 +187,20 @@ class DLibraryTestVsmViewModel(object):
         self.__record_definitions = ObservableField(RecordDefinitionsViewModel())
 
     @property
-    def available_items(self) -> ObservableList: return self.__available_items
+    def available_items(self) -> ObservableList:
+        return self.__available_items
 
     @property
-    def list_administration(self) -> ObservableField: return self.__list_administration
+    def list_administration(self) -> ObservableField:
+        return self.__list_administration
 
     @property
-    def predefined_dialogs(self) -> ObservableField: return self.__predefined_dialogs
+    def predefined_dialogs(self) -> ObservableField:
+        return self.__predefined_dialogs
 
     @property
-    def record_definitions(self) -> ObservableField: return self.__record_definitions
+    def record_definitions(self) -> ObservableField:
+        return self.__record_definitions
 
-    def __can_add_item(self, item): return item['@prop_one'] is not None and item['@prop_one'] != ''
+    def __can_add_item(self, item):
+        return item['@prop_one'] is not None and item['@prop_one'] != ''

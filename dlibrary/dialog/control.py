@@ -2,7 +2,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 import importlib
 
-from dlibrary.dialog.observable import ObservableField, ObservableList, ObservableMethod
+from dlibrary.utility.observable import ObservableField, ObservableList, ObservableMethod
 from dlibrary.utility import xmltodict as xml_to_dict_util
 from dlibrary.utility.eventing import Event
 from dlibrary.utility.singleton import SingletonMeta

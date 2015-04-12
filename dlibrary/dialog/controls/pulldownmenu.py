@@ -1,5 +1,6 @@
 from dlibrary.dialog.control import AbstractFieldControl, LayoutEnum, AlignModeEnum, AbstractDataContext
-from dlibrary.dialog.observable import ObservableList
+from dlibrary.resource.resourcelist import AbstractResourceList
+from dlibrary.utility.observable import ObservableList
 import vs
 
 
@@ -18,6 +19,8 @@ class PullDownMenu(AbstractFieldControl):
         super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled, data_value,
                          data_items)
         self.__data_available_items = data_available_items
+        self.__available_items_resources_list = None
+        """@type: AbstractResourceList"""
         self.__available_items_observable = None
         """@type: ObservableList"""
         self.__item_multi_value = 0
@@ -34,7 +37,13 @@ class PullDownMenu(AbstractFieldControl):
         self.__setup_observables()
 
     def __setup_observables(self):
-        self.__available_items_observable = self.getattr(self.__data_available_items, ObservableList())
+        available_items = self.getattr(self.__data_available_items, ObservableList())
+        if isinstance(available_items, ObservableList):
+            self.__available_items_resources_list = None
+            self.__available_items_observable = available_items
+        elif isinstance(available_items, AbstractResourceList):
+            self.__available_items_resources_list = available_items
+            self.__available_items_observable = available_items.names
         """@type: ObservableList"""
         self.__available_items_observable.list_changed_event.subscribe(self.__on_available_items_changed)
         self.__available_items_observable.list_reordered_event.subscribe(self.__on_available_items_reordered)
@@ -126,7 +135,11 @@ class PullDownMenu(AbstractFieldControl):
             return self.__item_none_existent_value
 
     def _on_control_event(self, data: int):
-        value = self._get_control_value()
+        # It can be that the resource needs to be imported, thus changing names and possibly changing the list.
+        if self.__available_items_resources_list is not None:
+            value = self.__available_items_resources_list.get_resource(self._get_control_value()).name
+        else:
+            value = self._get_control_value()
         self.__try_remove_special_items(value)
         self._value = value
 
@@ -136,7 +149,7 @@ class PullDownMenu(AbstractFieldControl):
 #       optional: @help -> str
 #       optional: @data-context -> str (property name of parent data-context) -> ObservableField
 #       optional: @data-disabled -> str (property name of data-context) -> ObservableMethod() -> bool
-#       required: @data-available-items -> str (property name of data-context) -> ObservableList
+#       required: @data-available-items -> str (property name of data-context) -> ObservableList OR AbstractResourceList
 #       required: @data-value -> str (property name of data-context or of an item) -> ObservableField
 #       optional: @data-items -> str (property name of data-context) -> ObservableList
 #       optional: @width -> int (in chars) || 20/>
