@@ -10,6 +10,7 @@ class Criteria(object):
 
     def has_record(self, record_name: str):
         self.__criteria.append('(R in [\'' + record_name + '\'])')
+        return self
 
     def for_each(self, do: callable):
         vs.ForEachObject(do, self.__get())
