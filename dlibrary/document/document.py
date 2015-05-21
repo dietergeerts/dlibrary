@@ -4,4 +4,5 @@ import vs
 
 class Document(object, metaclass=SingletonMeta):
     @property
-    def saved(self): return vs.GetFName() != vs.GetFPathName()
+    def saved(self) -> bool:
+        return vs.GetFName() != vs.GetFPathName()
