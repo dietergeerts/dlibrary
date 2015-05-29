@@ -8,7 +8,7 @@ class Separator(AbstractControl):
         return False
 
     @classmethod
-    def get_align_mode(cls, layout: int) -> int:
+    def align_mode(cls, layout: int) -> int:
         return -1
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,

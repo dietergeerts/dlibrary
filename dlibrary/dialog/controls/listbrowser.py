@@ -1,4 +1,4 @@
-from dlibrary.dialog.control import AlignModeEnum, AbstractDataContext, TextAlignEnum, AbstractListControl
+from dlibrary.dialog.control import AlignMode, AbstractDataContext, TextAlignEnum, AbstractListControl
 from dlibrary.utility import converter
 import vs
 
@@ -79,8 +79,8 @@ class ListBrowser(AbstractListControl):
         return True
 
     @classmethod
-    def get_align_mode(cls, layout: int) -> int:
-        return AlignModeEnum.RESIZE
+    def align_mode(cls, layout: int) -> int:
+        return AlignMode.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled: str, data_items: str, data_selected_items: str, index: bool,

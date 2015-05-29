@@ -1,15 +1,15 @@
-from dlibrary.dialog.control import AbstractControl, LayoutEnum, AlignModeEnum, AbstractDataContext, TextStyleEnum
+from dlibrary.dialog.control import AbstractControl, Layout, AlignMode, AbstractDataContext, TextStyleEnum
 import vs
 
 
 class StaticText(AbstractControl):
     @classmethod
     def can_align(cls, layout: int) -> bool:
-        return layout == LayoutEnum.VERTICAL
+        return layout == Layout.VERTICAL
 
     @classmethod
-    def get_align_mode(cls, layout: int) -> int:
-        return AlignModeEnum.RESIZE
+    def align_mode(cls, layout: int) -> int:
+        return AlignMode.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, text: str, width: int, style: int):

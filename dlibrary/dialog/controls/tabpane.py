@@ -1,4 +1,4 @@
-from dlibrary.dialog.control import AbstractGroupControl, AbstractControl, LayoutEnum, ControlFactory
+from dlibrary.dialog.control import AbstractGroupControl, AbstractControl, Layout, ControlFactory
 import vs
 
 
@@ -8,7 +8,7 @@ class TabPane(AbstractGroupControl):
         return False
 
     @classmethod
-    def get_align_mode(cls, layout: int) -> int:
+    def align_mode(cls, layout: int) -> int:
         return -1
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractControl,
@@ -43,5 +43,5 @@ def create(dialog_id: int, control_id: int, data: dict, data_parent: AbstractCon
                       data.get('@data-disabled', ''), data['@header'])
     control.add_controls(
         ControlFactory().create_controls(dialog_id, data['control'], control),
-        LayoutEnum.from_string(data.get('@layout', 'VERTICAL')))
+        Layout.from_string(data.get('@layout', 'VERTICAL')))
     return control

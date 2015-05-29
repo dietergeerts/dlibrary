@@ -1,16 +1,19 @@
-from dlibrary.dialog.control import AbstractGroupControl, AlignModeEnum, AbstractDataContext, LayoutEnum, ControlFactory
+from dlibrary.dialog.control import AbstractGroupControl, AlignMode, AbstractDataContext, Layout, ControlFactory
 from dlibrary.utility import converter
 import vs
 
 
 class GroupBox(AbstractGroupControl):
+
     @classmethod
     def can_align(cls, layout: int) -> bool:
+        """ :type layout: Layout (enum)
+        """
         return True
 
     @classmethod
-    def get_align_mode(cls, layout: int) -> int:
-        return AlignModeEnum.RESIZE
+    def align_mode(cls, layout: int) -> int:
+        return AlignMode.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled: str, header: str, border: bool):
@@ -45,5 +48,5 @@ def create(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDat
         data.get('@data-disabled', ''), data.get('@header', ''), converter.str2bool(data.get('@border', 'False')))
     control.add_controls(
         ControlFactory().create_controls(dialog_id, data['control'], control),
-        LayoutEnum.from_string(data.get('@layout', 'VERTICAL')))
+        Layout.from_string(data.get('@layout', 'VERTICAL')))
     return control

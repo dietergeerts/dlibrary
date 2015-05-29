@@ -1,4 +1,4 @@
-from dlibrary.dialog.control import AbstractControl, AlignModeEnum, AbstractDataContext, ControlFactory
+from dlibrary.dialog.control import AbstractControl, AlignMode, AbstractDataContext, ControlFactory
 import vs
 
 
@@ -8,8 +8,8 @@ class TabControl(AbstractControl):
         return True
 
     @classmethod
-    def get_align_mode(cls, layout: int) -> int:
-        return AlignModeEnum.RESIZE
+    def align_mode(cls, layout: int) -> int:
+        return AlignMode.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled):

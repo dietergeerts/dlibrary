@@ -9,15 +9,15 @@ from dlibrary.utility.singleton import SingletonMeta
 import vs
 
 
-class LayoutEnum(object):
+class Layout(object):
     VERTICAL = 1
     HORIZONTAL = 2
 
     @staticmethod
     def from_string(value: str) -> int:
         return {
-            'VERTICAL': LayoutEnum.VERTICAL,
-            'HORIZONTAL': LayoutEnum.HORIZONTAL
+            'VERTICAL': Layout.VERTICAL,
+            'HORIZONTAL': Layout.HORIZONTAL
         }.get(value)
 
 
@@ -27,7 +27,7 @@ class AlignEdgeEnum(object):
     LEFT = 3
 
 
-class AlignModeEnum(object):
+class AlignMode(object):
     RESIZE = 0
     SHIFT = 1
 
@@ -87,18 +87,26 @@ class AbstractDataContext(object, metaclass=ABCMeta):
 
 
 class AbstractControl(AbstractDataContext, metaclass=ABCMeta):
+
     @classmethod
     @abstractmethod
     def can_align(cls, layout: int) -> bool:
+        """
+        :type layout: Layout (enum)
+        """
         raise NotImplementedError
 
     @classmethod
     @abstractmethod
-    def get_align_mode(cls, layout: int) -> int:
+    def align_mode(cls, layout: int) -> int:
+        """
+        :type layout: Layout (enum)
+        :rtype : AlignMode (enum)
+        """
         raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str, data_disabled: str):
+                 data_context: str, data_disabled: str=''):
         super().__init__(None)
         self.__dialog_id = dialog_id
         self.__control_id = control_id
@@ -189,7 +197,7 @@ class AbstractGroupControl(AbstractControl, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def get_align_mode(cls, layout: int) -> int:
+    def align_mode(cls, layout: int) -> int:
         raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
@@ -206,7 +214,7 @@ class AbstractGroupControl(AbstractControl, metaclass=ABCMeta):
         for index, control in enumerate(self.__controls):
             if index == 0:
                 vs.SetFirstGroupItem(self._dialog_id, self.control_id, control.control_id)
-            elif layout == LayoutEnum.HORIZONTAL:
+            elif layout == Layout.HORIZONTAL:
                 vs.SetRightItem(self._dialog_id, self.__controls[index - 1].control_id, control.control_id, 0, 0)
             else:
                 vs.SetBelowItem(self._dialog_id, self.__controls[index - 1].control_id, control.control_id, 0, 0)
@@ -215,8 +223,8 @@ class AbstractGroupControl(AbstractControl, metaclass=ABCMeta):
         align_id = AlignFactory().generate_align_id()
         for control in self.__controls:
             if control.can_align(layout):
-                align_edge = AlignEdgeEnum.BOTTOM if layout == LayoutEnum.HORIZONTAL else AlignEdgeEnum.RIGHT
-                align_mode = control.get_align_mode(layout)
+                align_edge = AlignEdgeEnum.BOTTOM if layout == Layout.HORIZONTAL else AlignEdgeEnum.RIGHT
+                align_mode = control.align_mode(layout)
                 vs.AlignItemEdge(self._dialog_id, control.control_id, align_edge, align_id, align_mode)
 
     def setup(self, register_event_handler: callable):
@@ -245,7 +253,7 @@ class AbstractFieldControl(AbstractControl, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def get_align_mode(cls, layout: int) -> int:
+    def align_mode(cls, layout: int) -> int:
         raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
@@ -372,7 +380,7 @@ class AbstractListControl(AbstractControl, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def get_align_mode(cls, layout: int) -> int:
+    def align_mode(cls, layout: int) -> int:
         raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
