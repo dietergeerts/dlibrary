@@ -209,11 +209,11 @@ class LinkedObservableList(ObservableList):
 
 
 class AbstractObservableWithDependencies(object, metaclass=ABCMeta):
-    def __init__(self, dependant_observables: set=None):
+    def __init__(self, dependant_observables: list=None):
         if dependant_observables is not None:
             self.__subscribe_to_dependant_observables(dependant_observables)
 
-    def __subscribe_to_dependant_observables(self, dependant_observables: set):
+    def __subscribe_to_dependant_observables(self, dependant_observables: list):
         for observable in dependant_observables:
             if isinstance(observable, ObservableField):
                 observable.field_changed_event.subscribe(self._on_dependencies_changed)
@@ -227,7 +227,7 @@ class AbstractObservableWithDependencies(object, metaclass=ABCMeta):
 
 
 class ObservableMethod(AbstractObservableWithDependencies):
-    def __init__(self, method: callable, dependant_observables: set=None):
+    def __init__(self, method: callable, dependant_observables: list=None):
         super().__init__(dependant_observables)
         self.__method = method
         self.__method_changed_event = Event()
@@ -245,7 +245,7 @@ class ObservableMethod(AbstractObservableWithDependencies):
 
 
 class ObservableCommand(AbstractObservableWithDependencies):
-    def __init__(self, execute: callable, can_execute: callable=None, dependant_observables: set=None):
+    def __init__(self, execute: callable, can_execute: callable=None, dependant_observables: list=None):
         super().__init__(dependant_observables)
         self.__execute = execute
         self.__can_execute = can_execute
