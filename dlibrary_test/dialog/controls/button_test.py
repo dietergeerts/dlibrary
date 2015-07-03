@@ -42,7 +42,7 @@ class ButtonTest(TestCase):
         """
         Button(0, 0, '', self.__data_parent, '', self.__data_command, self.__caption)
 
-# TODO: The data_command has to be resolved to an ObservableCommand in order to be used with the Button.
-# TODO: The Button should listen to changes of the command, and act accordingly, being enabled/disabled.
-# TODO: The Button should execute the command when it receives its clicked event.
-# TODO: Test create method.
+    # TODO: The data_command has to be resolved to an ObservableCommand in order to be used with the Button.
+    # TODO: The Button should listen to changes of the command, and act accordingly, being enabled/disabled.
+    # TODO: The Button should execute the command when it receives its clicked event.
+    # TODO: Test create method.
