@@ -44,5 +44,5 @@ class EditText(AbstractFieldControl):
 def create(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDataContext) -> EditText:
     return EditText(
         dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''),
-        data.get('@data-disabled', ''), data['@data-value'], data.get('@data-items', ''), data.get('@width', 20),
-        data.get('@height', 1))
+        data.get('@data-disabled', ''), data['@data-value'], data.get('@data-items', ''), int(data.get('@width', '20')),
+        int(data.get('@height', '1')))
