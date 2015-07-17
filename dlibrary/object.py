@@ -30,6 +30,10 @@ class Viewport(AbstractObject):
         super().__init__(handle)
 
     @property
+    def title(self) -> str:
+        return vs.GetObjectVariableString(self.handle, 1032)
+
+    @property
     def scale(self) -> float:
         return vs.GetObjectVariableReal(self.handle, 1003)
 
