@@ -2,7 +2,8 @@ import pydevd
 
 from dlibrary.dialog.dialog import Dialog
 from dlibrary.resource.definition.definitions.record import RecordDefinitionResourceList
-from dlibrary.utility.observable import ObservableField, LinkedObservableField, ObservableCommand, ObservableList
+from dlibrary.utility.observable import ObservableField, LinkedObservableField, ObservableCommand, ObservableList, \
+    ObservableMethod
 from dlibrary.dialog.predefined.alert import Alert
 from dlibrary.dialog.predefined.alert import AlertType
 from dlibrary.dialog.predefined.alerts.alert_plugin import PlugInAlerts
@@ -185,6 +186,11 @@ class DLibraryTestVsmViewModel(object):
             ViewModelList(items, ItemViewModel, create_item, self.__can_add_item, {'prop_one'}))
         self.__predefined_dialogs = ObservableField(PredefinedDialogsViewModel())
         self.__record_definitions = ObservableField(RecordDefinitionsViewModel())
+        self.__always_disabled_method = ObservableMethod(lambda: False)
+
+    @property
+    def always_disable(self) -> ObservableMethod:
+        return self.__always_disabled_method
 
     @property
     def available_items(self) -> ObservableList:

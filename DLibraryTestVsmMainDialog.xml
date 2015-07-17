@@ -12,7 +12,8 @@
           <group-box>
             <control><static-text>SELECTED ITEM(S)</static-text></control>
             <control><static-text>Property One</static-text></control>
-            <control><edit-text data-items="selected_items" data-value="prop_one" width="30"/></control>
+            <control><edit-text data-items="selected_items" data-value="prop_one" width="30"
+                                data-disabled="always_disable"/></control>
             <control><static-text>Property Two</static-text></control>
             <control><pull-down-menu data-items="selected_items" data-value="prop_two"
                                      data-available-items="available_items"/></control>
