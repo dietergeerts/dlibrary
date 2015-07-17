@@ -4,8 +4,13 @@ import vs
 
 
 class Layer(object):
+
     def __init__(self, handle):
         self.__handle = handle
+
+    @property
+    def name(self):
+        return vs.GetLName(self.__handle)
 
     @property
     def drawing_area(self) -> float:
@@ -14,6 +19,7 @@ class Layer(object):
 
 
 class LayerRepository(object, metaclass=SingletonMeta):
+
     @staticmethod
     def get_by_object(object_handle) -> Layer:
         return Layer(vs.GetLayer(object_handle))
