@@ -9,6 +9,10 @@ class Layer(object):
         self.__handle = handle
 
     @property
+    def _handle(self):
+        return self.__handle
+
+    @property
     def name(self) -> str:
         """
         For a sheet layer, VW calls this the number!
@@ -29,6 +33,10 @@ class DesignLayer(Layer):
 
     def __init__(self, handle):
         super().__init__(handle)
+
+    @property
+    def scale(self) -> float:
+        return vs.GetLScale(self._handle)
 
 
 class SheetLayer(Layer):
