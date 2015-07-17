@@ -13,8 +13,36 @@ class Document(object, metaclass=SingletonMeta):
     def filename(self) -> str:
         return vs.GetFName()
 
+    @property
+    def layers(self) -> set:
+        """
+        :rtype: set(Layer)
+        """
+        layer_handles = []
+        for count in range(vs.NumLayers()):
+            layer_handles.append(vs.FLayer() if count == 0 else vs.NextLayer(layer_handles[count - 1]))
+        return {Layer.create(layer_handle) for layer_handle in layer_handles}
+
+    @property
+    def design_layers(self) -> set:
+        """
+        :rtype: set(DesignLayer)
+        """
+        return {layer for layer in self.layers if isinstance(layer, DesignLayer)}
+
+    @property
+    def sheet_layers(self) -> set:
+        """
+        :rtype: set(SheetLayer)
+        """
+        return {layer for layer in self.layers if isinstance(layer, SheetLayer)}
+
 
 class Layer(object):
+
+    @staticmethod
+    def create(layer_handle):
+        return {1: DesignLayer, 2: SheetLayer}.get(vs.GetObjectVariableInt(layer_handle, 154))(layer_handle)
 
     def __init__(self, handle):
         self.__handle = handle

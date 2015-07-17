@@ -1,5 +1,6 @@
 from abc import ABCMeta
-from dlibrary.document import Layer, DesignLayer, SheetLayer
+
+from dlibrary.document import Layer
 from dlibrary.utility import xmltodict
 from dlibrary.utility.exception import VSException
 from dlibrary.utility.singleton import SingletonMeta
@@ -17,11 +18,7 @@ class AbstractObject(object, metaclass=ABCMeta):
 
     @property
     def layer(self) -> Layer:
-        return self.__get_layer(vs.GetLayer(self.handle))
-
-    @staticmethod
-    def __get_layer(layer_handle) -> Layer:
-        return {1: DesignLayer, 2: SheetLayer}.get(vs.GetObjectVariableInt(layer_handle, 154))(layer_handle)
+        return Layer.create(vs.GetLayer(self.handle))
 
 
 class Viewport(AbstractObject):
