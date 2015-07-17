@@ -1,17 +1,11 @@
-from dlibrary.dialog.control import AbstractFieldControl, Layout, AlignMode, AbstractDataContext
+from dlibrary.dialog.control import AbstractFieldControl, Layout, AlignMode, AbstractDataContext, Align
 from dlibrary.resource.resourcelist import AbstractResourceList
 from dlibrary.utility.observable import ObservableList
 import vs
 
 
+@Align(mode={Layout.VERTICAL: AlignMode.RESIZE})
 class PullDownMenu(AbstractFieldControl):
-    @classmethod
-    def can_align(cls, layout: int) -> bool:
-        return layout == Layout.VERTICAL
-
-    @classmethod
-    def align_mode(cls, layout: int) -> int:
-        return AlignMode.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled: str, data_available_items: str, data_value: str, data_items: str,

@@ -1,16 +1,8 @@
-from dlibrary.dialog.control import AbstractControl, AlignMode, AbstractDataContext
+from dlibrary.dialog.control import AbstractControl, AlignMode, AbstractDataContext, Align
 import vs
 
-
+@Align(mode=AlignMode.SHIFT)
 class Button(AbstractControl):
-
-    @classmethod
-    def can_align(cls, layout: int) -> bool:
-        return True
-
-    @classmethod
-    def align_mode(cls, layout: int) -> int:
-        return AlignMode.SHIFT
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_command: str, caption: str):

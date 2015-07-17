@@ -3,13 +3,6 @@ import vs
 
 
 class TabPane(AbstractGroupControl):
-    @classmethod
-    def can_align(cls, layout: int) -> bool:
-        return False
-
-    @classmethod
-    def align_mode(cls, layout: int) -> int:
-        return -1
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractControl,
                  data_context: str, data_disabled: str, header: str):

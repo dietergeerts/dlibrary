@@ -3,13 +3,6 @@ import vs
 
 
 class Separator(AbstractControl):
-    @classmethod
-    def can_align(cls, layout: int) -> bool:
-        return False
-
-    @classmethod
-    def align_mode(cls, layout: int) -> int:
-        return -1
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str):

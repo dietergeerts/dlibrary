@@ -1,19 +1,9 @@
-from dlibrary.dialog.control import AbstractGroupControl, AlignMode, AbstractDataContext, Layout, ControlFactory
+from dlibrary.dialog.control import AbstractGroupControl, AlignMode, AbstractDataContext, Layout, ControlFactory, Align
 from dlibrary.utility import converter
 import vs
 
-
+@Align(mode=AlignMode.RESIZE)
 class GroupBox(AbstractGroupControl):
-
-    @classmethod
-    def can_align(cls, layout: int) -> bool:
-        """ :type layout: Layout (enum)
-        """
-        return True
-
-    @classmethod
-    def align_mode(cls, layout: int) -> int:
-        return AlignMode.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled: str, header: str, border: bool):

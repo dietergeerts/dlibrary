@@ -1,15 +1,9 @@
-from dlibrary.dialog.control import Layout, AlignMode, AbstractDataContext, AbstractFieldControl
+from dlibrary.dialog.control import Layout, AlignMode, AbstractDataContext, AbstractFieldControl, Align
 import vs
 
 
+@Align(mode={Layout.VERTICAL: AlignMode.RESIZE})
 class EditText(AbstractFieldControl):
-    @classmethod
-    def can_align(cls, layout: int) -> bool:
-        return layout == Layout.VERTICAL
-
-    @classmethod
-    def align_mode(cls, layout: int) -> int:
-        return AlignMode.RESIZE
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled: str, data_value: str, data_items: str, width: int, height: int):

@@ -2,6 +2,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 import importlib
 
+from dlibrary.utility.decorator import AbstractPropertyClassDecorator
 from dlibrary.utility.observable import ObservableField, ObservableList, ObservableMethod
 from dlibrary.utility import xmltodict as xml_to_dict_util
 from dlibrary.utility.eventing import Event
@@ -39,6 +40,33 @@ class AlignFactory(object, metaclass=SingletonMeta):
     def generate_align_id(self) -> int:
         self.__last_align_id += 1
         return self.__last_align_id
+
+
+class Align(AbstractPropertyClassDecorator):
+    """
+    Decorator to set how a control will be aligned.
+    """
+
+    def __init__(self, mode):
+        """
+        :type mode: AlignMode(Enum) || {Layout(Enum): AlignMode(Enum)}
+        """
+        super().__init__(mode if isinstance(mode, dict) else {Layout.VERTICAL: mode, Layout.HORIZONTAL: mode})
+
+    @classmethod
+    def has_alignment(cls, control: object, layout: int) -> bool:
+        """
+        :type layout: Layout(Enum)
+        """
+        return layout in cls._get_property_value(control)
+
+    @classmethod
+    def get_alignment(cls, control: object, layout: int) -> int:
+        """
+        :type layout: Layout(Enum)
+        :rtype: AlignMode(Enum)
+        """
+        return cls._get_property_value(control)[layout]
 
 
 class TextAlignEnum(object):
@@ -87,23 +115,6 @@ class AbstractDataContext(object, metaclass=ABCMeta):
 
 
 class AbstractControl(AbstractDataContext, metaclass=ABCMeta):
-
-    @classmethod
-    @abstractmethod
-    def can_align(cls, layout: int) -> bool:
-        """
-        :type layout: Layout (enum)
-        """
-        raise NotImplementedError
-
-    @classmethod
-    @abstractmethod
-    def align_mode(cls, layout: int) -> int:
-        """
-        :type layout: Layout (enum)
-        :rtype : AlignMode (enum)
-        """
-        raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled: str=''):
@@ -190,15 +201,6 @@ class AbstractControl(AbstractDataContext, metaclass=ABCMeta):
 
 
 class AbstractGroupControl(AbstractControl, metaclass=ABCMeta):
-    @classmethod
-    @abstractmethod
-    def can_align(cls, layout: int) -> bool:
-        raise NotImplementedError
-
-    @classmethod
-    @abstractmethod
-    def align_mode(cls, layout: int) -> int:
-        raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled: str):
@@ -220,11 +222,14 @@ class AbstractGroupControl(AbstractControl, metaclass=ABCMeta):
                 vs.SetBelowItem(self._dialog_id, self.__controls[index - 1].control_id, control.control_id, 0, 0)
 
     def __align_controls(self, layout: int):
+        """
+        :type layout: Layout(Enum)
+        """
         align_id = AlignFactory().generate_align_id()
         for control in self.__controls:
-            if control.can_align(layout):
+            if Align.has_decorator(control) and Align.has_alignment(control, layout):
                 align_edge = AlignEdgeEnum.BOTTOM if layout == Layout.HORIZONTAL else AlignEdgeEnum.RIGHT
-                align_mode = control.align_mode(layout)
+                align_mode = Align.get_alignment(control, layout)
                 vs.AlignItemEdge(self._dialog_id, control.control_id, align_edge, align_id, align_mode)
 
     def setup(self, register_event_handler: callable):
@@ -246,15 +251,6 @@ class AbstractGroupControl(AbstractControl, metaclass=ABCMeta):
 
 
 class AbstractFieldControl(AbstractControl, metaclass=ABCMeta):
-    @classmethod
-    @abstractmethod
-    def can_align(cls, layout: int) -> bool:
-        raise NotImplementedError
-
-    @classmethod
-    @abstractmethod
-    def align_mode(cls, layout: int) -> int:
-        raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled: str, data_value: str, data_items: str):
@@ -373,15 +369,6 @@ class AbstractFieldControl(AbstractControl, metaclass=ABCMeta):
 
 
 class AbstractListControl(AbstractControl, metaclass=ABCMeta):
-    @classmethod
-    @abstractmethod
-    def can_align(cls, layout: int) -> bool:
-        raise NotImplementedError
-
-    @classmethod
-    @abstractmethod
-    def align_mode(cls, layout: int) -> int:
-        raise NotImplementedError
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
                  data_context: str, data_disabled: str, data_items: str, data_selected_items: str, data_values: tuple):
