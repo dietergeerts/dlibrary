@@ -10,6 +10,9 @@ class Layer(object):
 
     @property
     def name(self) -> str:
+        """
+        For a sheet layer, VW calls this the number.
+        """
         return vs.GetLName(self.__handle)
 
     @property
