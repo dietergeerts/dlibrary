@@ -16,6 +16,10 @@ class Layer(object):
         return vs.GetLName(self.__handle)
 
     @property
+    def description(self) -> str:
+        return vs.GetObjectVariableString(self.__handle, 159)
+
+    @property
     def drawing_area(self) -> float:
         (p1x, p1y), (p2x, p2y) = vs.GetDrawingSizeRectN(self.__handle)
         return to_area_units(to_inches(p2x - p1x) * to_inches(p1y - p2y))
