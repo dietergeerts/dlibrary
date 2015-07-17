@@ -9,7 +9,7 @@ class Layer(object):
         self.__handle = handle
 
     @property
-    def name(self):
+    def name(self) -> str:
         return vs.GetLName(self.__handle)
 
     @property
