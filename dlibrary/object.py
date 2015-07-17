@@ -1,10 +1,41 @@
+from abc import ABCMeta
+from dlibrary.document import Layer, DesignLayer, SheetLayer
 from dlibrary.utility import xmltodict
 from dlibrary.utility.exception import VSException
 from dlibrary.utility.singleton import SingletonMeta
 import vs
 
 
+class AbstractObject(object, metaclass=ABCMeta):
+
+    def __init__(self, handle):
+        self.__handle = handle
+
+    @property
+    def handle(self):
+        return self.__handle
+
+    @property
+    def layer(self) -> Layer:
+        return self.__get_layer(vs.GetLayer(self.handle))
+
+    @staticmethod
+    def __get_layer(layer_handle) -> Layer:
+        return {1: DesignLayer, 2: SheetLayer}.get(vs.GetObjectVariableInt(layer_handle, 154))(layer_handle)
+
+
+class Viewport(AbstractObject):
+
+    def __init__(self, handle):
+        super().__init__(handle)
+
+    @property
+    def scale(self) -> float:
+        return vs.GetObjectVariableReal(self.handle, 1003)
+
+
 class PlugIn(object, metaclass=SingletonMeta):
+
     def __init__(self):
         self.__name = None
 
