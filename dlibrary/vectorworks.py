@@ -40,9 +40,9 @@ class Security(object):
 
     def __call__(self, function: callable) -> callable:
         def secured_function(*args, **kwargs):
-            if Vectorworks.dongle not in self.__dongles:
+            if Vectorworks().dongle not in self.__dongles:
                 self.__no_license_alert.show()
-            elif Vectorworks.version != self.__version:
+            elif Vectorworks().version != self.__version:
                 self.__other_license_alert.show()
             else:
                 function(*args, **kwargs)
