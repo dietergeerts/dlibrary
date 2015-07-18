@@ -29,7 +29,7 @@ class Security(object):
     @staticmethod
     def __create_other_license_alert(version: str):
         return Alert(AlertType.WARNING,
-                     'Your license is for Vectorworks version %s' % version,
+                     'Your license is for Vectorworks %s' % version,
                      'Contact the plugin distributor to update your license.')
 
     def __init__(self, version: str, dongles: set):
