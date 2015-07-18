@@ -1,4 +1,3 @@
-from dlibrary.units import to_area_units, to_inches
 from dlibrary.utility.singleton import SingletonMeta
 import vs
 
@@ -38,6 +37,81 @@ class Document(object, metaclass=SingletonMeta):
         return {layer for layer in self.layers if isinstance(layer, SheetLayer)}
 
 
+class Units(object, metaclass=SingletonMeta):
+
+    @staticmethod
+    def __get_length_units_per_inch() -> float:
+        return vs.GetPrefReal(152)
+
+    @staticmethod
+    def __get_area_units_per_square_inch() -> float:
+        return vs.GetPrefReal(176)
+
+    @staticmethod
+    def __get_volume_units_per_cubic_inch() -> float:
+        return vs.GetPrefReal(180)
+
+    @staticmethod
+    def __validate_length_str_to_inches(length: str) -> float:
+        return Units.to_inches(Units.__validate_length_str_to_length_units(length))
+
+    @staticmethod
+    def __validate_length_str_to_length_units(length: str) -> float:
+        ok, num = vs.ValidNumStr(length)
+        return num
+
+    @staticmethod
+    def to_inches(length_in_length_units_or_str: float) -> float:
+        """
+        :type length_in_length_units_or_str: float || str
+        """
+        if isinstance(length_in_length_units_or_str, str):
+            return Units.__validate_length_str_to_inches(length_in_length_units_or_str)
+        else:
+            return length_in_length_units_or_str / Units.__get_length_units_per_inch()
+
+    @staticmethod
+    def to_length_units(length_in_inches_or_str: float) -> float:
+        """
+        :type length_in_inches_or_str: float || str
+        """
+        if isinstance(length_in_inches_or_str, str):
+            return Units.__validate_length_str_to_length_units(length_in_inches_or_str)
+        else:
+            return length_in_inches_or_str * Units.__get_length_units_per_inch()
+
+    @staticmethod
+    def to_length_string(length_in_length_units: float, with_unit_mark: bool=False) -> str:
+        format = '%.' + vs.GetPrefLongInt(162) + 'f%s'
+        return format % (length_in_length_units, vs.GetPrefString(154) if with_unit_mark else '')
+
+    @staticmethod
+    def to_square_inches(area_in_area_units: float) -> float:
+        return area_in_area_units / Units.__get_area_units_per_square_inch()
+
+    @staticmethod
+    def to_area_units(area_in_square_inches: float) -> float:
+        return area_in_square_inches * Units.__get_area_units_per_square_inch()
+
+    @staticmethod
+    def to_area_string(araa_in_area_units: float, with_unit_mark: bool=False) -> str:
+        format = '%.' + vs.GetPrefLongInt(179) + 'f%s'
+        return format % (araa_in_area_units, vs.GetPrefString(178) if with_unit_mark else '')
+
+    @staticmethod
+    def to_cubic_inches(volume_in_volume_units: float) -> float:
+        return volume_in_volume_units / Units.__get_volume_units_per_cubic_inch()
+
+    @staticmethod
+    def to_volume_units(volume_in_cubic_inches: float) -> float:
+        return volume_in_cubic_inches * Units.__get_volume_units_per_cubic_inch()
+
+    @staticmethod
+    def to_volume_string(volume_in_volume_units: float, with_unit_mark: bool=False) -> str:
+        format = '%.' + vs.GetPrefLongInt(183) + 'f%s'
+        return format % (volume_in_volume_units, vs.GetPrefString(182) if with_unit_mark else '')
+
+
 class Layer(object):
 
     @staticmethod
@@ -65,7 +139,7 @@ class Layer(object):
     @property
     def drawing_area(self) -> float:
         (p1x, p1y), (p2x, p2y) = vs.GetDrawingSizeRectN(self.__handle)
-        return to_area_units(to_inches(p2x - p1x) * to_inches(p1y - p2y))
+        return Units.to_area_units(Units.to_inches(p2x - p1x) * Units.to_inches(p1y - p2y))
 
 
 class DesignLayer(Layer):
