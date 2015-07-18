@@ -60,7 +60,7 @@ class Layer(object):
 
     @property
     def description(self) -> str:
-        return vs.GetObjectVariableString(self.__handle, 159)
+        return ''
 
     @property
     def drawing_area(self) -> float:
@@ -85,4 +85,4 @@ class SheetLayer(Layer):
 
     @property
     def title(self) -> str:
-        return ''
+        return vs.GetObjectVariableString(self.__handle, 159)
