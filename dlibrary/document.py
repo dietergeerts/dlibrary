@@ -61,6 +61,10 @@ class Units(object, metaclass=SingletonMeta):
         return num
 
     @staticmethod
+    def __to_str(units: float, precision: int, with_unit_mark: bool, unit_mark: str) -> str:
+        return '%%.%sf%%s' % precision % (units, unit_mark if with_unit_mark else '')
+
+    @staticmethod
     def to_inches(length_in_length_units_or_str: float) -> float:
         """
         :type length_in_length_units_or_str: float || str
@@ -82,8 +86,7 @@ class Units(object, metaclass=SingletonMeta):
 
     @staticmethod
     def to_length_string(length_in_length_units: float, with_unit_mark: bool=False) -> str:
-        format = '%.' + vs.GetPrefLongInt(162) + 'f%s'
-        return format % (length_in_length_units, vs.GetPrefString(154) if with_unit_mark else '')
+        return Units.__to_str(length_in_length_units, vs.GetPrefLongInt(162), with_unit_mark, vs.GetPrefString(154))
 
     @staticmethod
     def to_square_inches(area_in_area_units: float) -> float:
@@ -95,8 +98,7 @@ class Units(object, metaclass=SingletonMeta):
 
     @staticmethod
     def to_area_string(araa_in_area_units: float, with_unit_mark: bool=False) -> str:
-        format = '%.' + vs.GetPrefLongInt(179) + 'f%s'
-        return format % (araa_in_area_units, vs.GetPrefString(178) if with_unit_mark else '')
+        return Units.__to_str(araa_in_area_units, vs.GetPrefLongInt(179), with_unit_mark, vs.GetPrefString(178))
 
     @staticmethod
     def to_cubic_inches(volume_in_volume_units: float) -> float:
@@ -108,8 +110,7 @@ class Units(object, metaclass=SingletonMeta):
 
     @staticmethod
     def to_volume_string(volume_in_volume_units: float, with_unit_mark: bool=False) -> str:
-        format = '%.' + vs.GetPrefLongInt(183) + 'f%s'
-        return format % (volume_in_volume_units, vs.GetPrefString(182) if with_unit_mark else '')
+        return Units.__to_str(volume_in_volume_units, vs.GetPrefLongInt(183), with_unit_mark, vs.GetPrefString(182))
 
 
 class Layer(object):
