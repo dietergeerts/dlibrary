@@ -85,4 +85,4 @@ class SheetLayer(Layer):
 
     @property
     def title(self) -> str:
-        return vs.GetObjectVariableString(self.__handle, 159)
+        return vs.GetObjectVariableString(self._handle, 159)
