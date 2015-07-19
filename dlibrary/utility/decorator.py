@@ -16,9 +16,9 @@ class AbstractPropertyClassDecorator(object, metaclass=ABCMeta):
         return cls
 
     @classmethod
-    def has_decorator(cls, control: object):
-        return hasattr(control, getattr(cls, cls.__get_property_name_name)())
+    def has_decorator(cls, obj: object):
+        return hasattr(obj, getattr(cls, cls.__get_property_name_name)())
 
     @classmethod
-    def _get_property_value(cls, control: object):
-        return getattr(control, getattr(cls, cls.__get_property_name_name)())
+    def _get_property_value(cls, obj: object):
+        return getattr(obj, getattr(cls, cls.__get_property_name_name)())

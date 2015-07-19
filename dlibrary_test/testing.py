@@ -88,6 +88,7 @@ class VectorScript(object):
                 VectorworksInstance().platform,
                 VectorworksInstance().version_build)
 
-
-vs.GetActiveSerialNumber = VectorScript.get_active_serial_number
-vs.GetVersionEx = VectorScript.get_version_ex
+    @staticmethod
+    def initialize():
+        vs.GetActiveSerialNumber = VectorScript.get_active_serial_number
+        vs.GetVersionEx = VectorScript.get_version_ex
