@@ -1,5 +1,5 @@
 from dlibrary.dialog.control import AbstractDataContext, ControlFactory
-from dlibrary.object import PlugIn
+from dlibrary.vectorworks import ActivePlugIn
 from dlibrary.utility.exception import VSException
 import vs
 import dlibrary.utility.converter as converter
@@ -9,7 +9,7 @@ class Dialog(AbstractDataContext):
     def __init__(self, dialog_name: str, data_context: object):
         super().__init__(data_context)
         try:
-            view = PlugIn().load_plugin_file(dialog_name + 'Dialog', {'control'})
+            view = ActivePlugIn().load_plugin_file(dialog_name + 'Dialog', {'control'})
         except (VSException, FileNotFoundError, PermissionError, OSError):
             raise
         else:

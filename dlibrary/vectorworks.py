@@ -1,5 +1,7 @@
 from dlibrary.dialog.predefined.alert import Alert, AlertType
+from dlibrary.utility.exception import VSException
 from dlibrary.utility.singleton import SingletonMeta
+from dlibrary.utility.xmltodict import AbstractXmlFile
 import vs
 
 
@@ -13,6 +15,43 @@ class Vectorworks(object, metaclass=SingletonMeta):
     @property
     def dongle(self) -> str:
         return vs.GetActiveSerialNumber()[-6:]
+
+
+class ActivePlugInType(object):
+    MENU = '.vsm'
+    TOOL = '.vst'
+    OBJECT = '.vso'
+
+
+class ActivePlugIn(object, metaclass=SingletonMeta):
+
+    def __init__(self):
+        self.__name = None
+
+    @property
+    def name(self):
+        # Singletons will keep it's data throughout the entire Vectorworks session!
+        # This result isn't the same during that session, it depends on the active plugin!
+        succeeded, self.__name, _ = vs.GetPluginInfo()
+        if not succeeded:
+            raise VSException('GetPluginInfo')
+        return self.__name
+
+
+class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile):
+
+    def __init__(self, active_plugin_type: str):
+        """
+        :type active_plugin_type: ActivePlugInType(Enum)
+        """
+        _, file_path = vs.FindFileInPluginFolder(ActivePlugIn().name + active_plugin_type)
+        super().__init__(file_path + ActivePlugIn().name + 'Prefs.xml')
+
+
+class AbstractActivePlugInDrawingXmlFile(AbstractXmlFile):
+
+    def __init__(self):
+        super().__init__(vs.GetFPathName()[:-len(vs.GetFName())] + ActivePlugIn().name + '.xml')
 
 
 class Security(object):
