@@ -1,15 +1,29 @@
+from abc import ABCMeta
 from dlibrary.dialog.control import AbstractDataContext, ControlFactory
+from dlibrary.utility.xmltodict import AbstractXmlFile, XmlFileLists
 from dlibrary.vectorworks import ActivePlugIn
 from dlibrary.utility.exception import VSException
 import vs
 import dlibrary.utility.converter as converter
 
 
+@XmlFileLists(lists={'control'})
+class AbstractActivePlugInDialogXmlFile(AbstractXmlFile, metaclass=ABCMeta):
+
+    def __init__(self, dialog_name: str, active_plugin_type: str):
+        """
+        :type active_plugin_type: ActivePlugInType(Enum)
+        """
+        _, file_path = vs.FindFileInPluginFolder(ActivePlugIn().name + active_plugin_type)
+        super().__init__(file_path + ActivePlugIn().name + dialog_name + 'Dialog.xml')
+
+
 class Dialog(AbstractDataContext):
-    def __init__(self, dialog_name: str, data_context: object):
+
+    def __init__(self, dialog_file: AbstractActivePlugInDialogXmlFile, data_context: object):
         super().__init__(data_context)
         try:
-            view = ActivePlugIn().load_plugin_file(dialog_name + 'Dialog', {'control'})
+            view = dialog_file.load()
         except (VSException, FileNotFoundError, PermissionError, OSError):
             raise
         else:

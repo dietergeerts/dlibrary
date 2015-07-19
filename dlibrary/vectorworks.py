@@ -1,3 +1,4 @@
+from abc import ABCMeta
 from dlibrary.dialog.predefined.alert import Alert, AlertType
 from dlibrary.utility.exception import VSException
 from dlibrary.utility.singleton import SingletonMeta
@@ -38,7 +39,7 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
         return self.__name
 
 
-class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile):
+class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
     def __init__(self, active_plugin_type: str):
         """
@@ -48,7 +49,7 @@ class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile):
         super().__init__(file_path + ActivePlugIn().name + 'Prefs.xml')
 
 
-class AbstractActivePlugInDrawingXmlFile(AbstractXmlFile):
+class AbstractActivePlugInDrawingXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
     def __init__(self):
         super().__init__(vs.GetFPathName()[:-len(vs.GetFName())] + ActivePlugIn().name + '.xml')

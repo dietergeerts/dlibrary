@@ -1,7 +1,9 @@
+from abc import ABCMeta
+
 import dlibrary.libs.xmltodict as xmltodict
 
 
-class AbstractXmlFile(object):
+class AbstractXmlFile(object, metaclass=ABCMeta):
     """
     Class used for setting up files with properties through decorators. This way, plugins can decide how their xml
     files will behave by just setting the appropriate decorators, as these settings can be plugin version dependant.
