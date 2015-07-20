@@ -131,15 +131,15 @@ class Layer(object):
         """
         For a sheet layer, VW calls this the number!
         """
-        return vs.GetLName(self.__handle)
+        return vs.GetLName(self._handle)
 
     @property
     def description(self) -> str:
-        return ''
+        return vs.GetDescriptionText(self._handle)
 
     @property
     def drawing_area(self) -> float:
-        (p1x, p1y), (p2x, p2y) = vs.GetDrawingSizeRectN(self.__handle)
+        (p1x, p1y), (p2x, p2y) = vs.GetDrawingSizeRectN(self._handle)
         return Units.to_area_units(Units.to_inches(p2x - p1x) * Units.to_inches(p1y - p2y))
 
 

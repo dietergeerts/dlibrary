@@ -1,4 +1,4 @@
-#   Copyright (c) Nemetschek North America, Inc. 2008.
+#   Copyright (c) Nemetschek North America, Inc. 2014.
 #   All Rights Reserved.
 
 #  **********************************************
@@ -146,27 +146,6 @@ def AddAssociation(
 	return 'BOOLEAN' # 
 
 
-def AddButton(
-		buttonStr , # STRING  - Descriptive text for dialog button.                     
-		itemID    , # INTEGER - Unique itemID for the dialog button, in a range of 1-50.
-		buttonType, # INTEGER - Style of dialog button control.                         
-		x1        , # INTEGER - Top left  X coordinate of button bounding box.          
-		y1        , # INTEGER - Top left  Y coordinate of button bounding box.          
-		x2        , # INTEGER - Bottom right  X coordinate of button bounding box.      
-		y2          # INTEGER - Bottom right  Y coordinate of button bounding box.      
-		):
-	'''
-		Python: vs.AddButton(buttonStr, itemID, buttonType, x1, y1, x2, y2)
-		VectorScript: PROCEDURE AddButton(buttonStr:STRING; itemID:INTEGER; buttonType:INTEGER; x1:INTEGER; y1:INTEGER; x2:INTEGER; y2:INTEGER);
-		
-		Category: Dialogs - Classic
-		Defines the standard button types (such as the OK or Cancel buttons, check boxes, radio buttons) within a custom dialog definition.
-		In addition to the regular button styles, there are also two "auto" button styles. These styles(check box and radio button) automatically handle user selection- deselection, and can be activated or deactivated by calling SetItemEnable.
-		To create a default button, assign the button an item ID of 1.
-	'''
-	pass
-
-
 def AddButtonMode(
 		imageSpecifier  # DYNARRAY[] of CHAR - The string identifier for the image. It should be of the form "ResourceFileNameWithoutExtension/PathOfImageFile".
 		):
@@ -213,83 +192,6 @@ def AddChoice(
 	pass
 
 
-def AddChoiceItem(
-		choiceTitle, # STRING  - Descriptive text string for the choice item.                   
-		itemID     , # INTEGER - Unique item ID for the choice item control, in a range of 1-50.
-		choiceType , # INTEGER - The type (style) of choice item control to be displayed.       
-		x1         , # INTEGER - Top left X coordinate of the control bounding box.             
-		y1         , # INTEGER - Top left Y coordinate of the control bounding box.             
-		x2         , # INTEGER - Bottom right X coordinate of control bounding box.             
-		y2           # INTEGER - Bottom right Y coordinate of control bounding box.             
-		):
-	'''
-		Python: vs.AddChoiceItem(choiceTitle, itemID, choiceType, x1, y1, x2, y2)
-		VectorScript: PROCEDURE AddChoiceItem(choiceTitle:STRING; itemID:INTEGER; choiceType:INTEGER; x1:INTEGER; y1:INTEGER; x2:INTEGER; y2:INTEGER);
-		
-		Category: Dialogs - Classic
-		Adds a choice item control to a custom dialog definition. A choice item allows the user to select an item from multiple list options. Options for the itemID parameter are: 1) pop-up, 2) multi-select list box, and 3) single-select list box.
-		<I>Combo Box-Popup Default State</I><P>
-		<I>Combo Box-Popup Open State</I><P>
-	'''
-	pass
-
-
-def AddField(
-		fieldStr , # STRING  - The descriptive text for the field item.                
-		itemID   , # INTEGER - Unique item ID for the dialog field, in a range of 1-50.
-		fieldType, # INTEGER - The type of field item to be displayed.                 
-		x1       , # INTEGER - Top left  X coordinate of field item bounding box.      
-		y1       , # INTEGER - Top left  Y coordinate of field item bounding box.      
-		x2       , # INTEGER - Bottom right  X coordinate of field item bounding box   
-		y2         # INTEGER - Bottom right  Y coordinate of field item bounding box.  
-		):
-	'''
-		Python: vs.AddField(fieldStr, itemID, fieldType, x1, y1, x2, y2)
-		VectorScript: PROCEDURE AddField(fieldStr:STRING; itemID:INTEGER; fieldType:INTEGER; x1:INTEGER; y1:INTEGER; x2:INTEGER; y2:INTEGER);
-		
-		Category: Dialogs - Classic
-		Defines a static or editable text field within the custom dialog definition. Note: single line edit fields should be 16 pixels high.
-		<I>Text Field Types</I><P>
-	'''
-	pass
-
-
-def AddGroupBox(
-		s     , # STRING  - Group box title string.                                 
-		item  , # INTEGER - Dialog item ID value.                                   
-		left  , # INTEGER - Top left X coordinate of group box bounds in dialog.    
-		top   , # INTEGER - Top left Y coordinate of group box bounds in dialog.    
-		right , # INTEGER - Bottom right X coordinate of group box bounds in dialog.
-		bottom  # INTEGER - Bottom right Y coordinate of group box bounds in dialog.
-		):
-	'''
-		Python: vs.AddGroupBox(s, item, left, top, right, bottom)
-		VectorScript: PROCEDURE AddGroupBox(s:STRING; item:INTEGER; left:INTEGER; top:INTEGER; right:INTEGER; bottom:INTEGER);
-		
-		Category: Dialogs - Classic
-		Adds a group box to a custom dialog.
-		<I>Group Box Dialog Control</I><P>
-	'''
-	pass
-
-
-def AddHelpItem(
-		itemID, # INTEGER - The id of the help control item.               
-		x1    , # INTEGER - X coordinate of top left corner of control.    
-		y1    , # INTEGER - Y coordinate of top left corner of control.    
-		x2    , # INTEGER - X coordinate of bottom right corner of control.
-		y2      # INTEGER - Y coordinate of bottom right corner of control.
-		):
-	'''
-		Python: vs.AddHelpItem(itemID, x1, y1, x2, y2)
-		VectorScript: PROCEDURE AddHelpItem(itemID:INTEGER; x1:INTEGER; y1:INTEGER; x2:INTEGER; y2:INTEGER);
-		
-		Category: Dialogs - Classic
-		Adds a help item to a custom dialog layout.
-	'''
-	pass
-
-
 def AddHole(
 		objectToGetHole, # in/out HANDLE - A 2D object to be cut by [[p:2]].        
 		holeTemplate     # HANDLE        - A 2D object to cut a hole out of [[p:1]].
@@ -302,8 +204,8 @@ def AddHole(
 		AddHole uses a holeTemplate to create a hole inside objectToGetHole.  Upon success, objectToGetHole is converted to polyline.   holeTemplate is unchanged.
 	'''
 	pass
-	return ( BOOLEAN        , # 
-	         objectToGetHole )
+	return ( False  , # 
+	         0       )
 
 
 def AdditionalDefRecords():
@@ -348,6 +250,21 @@ def AddLBOriginalName(
 		This function is called when hierarchical display is on and a new item is added to the list browser.
 	'''
 	pass
+
+
+def AddLevelFromTemplate(
+		storyHandle, # HANDLE  - The handle of the Story to add the new Story Level to.                     
+		index        # INTEGER - The index of the Story Level Template to use when creating the Story Level.
+		):
+	'''
+		Python: BOOLEAN = vs.AddLevelFromTemplate(storyHandle, index)
+		VectorScript: FUNCTION AddLevelFromTemplate(storyHandle:HANDLE; index:INTEGER) : BOOLEAN;
+		
+		Category: Layers
+		Adds a new Story Layer to the Story pointed to by 'storyHandle', using the Story Level Template at 'index' as a template.  The story must not already contain a Story Level with the same level type or elevation as the template.  If the template has a layer name set, a new layer will be created and associated with the new Story Level.
+	'''
+	pass
+	return 'BOOLEAN' # Whether the Story Level was successfully created.
 
 
 def AddListBoxTabStop(
@@ -441,8 +358,25 @@ def AddSolid(
 		Function AddSolid creates a new solid addition object from the referenced source objects. If the operation succeeds, the source objects will then be contained within the newSolid object, as the primitives which define the CSG.
 	'''
 	pass
-	return ( INTEGER , # 
-	         newSolid )
+	return ( 0      , # 
+	         0       )
+
+
+def AddStoryLevel(
+		storyHandle, # HANDLE - The handle of the story that the new level should be added to.                 
+		levelType  , # STRING - The level type of the new Story Level.  This cannot be blank.                  
+		elevation  , # POINT  - The elevation of the new Story Level in the story.                             
+		layerName    # STRING - The name of the layer to associate with the new Story Level.  This is optional.
+		):
+	'''
+		Python: BOOLEAN = vs.AddStoryLevel(storyHandle, levelType, elevation, layerName)
+		VectorScript: FUNCTION AddStoryLevel(storyHandle:HANDLE; levelType:STRING; elevation:REAL; layerName:STRING) : BOOLEAN;
+		
+		Category: Layers
+		Adds a new Story Layer to the Story pointed to by 'storyHandle'.  There must not be another story level in this story that matches 'levelType' or 'elevation', or the function will fail.  If the layer 'layerName' already exists, it will be associated with the new Story Level.
+	'''
+	pass
+	return 'BOOLEAN' # Whether the new Story Level was created and added.
 
 
 def AddSurface(
@@ -736,31 +670,31 @@ def AlertSetAlwaysDoVal(
 
 
 def AlignDistribute2D(
-		MenuAction  # LONGINT -  
+		MenuAction      , # LONGINT -  
+		AlignDist2DParms  # LONGINT -  
 		):
 	'''
-		Python: AlignDist2DParms = vs.AlignDistribute2D(MenuAction)
-		VectorScript: PROCEDURE AlignDistribute2D(MenuAction:LONGINT; VAR AlignDist2DParms:LONGINT);
+		Python: vs.AlignDistribute2D(MenuAction, AlignDist2DParms)
+		VectorScript: PROCEDURE AlignDistribute2D(MenuAction:LONGINT; AlignDist2DParms:LONGINT);
 		
 		Category: General Edit
 		2D Object Alignment/Distribution
 	'''
 	pass
-	return ( AlignDist2DParms )
 
 
 def AlignDistribute3D(
-		MenuAction  # LONGINT -  
+		MenuAction      , # LONGINT -  
+		AlignDist3DParms  # LONGINT -  
 		):
 	'''
-		Python: AlignDist3DParms = vs.AlignDistribute3D(MenuAction)
-		VectorScript: PROCEDURE AlignDistribute3D(MenuAction:LONGINT; VAR AlignDist3DParms:LONGINT);
+		Python: vs.AlignDistribute3D(MenuAction, AlignDist3DParms)
+		VectorScript: PROCEDURE AlignDistribute3D(MenuAction:LONGINT; AlignDist3DParms:LONGINT);
 		
 		Category: General Edit
 		3D Object Alignment/Distribution
 	'''
 	pass
-	return ( AlignDist3DParms )
 
 
 def AlignItemEdge(
@@ -854,9 +788,9 @@ def AngDialog3D(
 		Function AngDialog3D displays a dialog box which requests the user to enter three angle values. AngDialog3D will accept angle values in any supported angle format.
 	'''
 	pass
-	return ( xAngleResult, 
-	         yAngleResult, 
-	         zAngleResult )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def Angle(
@@ -1197,8 +1131,8 @@ def AutoKey(
 		Function AutoKey returns TRUE if a non-modifier keyboard character has been continually depressed for longer than the system defined key repeat rate. If a keyboard character has been continually depressed, then ASCII code of the character is returned in parameter asciiCode.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         asciiCode )
+	return ( False  , # 
+	         0       )
 
 
 def Backward():
@@ -1233,24 +1167,6 @@ def BeginContext():
 		
 		Category: Utility
 		Use this function in conjuction with EndContext to starts logging changes that are  made until the EndContext is reached.
-	'''
-	pass
-
-
-def BeginDialog(
-		dialogID  , # INTEGER - Unique identifier ID for dialog(in a range of 1-32).
-		dialogType, # INTEGER - Dialog style(always pass 1 for this parameter).     
-		x1        , # INTEGER - Top left X coordinate of custom dialog window.      
-		y1        , # INTEGER - Top left  Y coordinate of custom dialog window.     
-		x2        , # INTEGER - Bottom right  X coordinate of custom dialog window. 
-		y2          # INTEGER - Bottom right Y coordinate of custom dialog window.  
-		):
-	'''
-		Python: vs.BeginDialog(dialogID, dialogType, x1, y1, x2, y2)
-		VectorScript: PROCEDURE BeginDialog(dialogID:INTEGER; dialogType:INTEGER; x1:INTEGER; y1:INTEGER; x2:INTEGER; y2:INTEGER);
-		
-		Category: Dialogs - Classic
-		Initiates the custom dialog definition process. All VectorScript calls made between the BeginDialog and EndDialog will be used to construct a custom dialog.
 	'''
 	pass
 
@@ -1303,19 +1219,7 @@ def BeginGroupN(
 		May be used to create objects in an existing group by passing a group handle; if a handle initialized to nil is passed a new group is created.
 	'''
 	pass
-	return ( groupHandle )
-
-
-def BeginInteractiveFrames():
-	'''
-		Python: BOOLEAN = vs.BeginInteractiveFrames()
-		VectorScript: FUNCTION BeginInteractiveFrames : BOOLEAN;
-		
-		Category: View / Zoom
-		This function will activate interactive rendering if possible, while rendering in openGL.
-	'''
-	pass
-	return 'BOOLEAN' # Returns true if interactive rendering is available, false otherwise
+	return ( 0 )
 
 
 def BeginMesh():
@@ -1456,7 +1360,7 @@ def BeginVectorFillN(
 		Procedure BeginVectorFillN creates a new vector fill definition in a Vectorworks document. The value of vectorFillName will change only if the hatch name already exists.
 	'''
 	pass
-	return ( vectorFillName )
+	return ( 'string' )
 
 
 def BeginXtrd(
@@ -1547,8 +1451,8 @@ def BuildResourceList(
 		If folderIndex is positive, the list will include all the resources of that type from the current document, as well as from the specified folder. If folderIndex is 0, only the resources in the current document will be in the list. If folderIndex is negative, only the resources in the specified folder will be in the list.
 	'''
 	pass
-	return ( LONGINT , # 
-	         numItems )
+	return ( 0      , # 
+	         0       )
 
 
 def BuildResourceList2(
@@ -1567,8 +1471,8 @@ def BuildResourceList2(
 		If folderIndex is positive, the list will include all the resources of that type from the current document, as well as from the specified folder. If folderIndex is 0, only the resources in the current document will be in the list. If folderIndex is negative, only the resources in the specified folder will be in the list.
 	'''
 	pass
-	return ( LONGINT , # 
-	         numItems )
+	return ( 0      , # 
+	         0       )
 
 
 def BuildResourceListN(
@@ -1583,8 +1487,8 @@ def BuildResourceListN(
 		Build a resource list from the specified file.
 	'''
 	pass
-	return ( LONGINT , # 
-	         numItems )
+	return ( 0      , # 
+	         0       )
 
 
 def BuildResourceListN2(
@@ -1600,8 +1504,8 @@ def BuildResourceListN2(
 		Build a resource list from the specified file.
 	'''
 	pass
-	return ( LONGINT , # 
-	         numItems )
+	return ( 0      , # 
+	         0       )
 
 
 def CalcPolySegLen(
@@ -1775,9 +1679,9 @@ def Centroid(
 		Returns the centroid of the object. Returns false if an unsupported object type is supplied.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         x      , 
-	         y       )
+	return ( False  , # 
+	         0.0    , 
+	         0.0     )
 
 
 def Centroid3D(
@@ -1791,10 +1695,10 @@ def Centroid3D(
 		Returns the center of gravity of a 3D object. The function returns TRUE if the values were found.
 	'''
 	pass
-	return ( BOOLEAN, # Returns true if the function succeeds.
-	         xCG    , 
-	         yCG    , 
-	         zCG     )
+	return ( False  , # Returns true if the function succeeds.
+	         0.0    , 
+	         0.0    , 
+	         0.0     )
 
 
 def Chr(
@@ -1825,9 +1729,9 @@ def CircleCircleInters(
 		Finds the intersection of two circles.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         pt1    , 
-	         pt2     )
+	return ( False  , # 
+	         0,0,0  , 
+	         0,0,0   )
 
 
 def CircularDim(
@@ -2025,9 +1929,9 @@ def ClosestPoints(
 		Returns the points on two objects where the shortest distance between those objects occurs. Should support all VW primitives, including polylines and NURBS. Would be nice if it supported groups, symbols, and PIOs. Would also be nice if it supported 3D.
 	'''
 	pass
-	return ( pt1     , 
-	         pt2     , 
-	         touching )
+	return ( 0,0,0, 
+	         0,0,0, 
+	         False )
 
 
 def Cloud(
@@ -2047,17 +1951,6 @@ def Cloud(
 	'''
 	pass
 	return 'HANDLE' # 
-
-
-def ClrDialog():
-	'''
-		Python: vs.ClrDialog()
-		VectorScript: PROCEDURE ClrDialog;
-		
-		Category: Dialogs - Classic
-		Closes the frontmost displayed custom dialog..
-	'''
-	pass
 
 
 def ClrMessage():
@@ -2096,9 +1989,9 @@ def ColorIndexToRGB(
 		Procedure ColorIndexToRGB converts the Vectorworks palette colors from the colors' palette position index to its red, green, and blue component values. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def ColorIndexToRGBN(
@@ -2113,9 +2006,9 @@ def ColorIndexToRGBN(
 		Procedure ColorIndexToRGBN converts the Vectorworks palette colors from the colors' palette position index to its red, green, and blue component values. RGB values are in the range of 0 65535.Parameter ignoreBlackBackground specifies whether the black background preference should be ignored. If set to TRUE, black and white indexes will not be inverted in black background.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def CombineIntoSurface(
@@ -2175,8 +2068,8 @@ def Comp(
 		The vector component of v1 along v2 in v3, and the vector component of v1 orthogonal to v2 in v4.
 	'''
 	pass
-	return ( v3, 
-	         v4 )
+	return ( 0,0,0, 
+	         0,0,0 )
 
 
 def ComponentArea(
@@ -2250,8 +2143,8 @@ def ConvertHSF2PosixPath(
 		Converts HSF (using ':' as delimiter) file path to Posix (using '/' as delimiter) file path.
 	'''
 	pass
-	return ( BOOLEAN     , # Returns true if the conversion succeeds. False if it fails.[[BR]]The resulted Posix path will be the same as the passed HSF path if the function fails.
-	         outPosixPath )
+	return ( False   , # Returns true if the conversion succeeds. False if it fails.[[BR]]The resulted Posix path will be the same as the passed HSF path if the function fails.
+	         'string' )
 
 
 def ConvertPosix2HSFPath(
@@ -2266,8 +2159,8 @@ def ConvertPosix2HSFPath(
 		Converts Posix (using '/' as delimiter) file path to HSF (using ':' as delimiter) file path.
 	'''
 	pass
-	return ( BOOLEAN   , # Returns true if the conversion succeeds. False if it fails.[[BR]]The resulted Posix path will be the same as the passed Posix path if the function fails.
-	         outHSFPath )
+	return ( False   , # Returns true if the conversion succeeds. False if it fails.[[BR]]The resulted Posix path will be the same as the passed Posix path if the function fails.
+	         'string' )
 
 
 def ConvertTo3DPolys(
@@ -2938,7 +2831,7 @@ def CreateHLHandle(
 		Create a new Hidden Line Rendering options handle.
 	'''
 	pass
-	return ( HLOptionsHandle )
+	return ( 0 )
 
 
 def CreateIconPushButton(
@@ -3044,17 +2937,6 @@ def CreateImagePushButton(
 	pass
 
 
-def CreateInteractiveLightGroup():
-	'''
-		Python: vs.CreateInteractiveLightGroup()
-		VectorScript: PROCEDURE CreateInteractiveLightGroup;
-		
-		Category: View / Zoom
-		Creates the lights for interactive rendering in openGL.
-	'''
-	pass
-
-
 def CreateInterpolatedSurface(
 		surfaceHandle, # HANDLE  - Handle to a NURBS surface to approximate                                                    
 		numUPts      , # LONGINT - Number of interpolation points in the U parametric direction.  Must be greater than uDegree.
@@ -3136,6 +3018,25 @@ def CreateLB(
 		Creates a layout manager list browser control.
 	'''
 	pass
+
+
+def CreateLevelTemplate(
+		layerName  , # STRING - The layer name for the new Story Level Template.  This can be blank, meaning that layers will not be created for instances of the new Story Level Template.       
+		scaleFactor, # POINT  - The scale factor for the (optional) layer associated with this Story Level Template.                                                                              
+		levelType  , # STRING - The level type for the new Story Level Template.  There may be multiple Story Level Templates with the same level type, as long as they have different elevations.
+		elevation  , # POINT  - The elevation of the Story Level Template, relative to the height of the story in which the level is used.                                                        
+		wallHeight   # POINT  - The wall height for (optional) layers created when using this Story Level Template in a Story.  If the layer name is empty, this parameter is unused.             
+		):
+	'''
+		Python: (BOOLEAN, index) = vs.CreateLevelTemplate(layerName, scaleFactor, levelType, elevation, wallHeight)
+		VectorScript: FUNCTION CreateLevelTemplate(layerName:STRING; scaleFactor:REAL; levelType:STRING; elevation:REAL; wallHeight:REAL; VAR index:INTEGER) : BOOLEAN;
+		
+		Category: Layers
+		Creates a Story Level Template in the current file. Sets the index parameter to the index of the new template in the list of templates. Story Levels contain a level type, elevation, and optional layer to be used to bound objects on stories; Story Level Templates define a generic level that can be added to multiple stories.
+	'''
+	pass
+	return ( False  , # Whether the Story Level Template was successfully created.
+	         0       )
 
 
 def CreateLight(
@@ -3338,7 +3239,7 @@ def CreateOpenGLHandle(
 		Return a new OpenGL options handle.
 	'''
 	pass
-	return ( GLHandle )
+	return ( 0 )
 
 
 def CreatePaintFromImage(
@@ -3566,7 +3467,7 @@ def CreateRWHandle(
 		Create a new RenderWorks options handle.
 	'''
 	pass
-	return ( RWHandle )
+	return ( 0 )
 
 
 def CreateScriptResource(
@@ -3804,8 +3705,8 @@ def CreateStoryLayerTemplate(
 		Creates a Story Layer Template in the current file. Sets the index parameter to the index of the new template in the list of templates. Story Layer Templates are used to define what Layers are typically found in a Story. When a Story is created, the user has the option to automatically create the Layers defined by the Story Layer Templates.
 	'''
 	pass
-	return ( BOOLEAN, # Whether a Story Layer Template is successfully created.
-	         index   )
+	return ( False  , # Whether a Story Layer Template is successfully created.
+	         0       )
 
 
 def CreateStyledStatic(
@@ -3950,6 +3851,20 @@ def CreateText(
 		Procedure CreateText creates a new text object in a Vectorworks document. The text object is created using the current pen position and default attributes.
 	'''
 	pass
+
+
+def CreateTextStyleRes(
+		name  # STRING - The name for the new text style.
+		):
+	'''
+		Python: HANDLE = vs.CreateTextStyleRes(name)
+		VectorScript: FUNCTION CreateTextStyleRes(name:STRING) : HANDLE;
+		
+		Category: Text Style Constant
+		Creates a new text style resource with the specified name.  A handle to the new resource is returned.  Once the resource is created the attributes of the text style resource should be set appropriately.
+	'''
+	pass
+	return 'HANDLE' # A handle to the newly created text style resource will be returned.
 
 
 def CreateTexture():
@@ -4292,6 +4207,18 @@ def Date(
 	return 'STRING' # 
 
 
+def DBDiagnose():
+	'''
+		Python: BOOLEAN = vs.DBDiagnose()
+		VectorScript: FUNCTION DBDiagnose : BOOLEAN;
+		
+		Category: ODBC
+		Test ODBC connectivity and creates log file in application folder. Returns true if succeeded.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def DBDocAddConn(
 		dsn     , # DYNARRAY[] of CHAR -  
 		userName, # DYNARRAY[] of CHAR -  
@@ -4320,11 +4247,11 @@ def DBDocGetColumns(
 		Returns a string representing a ';' delimited lists of the specified table data.
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         outNames   , 
-	         outTypes   , 
-	         outCanBeKey, 
-	         outIsKey    )
+	return ( False   , # 
+	         'string', 
+	         'string', 
+	         'string', 
+	         'string' )
 
 
 def DBDocGetConn(
@@ -4338,9 +4265,9 @@ def DBDocGetConn(
 		Get database connection info.
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         outUserName, 
-	         outPassword )
+	return ( False   , # 
+	         'string', 
+	         'string' )
 
 
 def DBDocGetDB(
@@ -4353,8 +4280,8 @@ def DBDocGetDB(
 		Returns a string representing a ';' delimited list of the databases currectly connected to the document.
 	'''
 	pass
-	return ( BOOLEAN     , # 
-	         outDatabases )
+	return ( False   , # 
+	         'string' )
 
 
 def DBDocGetTables(
@@ -4368,8 +4295,8 @@ def DBDocGetTables(
 		Returns a string representing a ';' delimited list of the tables in the specified database.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         outTables )
+	return ( False   , # 
+	         'string' )
 
 
 def DBDocHasConn():
@@ -4810,9 +4737,9 @@ def DBGetFormatConn(
 		Returns the ODBC connection for the specified format.
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         outDatabase, 
-	         outTable    )
+	return ( False   , # 
+	         'string', 
+	         'string' )
 
 
 def DBGetFormatFieldConn(
@@ -4826,10 +4753,10 @@ def DBGetFormatFieldConn(
 		Get ODBC connection for the specified format field.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         fieldName , 
-	         columnName, 
-	         linkType   )
+	return ( False   , # 
+	         'string', 
+	         'string', 
+	         0        )
 
 
 def DBObjSQLGetRead(
@@ -4843,8 +4770,8 @@ def DBObjSQLGetRead(
 		Get an object's SQL sentence for ODBC read.
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         SQLSentence )
+	return ( False   , # 
+	         'string' )
 
 
 def DBObjSQLGetWrite(
@@ -4858,8 +4785,8 @@ def DBObjSQLGetWrite(
 		Get an object's SQL sentence for ODBC write.
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         SQLSentence )
+	return ( False   , # 
+	         'string' )
 
 
 def DBObjSQLSetRead(
@@ -4975,9 +4902,9 @@ def DBSQLExecute(
 		Executes a SQL in the specified database connected to the current document. Note! The resultSetInstance have to be deleted with call to 'DBSQLExecuteDelete'
 	'''
 	pass
-	return ( BOOLEAN         , # 
-	         outColumnCnt    , 
-	         outResultSetInst )
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def DBSQLExecuteDelete(
@@ -4990,7 +4917,7 @@ def DBSQLExecuteDelete(
 		Deletes a resultSetInstance created with 'DBSQLExecute' or 'DBSQLExecuteDSN'
 	'''
 	pass
-	return ( resultSetInst )
+	return ( 0 )
 
 
 def DBSQLExecuteDSN(
@@ -5007,9 +4934,9 @@ def DBSQLExecuteDSN(
 		Executes a SQL in the specified DSN registered in the ODBC manager. Note! The resultSetInstance have to be deleted with call to 'DBSQLExecuteDelete'
 	'''
 	pass
-	return ( BOOLEAN         , # 
-	         outColumnCnt    , 
-	         outResultSetInst )
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def DBSQLExecuteError(
@@ -5022,11 +4949,11 @@ def DBSQLExecuteError(
 		Return information about the last error occured in the ODBC API functions.
 	'''
 	pass
-	return ( BOOLEAN     , # 
-	         message     , 
-	         state       , 
-	         code        , 
-	         internalDesc )
+	return ( False   , # 
+	         'string', 
+	         'string', 
+	         0       , 
+	         'string' )
 
 
 def DBSQLExecuteGet(
@@ -5041,9 +4968,9 @@ def DBSQLExecuteGet(
 		Retrieves information from the resultSetInstance created with 'DBSQLExecute' or 'DBSQLExecuteDSN'
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         outColumnName, 
-	         outValue      )
+	return ( False   , # 
+	         'string', 
+	         'string' )
 
 
 def DBSQLExecuteNext(
@@ -5089,20 +5016,6 @@ def Deg2Rad(
 	return 'REAL' # 
 
 
-def DelChoice(
-		item       , # INTEGER - Item ID of dialog control.             
-		whichChoice  # INTEGER - Position in list of item to be deleted.
-		):
-	'''
-		Python: vs.DelChoice(item, whichChoice)
-		VectorScript: PROCEDURE DelChoice(item:INTEGER; whichChoice:INTEGER);
-		
-		Category: Dialogs - Classic
-		Procedure DelChoice deletes an item from a VectorScript dialog choice item list.
-	'''
-	pass
-
-
 def DelClass(
 		clasName   # STRING - Name of class to delete.
 		):
@@ -5129,7 +5042,7 @@ def Delete(
 		Procedure Delete removes a substring from the specified source string.
 	'''
 	pass
-	return ( source )
+	return ( 'string' )
 
 
 def DeleteAllComponents(
@@ -5306,6 +5219,20 @@ def DeleteLBItem(
 	'''
 	pass
 	return 'BOOLEAN' # 
+
+
+def DeleteLevelTemplate(
+		index  # INTEGER - The index of the Story Level Template to be deleted.
+		):
+	'''
+		Python: BOOLEAN = vs.DeleteLevelTemplate(index)
+		VectorScript: FUNCTION DeleteLevelTemplate(index:INTEGER) : BOOLEAN;
+		
+		Category: Layers
+		Deletes the nth Story Level Template from the current file. For example, if 3 is passed in, it will delete the 3rd Story Level Template in the file.
+	'''
+	pass
+	return 'BOOLEAN' # Whether the Story Level Template at 'index' was found and deleted successfully.
 
 
 def DeleteObjs():
@@ -5598,25 +5525,12 @@ def DetailGraphicOptDlg(
 		This brings up the Graphic Options dialog for Detail-Callout Marker and Detail Callout objects.
 	'''
 	pass
-	return ( BOOLEAN       , # Whether the user clicked on the OK button.
-	         Marker        , 
-	         ShoulderLength, 
-	         TagPosIndex   , 
-	         LeaderType    , 
-	         LeaderThick    )
-
-
-def DialogEvent(
-		):
-	'''
-		Python: item = vs.DialogEvent()
-		VectorScript: PROCEDURE DialogEvent(VAR item:INTEGER);
-		
-		Category: Dialogs - Classic
-		Monitors user activity within a dialog; when an item is selected, the numeric identifier of the item is returned.
-	'''
-	pass
-	return ( item )
+	return ( False   , # Whether the user clicked on the OK button.
+	         'string', 
+	         0.0     , 
+	         0       , 
+	         0       , 
+	         0        )
 
 
 def DidCancel():
@@ -5686,20 +5600,6 @@ def DisplayContextualHelp(
 		
 		Category: Utility
 		Using the identifier string for a GUI element given by the Contextual Help Manager displays the associated contextual help. This could be a WebWorks webpage, a Internet webpage or even a local file.
-	'''
-	pass
-	return 'BOOLEAN' # 
-
-
-def DisplayContexualHelp(
-		helpIdentifier  # STRING -  
-		):
-	'''
-		Python: BOOLEAN = vs.DisplayContexualHelp(helpIdentifier)
-		VectorScript: FUNCTION DisplayContexualHelp(helpIdentifier:STRING) : BOOLEAN;
-		
-		Category: Utility
-		Displays the help associated with the given contextual help identifier.
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -5913,28 +5813,6 @@ def DoubLines(
 	pass
 
 
-def DrawDialog():
-	'''
-		Python: vs.DrawDialog()
-		VectorScript: PROCEDURE DrawDialog;
-		
-		Category: Dialogs - Classic
-		Redraws the frontmost custom dialog.
-	'''
-	pass
-
-
-def DrawInteractiveFrame():
-	'''
-		Python: vs.DrawInteractiveFrame()
-		VectorScript: PROCEDURE DrawInteractiveFrame;
-		
-		Category: View / Zoom
-		This function will submit a frame for interactive rendering in openGL.  It should be called between BeginInteractiveFrames and EndInteractiveFrames
-	'''
-	pass
-
-
 def DrawNurbsObject(
 		h  # HANDLE -  
 		):
@@ -5984,9 +5862,9 @@ def DS_GetFillStyle(
 		Returns document shadow fill style, fill name or color index.
 	'''
 	pass
-	return ( shadowFillStyle, 
-	         shadowFillName , 
-	         solidColorRef   )
+	return ( 0       , 
+	         'string', 
+	         0        )
 
 
 def DS_GetOffset():
@@ -6117,8 +5995,8 @@ def DTM6_GetZatXY(
 		Get the elevation at specified x,y on the specified DTM. Returns false if the DTM doesnt exist or the point is outside the DTM. TINType - 0:Existing; 1:Proposed; 2:Current
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         outZ    )
+	return ( False  , # 
+	         0.0     )
 
 
 def DTM6_IsDTM6Object(
@@ -6262,8 +6140,8 @@ def EditCriteriaWithUI(
 		Edit a criteria string with Edit Criteria Dialog.
 	'''
 	pass
-	return ( INTEGER , # The funtion returns the following values:[[BR]]0 - failed. The input criteria is incorrect.[[BR]]1 - The edit was OK[[BR]]2 - The edit was Cancel[[BR]]
-	         criteria )
+	return ( 0       , # The funtion returns the following values:[[BR]]0 - failed. The input criteria is incorrect.[[BR]]1 - The edit was OK[[BR]]2 - The edit was Cancel[[BR]]
+	         'string' )
 
 
 def EditGeorefWithUI(
@@ -6304,7 +6182,7 @@ def EditOpenGLPrefs(
 		Allows the user to edit OpenGL renderer preferences and stores them in the current drawing.
 	'''
 	pass
-	return ( updateRendering )
+	return ( False )
 
 
 def EditProperties(
@@ -6330,7 +6208,7 @@ def EditRenderWorksPrefs(
 		Allows the user to edit RenderWorks renderer preferences and stores them in the current drawing.
 	'''
 	pass
-	return ( updateRendering )
+	return ( False )
 
 
 def EditShaderRecord(
@@ -6404,11 +6282,11 @@ def EllipseEllipseIntersect(
 		Calculates the intersections between the two specified ellipses.
 	'''
 	pass
-	return ( INTEGER, # Returns the number of valid intersection points.  If the return value is n, the first n points are valid.  For example, if the return value is 1, the int1 parameter contains a valid point of intersection, and int2, int3, and int4 are invalid.  If the return value is 3, int1, int2, and int3 contain valid points, and int4 is invalid.
-	         int1   , 
-	         int2   , 
-	         int3   , 
-	         int4    )
+	return ( 0      , # Returns the number of valid intersection points.  If the return value is n, the first n points are valid.  For example, if the return value is 1, the int1 parameter contains a valid point of intersection, and int2, int3, and int4 are invalid.  If the return value is 3, int1, int2, and int3 contain valid points, and int4 is invalid.
+	         0,0    , 
+	         0,0    , 
+	         0,0    , 
+	         0,0     )
 
 
 def EnableDrawingWorksheetPalette(
@@ -6684,17 +6562,6 @@ def EndContext(
 	pass
 
 
-def EndDialog():
-	'''
-		Python: vs.EndDialog()
-		VectorScript: PROCEDURE EndDialog;
-		
-		Category: Dialogs - Classic
-		Terminates the dialog definition process.
-	'''
-	pass
-
-
 def EndFolder():
 	'''
 		Python: vs.EndFolder()
@@ -6713,17 +6580,6 @@ def EndGroup():
 		
 		Category: Objects - Groups
 		Procedure EndGroup completes the creation of a new group object in a Vectorworks document. The new group object is then generated in the document.
-	'''
-	pass
-
-
-def EndInteractiveFrames():
-	'''
-		Python: vs.EndInteractiveFrames()
-		VectorScript: PROCEDURE EndInteractiveFrames;
-		
-		Category: View / Zoom
-		Turns off interactive rendering in openGL.  Should be called after BeginInteractiveFrames
 	'''
 	pass
 
@@ -7044,9 +6900,9 @@ def EvaluateNurbsSurfacePointAndNormal(
 		Determines the point and normal on the NURBS surface at the given u/v value.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         point  , 
-	         normal  )
+	return ( False  , # 
+	         0,0,0  , 
+	         0,0,0   )
 
 
 def Exp(
@@ -7117,6 +6973,21 @@ def ExportIGES(
 	'''
 	pass
 	return 'BOOLEAN' # Return TRUE if succeeded.
+
+
+def ExportImageFile(
+		hHmage  , # HANDLE             - The handle of the image object to be exported.
+		filePath  # DYNARRAY[] of CHAR - Full path to the output image file.           
+		):
+	'''
+		Python: BOOLEAN = vs.ExportImageFile(hHmage, filePath)
+		VectorScript: FUNCTION ExportImageFile(hHmage:HANDLE; filePath:DYNARRAY of CHAR) : BOOLEAN;
+		
+		Category: Utility
+		Export the specified Image object in Vectorworks as an image file.
+	'''
+	pass
+	return 'BOOLEAN' # 
 
 
 def ExportPDFPages(
@@ -7221,9 +7092,9 @@ def FFillBack(
 		Procedure FFillBack returns the current fill background color. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def FFillColorByClass():
@@ -7248,9 +7119,9 @@ def FFillFore(
 		Procedure FFillFore returns the current fill foreground color. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def FFillPat():
@@ -7370,9 +7241,9 @@ def FindAttribute(
 		Finds the specified attribute by name.
 	'''
 	pass
-	return ( INTEGER       , # 
-	         foundPath     , 
-	         attributeValue )
+	return ( 0       , # 
+	         'string', 
+	         'string' )
 
 
 def FindElement(
@@ -7388,8 +7259,8 @@ def FindElement(
 		Finds the specified element by name.
 	'''
 	pass
-	return ( INTEGER  , # 
-	         foundPath )
+	return ( 0       , # 
+	         'string' )
 
 
 def FindFileInPluginFolder(
@@ -7403,8 +7274,8 @@ def FindFileInPluginFolder(
 		Searches for filename in all plug-in folders.  Returns TRUE if the file is found, FALSE otherwise.  If found, the result is returned in the path parameter.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         path    )
+	return ( False   , # 
+	         'string' )
 
 
 def FindLBColumnDataItem(
@@ -7421,8 +7292,8 @@ def FindLBColumnDataItem(
 		Finds the column data item with the specified text.
 	'''
 	pass
-	return ( BOOLEAN            , # 
-	         columnDataItemIndex )
+	return ( False  , # 
+	         0       )
 
 
 def FindLBColumnItem(
@@ -7439,8 +7310,8 @@ def FindLBColumnItem(
 		Finds the column item with the specified text.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         itemIndex )
+	return ( False  , # 
+	         0       )
 
 
 def FindObjAtPt_Create(
@@ -7659,9 +7530,9 @@ def FMarker(
 		Procedure FMarker returns the active marker style parameters.
 	'''
 	pass
-	return ( style, 
-	         size , 
-	         ang   )
+	return ( 0  , 
+	         0.0, 
+	         0   )
 
 
 def FMarkerByClass():
@@ -7784,13 +7655,13 @@ def FormatTextDialog(
 		Displays the text formatting dialog and returns the selected text formatting options.
 	'''
 	pass
-	return ( fontName  , 
-	         style     , 
-	         size      , 
-	         spacing   , 
-	         leading   , 
-	         hAlignment, 
-	         vAlignment )
+	return ( 'string', 
+	         0       , 
+	         0.0     , 
+	         0       , 
+	         0.0     , 
+	         0       , 
+	         0        )
 
 
 def Forward():
@@ -7826,9 +7697,9 @@ def FPenBack(
 		Procedure FPenBack returns the current pen background color. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def FPenColorByClass():
@@ -7853,9 +7724,9 @@ def FPenFore(
 		Procedure FPenFore returns the current pen foreground color of the document. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def FPenPat():
@@ -7944,8 +7815,8 @@ def GeogCoordToVW(
 		Get point in Vectorworks coordinates.
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         outCoord )
+	return ( False  , # 
+	         0,0     )
 
 
 def Get2DPt(
@@ -7960,7 +7831,7 @@ def Get2DPt(
 		Returns the location of the specified vertex of a referenced object.
 	'''
 	pass
-	return ( loc )
+	return ( 0,0 )
 
 
 def Get3DCntr(
@@ -7974,8 +7845,8 @@ def Get3DCntr(
 		Procedure Get3DCntr returns the three-dimensional center point of the referenced 3D object.
 	'''
 	pass
-	return ( p     , 
-	         zValue )
+	return ( 0,0, 
+	         0.0 )
 
 
 def Get3DInfo(
@@ -7989,9 +7860,9 @@ def Get3DInfo(
 		Procedure Get3DInfo returns the height, width and depth values of the referenced 3D object.
 	'''
 	pass
-	return ( height, 
-	         width , 
-	         depth  )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def Get3DOrientation(
@@ -8006,11 +7877,11 @@ def Get3DOrientation(
 		If the object is mirrored, a reflection across the X-Y plane must be applied before rotating by the angles above in order to reproduce the object's orientation.
 	'''
 	pass
-	return ( BOOLEAN     , # [[name]] returns TRUE if a valid 3D object was passed to the procedure.
-	         xRot        , 
-	         yRot        , 
-	         zRot        , 
-	         isMirroredXY )
+	return ( False  , # [[name]] returns TRUE if a valid 3D object was passed to the procedure.
+	         0.0    , 
+	         0.0    , 
+	         0.0    , 
+	         False   )
 
 
 def GetActiveEditItem(
@@ -8093,8 +7964,8 @@ def GetArc(
 		Procedure GetArc returns the start and sweep angle of the referenced arc or round wall.
 	'''
 	pass
-	return ( startAngleR, 
-	         arcAngleR   )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetArrayDimensions(
@@ -8108,10 +7979,10 @@ def GetArrayDimensions(
 		Returns the dimensions of the specified array.
 	'''
 	pass
-	return ( rowStart   , 
-	         rowEnd     , 
-	         columnStart, 
-	         columnEnd   )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetAttributeValue(
@@ -8127,8 +7998,8 @@ def GetAttributeValue(
 		Gets a value of an attribute.
 	'''
 	pass
-	return ( INTEGER, # 
-	         value   )
+	return ( 0       , # 
+	         'string' )
 
 
 def GetBatAttributes(
@@ -8143,13 +8014,13 @@ def GetBatAttributes(
 		Procedure GetBatAttributes returns the attributes of a bat dormer in the referenced roof.
 	'''
 	pass
-	return ( useHeight   , 
-	         heightDepth , 
-	         bottomWidth , 
-	         topWidth    , 
-	         baseHeight  , 
-	         controlPoint, 
-	         topSlope     )
+	return ( False, 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0   )
 
 
 def GetBBox(
@@ -8163,8 +8034,8 @@ def GetBBox(
 		Procedure GetBBox returns the bounding box coordinates of the projection of the referenced object on the screen plane.
 	'''
 	pass
-	return ( p1, 
-	         p2 )
+	return ( 0,0, 
+	         0,0 )
 
 
 def GetBeamAngle(
@@ -8178,7 +8049,7 @@ def GetBeamAngle(
 		Procedure GetBeamAngle returns the spread angle of the referenced spot light.
 	'''
 	pass
-	return ( beamAngleR )
+	return ( 0.0 )
 
 
 def GetBinaryConstraint(
@@ -8215,7 +8086,7 @@ def GetBooleanItem(
 		Determines if a radio or checkbox button is selected or not.
 	'''
 	pass
-	return ( outState )
+	return ( False )
 
 
 def GetCAlign(
@@ -8258,8 +8129,8 @@ def GetCDATA(
 		Gets CDATA section.
 	'''
 	pass
-	return ( INTEGER  , # 
-	         returnVal )
+	return ( 0       , # 
+	         'string' )
 
 
 def GetCellNum(
@@ -8306,7 +8177,7 @@ def GetChoiceCount(
 		Gets the number of items in the component that contains the choices.
 	'''
 	pass
-	return ( outCount )
+	return ( 0 )
 
 
 def GetChoiceIndex(
@@ -8322,22 +8193,7 @@ def GetChoiceIndex(
 		Finds the index of the given string in a layout manager list box or pull down menu. The index is zero based and is set to -1 if the item is not found.
 	'''
 	pass
-	return ( itemIndex )
-
-
-def GetChoiceStr(
-		item       , # INTEGER - Item ID of dialog control.                            
-		whichChoice  # INTEGER - Position of choice item in list (in a range of 0 - n).
-		):
-	'''
-		Python: s = vs.GetChoiceStr(item, whichChoice)
-		VectorScript: PROCEDURE GetChoiceStr(item:INTEGER; whichChoice:INTEGER; VAR s:STRING);
-		
-		Category: Dialogs - Handler
-		GetChoiceStr returns the string associated with a particular choice item value.
-	'''
-	pass
-	return ( s )
+	return ( 0 )
 
 
 def GetChoiceStringFromStoryBoundData(
@@ -8353,7 +8209,7 @@ def GetChoiceStringFromStoryBoundData(
 		Gets the story bound choice string from story bound data.
 	'''
 	pass
-	return ( choiceString )
+	return ( 'string' )
 
 
 def GetChoiceText(
@@ -8369,7 +8225,7 @@ def GetChoiceText(
 		Using the index, gets the text of the menu item of the given component.
 	'''
 	pass
-	return ( itemText )
+	return ( 'string' )
 
 
 def GetClass(
@@ -8397,9 +8253,9 @@ def GetClassArrow(
 		Procedure GetClassArrow returns the arrow style parameters for the indicated class.
 	'''
 	pass
-	return ( style, 
-	         size , 
-	         angle )
+	return ( 0  , 
+	         0.0, 
+	         0   )
 
 
 def GetClassBeginningMarker(
@@ -8413,13 +8269,13 @@ def GetClassBeginningMarker(
 		Gets all properties for the named class' beginning marker. Return TRUE if operation was successful.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         style         , 
-	         angle         , 
-	         size          , 
-	         width         , 
-	         thicknessBasis, 
-	         thickness      )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0.0    , 
+	         0.0    , 
+	         0      , 
+	         0.0     )
 
 
 def GetClassEndMarker(
@@ -8433,13 +8289,13 @@ def GetClassEndMarker(
 		Gets all properties for the named class's end marker. Return TRUE if operation was successful.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         style         , 
-	         angle         , 
-	         size          , 
-	         width         , 
-	         thicknessBasis, 
-	         thickness      )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0.0    , 
+	         0.0    , 
+	         0      , 
+	         0.0     )
 
 
 def GetClassOptions():
@@ -8465,9 +8321,9 @@ def GetClFillBack(
 		Returns the fill background color setting of the specified class. The color is returned as the three RGB components of the color. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetClFillFore(
@@ -8481,9 +8337,9 @@ def GetClFillFore(
 		Returns the fill foreground color setting of the specified class. The color is returned as the RGB components of the color. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetClFPat(
@@ -8572,9 +8428,9 @@ def GetClosestPt(
 		GetClosestPt supports only 2D objects.
 	'''
 	pass
-	return ( obj         , 
-	         index       , 
-	         containedObj )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetClosestSide(
@@ -8590,8 +8446,8 @@ def GetClosestSide(
 		GetClosestSide supports only 2D objects.  If the object is unsupported, -1 will be returned as the index values.
 	'''
 	pass
-	return ( index1, 
-	         index2 )
+	return ( 0, 
+	         0 )
 
 
 def GetClPenBack(
@@ -8605,9 +8461,9 @@ def GetClPenBack(
 		Returns the pen background color setting of the specified class. The color is returned as the three RGB components of the color. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetClPenFore(
@@ -8621,9 +8477,23 @@ def GetClPenFore(
 		Returns the pen foreground color setting of the specified class. The color is returned as the three RGB components of the color. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
+
+
+def GetClTextStyleRef(
+		clasName   # STRING - Name of class
+		):
+	'''
+		Python: LONGINT = vs.GetClTextStyleRef(className)
+		VectorScript: FUNCTION GetClTextStyleRef(className:STRING) : LONGINT;
+		
+		Category: Classes
+		Function GetClTextStyleRef gets the text style of the specified class.  The integer style is the internal index of the text style.
+	'''
+	pass
+	return 'LONGINT' # 
 
 
 def GetClTextureC(
@@ -8724,6 +8594,20 @@ def GetClUseGraphic(
 	return 'BOOLEAN' # True indicates that this class is set to use its graphic attributes when objects are created in this class. False indicates that the objects created in this class will get default attributes from the default global attribute settings.
 
 
+def GetClUseTextStyle(
+		clasName   # STRING - Name of class
+		):
+	'''
+		Python: BOOLEAN = vs.GetClUseTextStyle(className)
+		VectorScript: FUNCTION GetClUseTextStyle(className:STRING) : BOOLEAN;
+		
+		Category: Classes
+		Function GetClUseTextStyle returns whether the text style of the specified class is used at object creation.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def GetClUseTexture(
 		clasName   # STRING - Class name.
 		):
@@ -8750,8 +8634,8 @@ def GetClVectorFill(
 		The function return value will be TRUE if the class uses a hatch pattern, and will be FALSE if the class does not use a hatch pattern.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         hatchName )
+	return ( False   , # 
+	         'string' )
 
 
 def GetColorButton(
@@ -8766,9 +8650,9 @@ def GetColorButton(
 		Gets the color of a modern dialog color button.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetColorChoice(
@@ -8783,7 +8667,7 @@ def GetColorChoice(
 		Get current choice for color popup dialog control.
 	'''
 	pass
-	return ( colorIndex )
+	return ( 0 )
 
 
 def GetColorName(
@@ -8800,6 +8684,22 @@ def GetColorName(
 	return 'STRING' # The name of the color specified by the index.
 
 
+def GetCompBotIsRelStory(
+		object        , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                
+		):
+	'''
+		Python: (BOOLEAN, bottomIsRelativeToStory) = vs.GetCompBotIsRelStory(object, componentIndex)
+		VectorScript: FUNCTION GetCompBotIsRelStory(object:HANDLE; componentIndex:INTEGER; VAR bottomIsRelativeToStory:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets whether or not the component bottom is relative to a story.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
 def GetComponentAutoBoundEdgeOffset(
 		object        , # HANDLE  - The object. Can be a  slab, Slab Style, or the Slab Preferences.
 		componentIndex  # INTEGER - The index of the component.                                     
@@ -8812,8 +8712,8 @@ def GetComponentAutoBoundEdgeOffset(
 		Gets the auto-bound edge offset of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN            , # 
-	         autoBoundEdgeOffset )
+	return ( False  , # 
+	         0       )
 
 
 def GetComponentClass(
@@ -8828,8 +8728,8 @@ def GetComponentClass(
 		Gets the class of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         componentClass )
+	return ( False  , # 
+	         0       )
 
 
 def GetComponentFill(
@@ -8844,8 +8744,8 @@ def GetComponentFill(
 		Gets the fill of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         fill    )
+	return ( False  , # 
+	         0       )
 
 
 def GetComponentFillColors(
@@ -8860,9 +8760,9 @@ def GetComponentFillColors(
 		Gets the fore and back fill colors of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         fillForeColor, 
-	         fillBackColor )
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def GetComponentFollowBottomWallPeaks(
@@ -8877,8 +8777,8 @@ def GetComponentFollowBottomWallPeaks(
 		Gets the follow bottom wall peaks flag of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN              , # 
-	         followBottomWallPeaks )
+	return ( False  , # 
+	         False   )
 
 
 def GetComponentFollowTopWallPeaks(
@@ -8893,8 +8793,8 @@ def GetComponentFollowTopWallPeaks(
 		Gets the follow top wall peaks flag of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN           , # 
-	         followTopWallPeaks )
+	return ( False  , # 
+	         False   )
 
 
 def GetComponentManualEdgeOffset(
@@ -8909,8 +8809,8 @@ def GetComponentManualEdgeOffset(
 		Gets the manual edge offset of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN         , # 
-	         manualEdgeOffset )
+	return ( False  , # 
+	         0.0     )
 
 
 def GetComponentName(
@@ -8970,11 +8870,11 @@ def GetComponentPenColors(
 		Gets the colors of the pens of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN          , # 
-	         leftPenForeColor , 
-	         leftPenBackColor , 
-	         rightPenForeColor, 
-	         rightPenBackColor )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetComponentPenStyles(
@@ -8989,9 +8889,9 @@ def GetComponentPenStyles(
 		Gets the left and right side pen styles of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         leftPenStyle , 
-	         rightPenStyle )
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def GetComponentPenWeights(
@@ -9006,9 +8906,9 @@ def GetComponentPenWeights(
 		Gets the pen weights of the left and right sides of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         leftPenWeight , 
-	         rightPenWeight )
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def GetComponentRect(
@@ -9023,11 +8923,25 @@ def GetComponentRect(
 		Retrieves the bounding rect coordinates of the specified Layout Manager component.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         nLeft  , 
-	         nTop   , 
-	         nRight , 
-	         nBottom )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0      , 
+	         0       )
+
+
+def GetComponents(
+		object  # HANDLE - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
+		):
+	'''
+		Python: HANDLE = vs.GetComponents(object)
+		VectorScript: FUNCTION GetComponents(object:HANDLE) : HANDLE;
+		
+		Category: Objects - Architectural
+		Gets the components of the object.
+	'''
+	pass
+	return 'HANDLE' # 
 
 
 def GetComponentTexture(
@@ -9042,8 +8956,8 @@ def GetComponentTexture(
 		Gets the texture of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         texture )
+	return ( False  , # 
+	         0       )
 
 
 def GetComponentTextWidth(
@@ -9058,8 +8972,8 @@ def GetComponentTextWidth(
 		Retrieves the static text's width in Layout Manager Units.
 	'''
 	pass
-	return ( BOOLEAN        , # 
-	         nWidthInLMUnits )
+	return ( False  , # 
+	         0       )
 
 
 def GetComponentUseFillClassAttr(
@@ -9074,8 +8988,8 @@ def GetComponentUseFillClassAttr(
 		Gets the use fill class attributes flag of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN               , # 
-	         useFillClassAttributes )
+	return ( False  , # 
+	         False   )
 
 
 def GetComponentUsePenClassAttr(
@@ -9090,9 +9004,9 @@ def GetComponentUsePenClassAttr(
 		Gets the use class attributes flags of the pens of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN                   , # 
-	         useLeftPenClassAttributes , 
-	         useRightPenClassAttributes )
+	return ( False  , # 
+	         False  , 
+	         False   )
 
 
 def GetComponentWallBottomOffset(
@@ -9107,8 +9021,8 @@ def GetComponentWallBottomOffset(
 		Gets the offset from wall bottom of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN             , # 
-	         offsetFromWallBottom )
+	return ( False  , # 
+	         0.0     )
 
 
 def GetComponentWallTopOffset(
@@ -9123,8 +9037,8 @@ def GetComponentWallTopOffset(
 		Gets the offset from wall top of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN          , # 
-	         offsetFromWallTop )
+	return ( False  , # 
+	         0.0     )
 
 
 def GetComponentWidth(
@@ -9139,8 +9053,24 @@ def GetComponentWidth(
 		Gets the width of a component in an object.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         width   )
+	return ( False  , # 
+	         0.0     )
+
+
+def GetCompTopIsRelStory(
+		object        , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                
+		):
+	'''
+		Python: (BOOLEAN, topIsRelativeToStory) = vs.GetCompTopIsRelStory(object, componentIndex)
+		VectorScript: FUNCTION GetCompTopIsRelStory(object:HANDLE; componentIndex:INTEGER; VAR topIsRelativeToStory:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets whether or not the component top is relative to a story.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
 
 
 def GetControlData(
@@ -9155,7 +9085,7 @@ def GetControlData(
 		Returns information about the specified extended control item.
 	'''
 	pass
-	return ( data )
+	return ( 0 )
 
 
 def GetCoreWallComponent(
@@ -9183,8 +9113,8 @@ def GetCurrentLocalization(
 		Currently this will always return the same language for a given installation of Vectorworks.
 	'''
 	pass
-	return ( language   , 
-	         subLanguage )
+	return ( 'string', 
+	         'string' )
 
 
 def GetCurrentMode():
@@ -9255,8 +9185,8 @@ def GetCustomObjectColor(
 		Get an auxilary color index stored in'objectHand' previously  with SetCustomObjectColor .  Aplication will preserve the color mapped to inTagID.
 	'''
 	pass
-	return ( BOOLEAN      , # Returns TRUE if the operation was successful.
-	         outColorIndex )
+	return ( False  , # Returns TRUE if the operation was successful.
+	         0       )
 
 
 def GetCustomObjectInfo(
@@ -9269,11 +9199,11 @@ def GetCustomObjectInfo(
 		Function GetCustomObjectInfo is used within plug-in object scripts to determine information about the object. Only returns false if the object is corrupt.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         objectName, 
-	         objectHand, 
-	         recordHand, 
-	         wallHand   )
+	return ( False   , # 
+	         'string', 
+	         0       , 
+	         0       , 
+	         0        )
 
 
 def GetCustomObjectPath(
@@ -9347,6 +9277,29 @@ def GetCVis(
 	return 'INTEGER' # [[note:ClassVisResultTable]][[BR]]
 
 
+def GetCWFramesFromPt(
+		hWall             , # HANDLE  - Handle to the curtain wall                                                                                         
+		testPt            , # POINT   - Point to test on the curtian wall. Typically the center point of the object to be placed in the curtian wall panel.
+		includeBottomFrame  # BOOLEAN - Include the bottom frame.                                                                                          
+		):
+	'''
+		Python: (BOOLEAN, panelThickness, panelOffset, frameInsetTop, frameInsetBottom, frameInsetRight, frameInsetLeft) = vs.GetCWFramesFromPt(hWall, testPt, includeBottomFrame)
+		VectorScript: FUNCTION GetCWFramesFromPt(hWall:HANDLE; testPt:REAL; includeBottomFrame:BOOLEAN; VAR panelThickness:REAL; VAR panelOffset:REAL; VAR frameInsetTop:REAL; VAR frameInsetBottom:REAL; VAR frameInsetRight:REAL; VAR frameInsetLeft:REAL) : BOOLEAN;
+		
+		Category: Objects - Walls
+		Returns information about the frames  in a crutain wall from a given point.
+		Used for placing objects inside a panel in a curtain wall. When passing the center point of the object in the wall, it will find the panel in the curtain wall and return information about the surrouding frames.
+	'''
+	pass
+	return ( False  , # Returns TRUE if hWall is a crutain wall and frames are found.[[BR]]Returns FALSE is hWall is not a curtiain wall or the test point is not found on the wall.
+	         0.0    , 
+	         0.0    , 
+	         0.0    , 
+	         0.0    , 
+	         0.0    , 
+	         0.0     )
+
+
 def GetCWidth(
 		h  , # HANDLE  - Handle to worksheet.   
 		row, # INTEGER - Worksheet row index.   
@@ -9361,6 +9314,43 @@ def GetCWidth(
 	'''
 	pass
 	return 'INTEGER' # 
+
+
+def GetCWPanelFromPt(
+		hWall             , # HANDLE  - Handle to the curtain wall                                                                                         
+		testPt            , # POINT   - Point to test on the curtian wall. Typically the center point of the object to be placed in the curtian wall panel.
+		includeBottomFrame  # BOOLEAN - Include the bottom frame in the return height.                                                                     
+		):
+	'''
+		Python: (BOOLEAN, centerPt, width, height) = vs.GetCWPanelFromPt(hWall, testPt, includeBottomFrame)
+		VectorScript: FUNCTION GetCWPanelFromPt(hWall:HANDLE; testPt:REAL; includeBottomFrame:BOOLEAN; VAR centerPt:REAL; VAR width:REAL; VAR height:REAL) : BOOLEAN;
+		
+		Category: Objects - Walls
+		Returns information about a panel in a crutain wall from a given point.
+		Used for placing objects inside a panel in a curtain wall. When passing the center point of the object in the wall, it will find the panel in the curtain wall and return a new center point and the height and width of the panel.
+	'''
+	pass
+	return ( False  , # Returns TRUE if hWall is a crutain wall and a panel is found.[[BR]]Returns FALSE is hWall is not a curtiain wall or the test point is not found on the wall.
+	         0,0    , 
+	         0.0    , 
+	         0.0     )
+
+
+def GetDashDataValPairAt(
+		dashStyleIndex, # INTEGER - The dash style index.        
+		dataIndex       # INTEGER - Index fo the data value pair.
+		):
+	'''
+		Python: (BOOLEAN, dash, gap) = vs.GetDashDataValPairAt(dashStyleIndex, dataIndex)
+		VectorScript: FUNCTION GetDashDataValPairAt(dashStyleIndex:INTEGER; dataIndex:INTEGER; VAR dash:REAL; VAR gap:REAL) : BOOLEAN;
+		
+		Category: Document Attributes
+		Function GetDashDataValPairAt gets the dash data for the specified dash style. The dash data is a dash/gap value pair. GetDashDataValPairAt returns false if the dash style or dash data doesn't exist. Dash styles support up to 5 dash/gap value pairs.
+	'''
+	pass
+	return ( False  , # 
+	         0.0    , 
+	         0.0     )
 
 
 def GetDashStyle(
@@ -9441,14 +9431,14 @@ def GetDefaultBeginningMarker(
 		Gets all properties for the document default beginning marker. Return TRUE if operation was successful.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         style         , 
-	         angle         , 
-	         size          , 
-	         width         , 
-	         thicknessBasis, 
-	         thickness     , 
-	         visibility     )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0.0    , 
+	         0.0    , 
+	         0      , 
+	         0.0    , 
+	         False   )
 
 
 def GetDefaultEndMarker(
@@ -9461,14 +9451,14 @@ def GetDefaultEndMarker(
 		Gets all properties for the document default end marker. Return TRUE if operation was successful.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         style         , 
-	         angle         , 
-	         size          , 
-	         width         , 
-	         thicknessBasis, 
-	         thickness     , 
-	         visibility     )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0.0    , 
+	         0.0    , 
+	         0      , 
+	         0.0    , 
+	         False   )
 
 
 def GetDefaultOpacity(
@@ -9481,7 +9471,7 @@ def GetDefaultOpacity(
 		Returns the default opacity.
 	'''
 	pass
-	return ( opacity )
+	return ( 0 )
 
 
 def GetDefaultTextSize():
@@ -9496,18 +9486,18 @@ def GetDefaultTextSize():
 	return 'REAL' # 
 
 
-def GetDialog(
-		dialogID  # INTEGER - ID number of dialog to be displayed.
+def GetDescriptionText(
+		hObject  # HANDLE - Handle of object for which to retrieve the text.
 		):
 	'''
-		Python: vs.GetDialog(dialogID)
-		VectorScript: PROCEDURE GetDialog(dialogID:INTEGER);
+		Python: descriptionText = vs.GetDescriptionText(hObject)
+		VectorScript: PROCEDURE GetDescriptionText(hObject:HANDLE; VAR descriptionText:DYNARRAY of CHAR);
 		
-		Category: Dialogs - Classic
-		Displays the specified custom dialog and brings it to the front of the dialog order.
-		Note: This procedure should NOT be a part of the dialog definition.
+		Category: Object Attributes
+		Retrieves any description text that exists for a specified object and passes it back in the descriptionText argument. The descriptionText argument will be empty if the object has no description text.
 	'''
 	pass
+	return ( 'string' )
 
 
 def GetDimText(
@@ -9535,8 +9525,8 @@ def GetDLComponentClass(
 		Gets the class of the component at index in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         componentClass )
+	return ( False  , # 
+	         0       )
 
 
 def GetDLComponentFill(
@@ -9550,8 +9540,8 @@ def GetDLComponentFill(
 		Gets the fill of the component at index in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         fill    )
+	return ( False  , # 
+	         0       )
 
 
 def GetDLComponentFillColors(
@@ -9565,9 +9555,9 @@ def GetDLComponentFillColors(
 		Gets the fore and back fill colors of the component at index in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         fillForeColor, 
-	         fillBackColor )
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def GetDLComponentName(
@@ -9595,11 +9585,11 @@ def GetDLComponentPenColors(
 		Gets the fore and back colors of the left and right side pens of the component at index in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN          , # 
-	         leftPenForeColor , 
-	         leftPenBackColor , 
-	         rightPenForeColor, 
-	         rightPenBackColor )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetDLComponentPenStyles(
@@ -9613,9 +9603,9 @@ def GetDLComponentPenStyles(
 		Gets the left and right side pen styles of the component at index in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         penStyleLeft , 
-	         penStyleRight )
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def GetDLComponentPenWeights(
@@ -9629,9 +9619,9 @@ def GetDLComponentPenWeights(
 		Gets the pen weights of the left and right sides of the component at index in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         penWeightLeft , 
-	         penWeightRight )
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def GetDLComponentUseFillClassAttr(
@@ -9645,8 +9635,8 @@ def GetDLComponentUseFillClassAttr(
 		Gets the use fill class attributes flag of the component at index in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN     , # 
-	         useClassAttr )
+	return ( False  , # 
+	         False   )
 
 
 def GetDLComponentUsePenClassAttr(
@@ -9660,9 +9650,9 @@ def GetDLComponentUsePenClassAttr(
 		Gets the useclass attributes flags of the left and right side pens of the component at index in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN             , # 
-	         leftPenUseClassAttr , 
-	         rightPenUseClassAttr )
+	return ( False  , # 
+	         False  , 
+	         False   )
 
 
 def GetDLComponentWidth(
@@ -9676,8 +9666,8 @@ def GetDLComponentWidth(
 		Gets the width of the component at index in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         width   )
+	return ( False  , # 
+	         0.0     )
 
 
 def GetDLControlOffset():
@@ -9740,13 +9730,13 @@ def GetDormerAttributes(
 		Procedure GetDormerAttributes returns the attributes of a roof element in the referenced roof.
 	'''
 	pass
-	return ( edgeIndex         , 
-	         cornerOffset      , 
-	         isPerpOffset      , 
-	         perpOrHeightOffset, 
-	         symName           , 
-	         centerSymbol      , 
-	         symOffset          )
+	return ( 0    , 
+	         0.0  , 
+	         False, 
+	         0.0  , 
+	         0    , 
+	         False, 
+	         0.0   )
 
 
 def GetDormerThick(
@@ -9760,8 +9750,8 @@ def GetDormerThick(
 		Procedure GetDormerThick returns dormer roof and wall thicknesses for the referenced roof.
 	'''
 	pass
-	return ( wallThick, 
-	         roofThick )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetDrawingSizeRect(
@@ -9774,8 +9764,8 @@ def GetDrawingSizeRect(
 		Returns  the top left and bottom right coordinates of a rectangle surrounding the entire area of the document containing objects.
 	'''
 	pass
-	return ( p1, 
-	         p2 )
+	return ( 0,0, 
+	         0,0 )
 
 
 def GetDrawingSizeRectN(
@@ -9790,8 +9780,8 @@ def GetDrawingSizeRectN(
 		Similar to GetDrawingSizeRect but can work on specified layer.
 	'''
 	pass
-	return ( p1, 
-	         p2 )
+	return ( 0,0, 
+	         0,0 )
 
 
 def GetDXFColorToLW(
@@ -9820,8 +9810,8 @@ def GetEditInteger(
 		Returns the numeric value from the specified INTEGER numeric edit field control.
 	'''
 	pass
-	return ( BOOLEAN, # A BOOLEAN value indicating the success of the operation.
-	         value   )
+	return ( False  , # A BOOLEAN value indicating the success of the operation.
+	         0       )
 
 
 def GetEditReal(
@@ -9837,8 +9827,8 @@ def GetEditReal(
 		Returns the numeric value from the specified REAL numeric edit field control.
 	'''
 	pass
-	return ( BOOLEAN, # A BOOLEAN value indicating the success of the operation.
-	         value   )
+	return ( False  , # A BOOLEAN value indicating the success of the operation.
+	         0.0     )
 
 
 def GetElementValue(
@@ -9853,8 +9843,8 @@ def GetElementValue(
 		Gets a value of an element, given a path.
 	'''
 	pass
-	return ( INTEGER, # 
-	         value   )
+	return ( 0       , # 
+	         'string' )
 
 
 def GetEnabledModules():
@@ -9881,11 +9871,11 @@ def GetEntityMatrix(
 		Gets the matrix of the plane for a planar object.
 	'''
 	pass
-	return ( BOOLEAN       , # Returns true if the object passed is a planar object.
-	         offset        , 
-	         rotationXAngle, 
-	         rotationYAngle, 
-	         rotationZAngle )
+	return ( False  , # Returns true if the object passed is a planar object.
+	         0,0,0  , 
+	         0.0    , 
+	         0.0    , 
+	         0.0     )
 
 
 def GetEvent():
@@ -9899,20 +9889,6 @@ def GetEvent():
 	return 'LONGINT' # 
 
 
-def GetField(
-		fieldID  # INTEGER - Item ID of field from which to retrieve data.
-		):
-	'''
-		Python: DYNARRAY of CHAR = vs.GetField(fieldID)
-		VectorScript: FUNCTION GetField(fieldID:INTEGER) : DYNARRAY of CHAR;
-		
-		Category: Dialogs - Handler
-		Function GetField retrieves the text from a text field. This procedure is called when exiting a custom dialog to retrieve user data.
-	'''
-	pass
-	return 'DYNARRAY[] of CHAR' # 
-
-
 def GetFile(
 		):
 	'''
@@ -9924,7 +9900,7 @@ def GetFile(
 		It is advisable to call DidCancel after using this procedure and check that the user did not cancel the file selection process.
 	'''
 	pass
-	return ( fileName )
+	return ( 'string' )
 
 
 def GetFileInfo(
@@ -9938,14 +9914,14 @@ def GetFileInfo(
 		This function gets the attributes of a file.
 	'''
 	pass
-	return ( fullReadPath       , 
-	         fullWritePath      , 
-	         readFileExists     , 
-	         writeFileExists    , 
-	         locked             , 
-	         hasReadPermission  , 
-	         hasWritePermission , 
-	         hasFolderPermission )
+	return ( 'string', 
+	         'string', 
+	         False   , 
+	         False   , 
+	         False   , 
+	         False   , 
+	         False   , 
+	         False    )
 
 
 def GetFileN(
@@ -9961,8 +9937,8 @@ def GetFileN(
 		Returns the fully-qualified pathname of the selected file.
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         fileName )
+	return ( False   , # 
+	         'string' )
 
 
 def GetFilesInFolder(
@@ -9991,9 +9967,9 @@ def GetFillBack(
 		Procedure GetFillBack returns the fill background color of the referenced object. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetFillFore(
@@ -10007,9 +9983,9 @@ def GetFillFore(
 		Procedure GetFillFore returns the fill foreground color of the referenced object. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetFillIAxisEndPoint(
@@ -10024,8 +10000,8 @@ def GetFillIAxisEndPoint(
 		Note: only works with 2D objects that have a gradient or image fill.
 	'''
 	pass
-	return ( xIAxisEndPoint, 
-	         yIAxisEndPoint )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetFillJAxisEndPoint(
@@ -10040,8 +10016,8 @@ def GetFillJAxisEndPoint(
 		Note: only works with 2D objects that have a gradient or image fill.
 	'''
 	pass
-	return ( xJAxisEndPoint, 
-	         yJAxisEndPoint )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetFillOriginPoint(
@@ -10056,8 +10032,8 @@ def GetFillOriginPoint(
 		Note: only works with 2D objects that have a gradient or image fill.
 	'''
 	pass
-	return ( xOriginPoint, 
-	         yOriginPoint )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetFillPoints(
@@ -10072,12 +10048,12 @@ def GetFillPoints(
 		Note: only works with 2D objects that have a gradient or image fill.
 	'''
 	pass
-	return ( xOriginPoint  , 
-	         yOriginPoint  , 
-	         xIAxisEndPoint, 
-	         yIAxisEndPoint, 
-	         xJAxisEndPoint, 
-	         yJAxisEndPoint )
+	return ( 0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def GetFirstChild(
@@ -10092,8 +10068,8 @@ def GetFirstChild(
 		Returns first child of given element.
 	'''
 	pass
-	return ( INTEGER, # 
-	         value   )
+	return ( 0       , # 
+	         'string' )
 
 
 def GetFldName(
@@ -10149,8 +10125,8 @@ def GetFolder(
 		Gets the path to a user selected folder
 	'''
 	pass
-	return ( INTEGER      , # 
-	         directoryPath )
+	return ( 0       , # 
+	         'string' )
 
 
 def GetFolderPath(
@@ -10176,6 +10152,18 @@ def GetFontID(
 		
 		Category: Objects - Text
 		Function GetFontID converts the string name of an available font to a font ID which can be passed to other VectorScript routines.
+	'''
+	pass
+	return 'INTEGER' # 
+
+
+def GetFontListSize():
+	'''
+		Python: INTEGER = vs.GetFontListSize()
+		VectorScript: FUNCTION GetFontListSize : INTEGER;
+		
+		Category: Objects - Text
+		Returns the number of available fonts on the local system.
 	'''
 	pass
 	return 'INTEGER' # 
@@ -10234,12 +10222,12 @@ def GetGableAttributes(
 		Procedure GetGableAttributes returns the attributes of a gable dormer in the referenced roof.
 	'''
 	pass
-	return ( useHeight  , 
-	         heightDepth, 
-	         bottomWidth, 
-	         overhang   , 
-	         leftSlope  , 
-	         rightSlope  )
+	return ( False, 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0   )
 
 
 def GetGISOrigin(
@@ -10252,10 +10240,10 @@ def GetGISOrigin(
 		Get geographical origin.
 	'''
 	pass
-	return ( BOOLEAN        , # 
-	         outLat         , 
-	         outLon         , 
-	         outAngleToNorth )
+	return ( False  , # 
+	         0.0    , 
+	         0.0    , 
+	         0.0     )
 
 
 def GetGradientData(
@@ -10270,11 +10258,30 @@ def GetGradientData(
 		Gets the spot position, midpoint position and color of the specified gradient segment.
 	'''
 	pass
-	return ( spotPosition    , 
-	         midpointPosition, 
-	         red             , 
-	         green           , 
-	         blue             )
+	return ( 0.0, 
+	         0.0, 
+	         0  , 
+	         0  , 
+	         0   )
+
+
+def GetGradientDataN(
+		gradient    , # HANDLE  - Gradient that contains the segment.
+		segmentIndex  # INTEGER - Segment from which to get the data.
+		):
+	'''
+		Python: (Boolean, spotPosition, midpointPosition, red, green, blue, opacity) = vs.GetGradientDataN(gradient, segmentIndex)
+		VectorScript: PROCEDURE GetGradientDataN(gradient:HANDLE; segmentIndex:INTEGER; VAR spotPosition:REAL; VAR midpointPosition:REAL; VAR red:LONGINT; VAR green:LONGINT; VAR blue:LONGINT; VAR opacity:INTEGER);
+		
+		Category: Document Attributes
+	'''
+	pass
+	return ( 0.0, 
+	         0.0, 
+	         0  , 
+	         0  , 
+	         0  , 
+	         0   )
 
 
 def GetGradientMidpointPosition(
@@ -10289,7 +10296,41 @@ def GetGradientMidpointPosition(
 		Gets the midpoint position of the specified gradient segment.
 	'''
 	pass
-	return ( position )
+	return ( 0.0 )
+
+
+def GetGradientOpacity(
+		gradient    , # HANDLE  - Gradient that contains the segment.
+		segmentIndex  # INTEGER - Segment from which to get the data.
+		):
+	'''
+		Python: opacity = vs.GetGradientOpacity(gradient, segmentIndex)
+		VectorScript: PROCEDURE GetGradientOpacity(gradient:HANDLE; segmentIndex:INTEGER; VAR opacity:INTEGER);
+		
+		Category: Document Attributes
+	'''
+	pass
+	return ( 0 )
+
+
+def GetGradientSlider(
+		dialogID    , # LONGINT - Index to the dialog layout that contains the gradient slider component.
+		componentID , # LONGINT - Index to a specific gradient slider component.                         
+		segmentIndex  # INTEGER - Segment from which to get the data.                                    
+		):
+	'''
+		Python: (spotPosition, midpointPosition, red, green, blue, opacity) = vs.GetGradientSlider(dialogID, componentID, segmentIndex)
+		VectorScript: PROCEDURE GetGradientSlider(dialogID:LONGINT; componentID:LONGINT; segmentIndex:INTEGER; VAR spotPosition:REAL; VAR midpointPosition:REAL; VAR red:LONGINT; VAR green:LONGINT; VAR blue:LONGINT; VAR opacity:INTEGER);
+		
+		Category: Dialogs - Modern
+	'''
+	pass
+	return ( 0.0, 
+	         0.0, 
+	         0  , 
+	         0  , 
+	         0  , 
+	         0   )
 
 
 def GetGradientSliderData(
@@ -10305,11 +10346,11 @@ def GetGradientSliderData(
 		Gets the spot position, midpoint position and color of the specified gradient slider segment.
 	'''
 	pass
-	return ( spotPosition    , 
-	         midpointPosition, 
-	         red             , 
-	         green           , 
-	         blue             )
+	return ( 0.0, 
+	         0.0, 
+	         0  , 
+	         0  , 
+	         0   )
 
 
 def GetGradientSliderSelectedMarker(
@@ -10325,8 +10366,8 @@ def GetGradientSliderSelectedMarker(
 		Note: use the number, 1, to identify a color marker and the number, 2, to identify a midpoint marker.
 	'''
 	pass
-	return ( segmentIndex, 
-	         markerType   )
+	return ( 0, 
+	         0 )
 
 
 def GetGradientSpotColor(
@@ -10341,9 +10382,9 @@ def GetGradientSpotColor(
 		Gets the spot color of the specified gradient segment.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetGradientSpotPosition(
@@ -10358,7 +10399,7 @@ def GetGradientSpotPosition(
 		Gets the spot position of the specified gradient segment.
 	'''
 	pass
-	return ( position )
+	return ( 0.0 )
 
 
 def GetHipAttributes(
@@ -10373,13 +10414,13 @@ def GetHipAttributes(
 		Procedure GetHipAttributes returns the attributes of a hip dormer in the referenced roof.
 	'''
 	pass
-	return ( useHeight  , 
-	         heightDepth, 
-	         bottomWidth, 
-	         overhang   , 
-	         leftSlope  , 
-	         rightSlope , 
-	         frontSlope  )
+	return ( False, 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0   )
 
 
 def GetHole(
@@ -10395,8 +10436,8 @@ def GetHole(
 		The definition polyline can be edited or queried using the standard VectorScript polyline API functions.
 	'''
 	pass
-	return ( BOOLEAN, # Returns TRUE if the polyline contains openings, otherwise returns FALSE.
-	         outHole )
+	return ( False  , # Returns TRUE if the polyline contains openings, otherwise returns FALSE.
+	         0       )
 
 
 def GetIconPushButtonState(
@@ -10411,8 +10452,8 @@ def GetIconPushButtonState(
 		Retrieves the state of the specified Layout Manager icon push button (pressed or not pressed).
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         bPressed )
+	return ( False  , # 
+	         False   )
 
 
 def GetImageCropObject(
@@ -10488,7 +10529,7 @@ def GetItemText(
 		Gets the text that is contained in the given componentID.
 	'''
 	pass
-	return ( text )
+	return ( 'string' )
 
 
 def GetKeyDown(
@@ -10501,7 +10542,7 @@ def GetKeyDown(
 		Procedure GetKeyDown pauses execution of a VectorScript routine until a key is pressed by the user. When the key is pressed, the ASCII code of the key is returned.
 	'''
 	pass
-	return ( asciiCode )
+	return ( 0 )
 
 
 def GetLastDXFImportOpt(
@@ -10557,9 +10598,9 @@ def GetLayerAmbientColor(
 		Procedure GetLayerAmbientColor returns the color of the ambient light of the referenced layer. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetLayerAmbientInfo(
@@ -10573,8 +10614,8 @@ def GetLayerAmbientInfo(
 		Procedure GetLayerAmbientInfo returns the attribute values for the ambient light object of the referenced layer.
 	'''
 	pass
-	return ( isOn      , 
-	         brightness )
+	return ( False, 
+	         0     )
 
 
 def GetLayerByName(
@@ -10616,8 +10657,8 @@ def GetLayerElevation(
 		Gets the elevation and thickness of the specified layer.
 	'''
 	pass
-	return ( baseElev , 
-	         thickness )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetLayerForStory(
@@ -10699,11 +10740,11 @@ def GetLayoutDialogPosition(
 		This function can be useful for displaying a dialog in a position in which it was placed during prior use.
 	'''
 	pass
-	return ( BOOLEAN, # true - success - the location of the dialog window was retrieved.[[BR]]false - failure - the location of the dialog window was not retrieved, likely because it does not currently exist, or the dialogID is invalid.  The dialog window will exist anytime between the Setup message and OK/Cancel message.
-	         left   , 
-	         top    , 
-	         right  , 
-	         bottom  )
+	return ( False  , # true - success - the location of the dialog window was retrieved.[[BR]]false - failure - the location of the dialog window was not retrieved, likely because it does not currently exist, or the dialogID is invalid.  The dialog window will exist anytime between the Setup message and OK/Cancel message.
+	         0      , 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetLayoutDialogSize(
@@ -10717,8 +10758,8 @@ def GetLayoutDialogSize(
 		Retrieves a Layout Manager dialog's size, in pixels.
 	'''
 	pass
-	return ( width , 
-	         height )
+	return ( 0, 
+	         0 )
 
 
 def GetLBColumnDataItemInfo(
@@ -10735,11 +10776,11 @@ def GetLBColumnDataItemInfo(
 		Gets the specified column data item's text, image and user data.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         itemString, 
-	         imageOn   , 
-	         imageOff  , 
-	         itemData   )
+	return ( False   , # 
+	         'string', 
+	         0       , 
+	         0       , 
+	         0        )
 
 
 def GetLBColumnHeaderJust(
@@ -10755,8 +10796,8 @@ def GetLBColumnHeaderJust(
 		Retrieves the specified column header's justification.
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         justification )
+	return ( False  , # 
+	         0       )
 
 
 def GetLBColumnHeaderToolTip(
@@ -10772,9 +10813,9 @@ def GetLBColumnHeaderToolTip(
 		Gets the list browser column header's tooltip text.
 	'''
 	pass
-	return ( BOOLEAN           , # 
-	         toolTipPrimaryText, 
-	         toolTipSubText     )
+	return ( False   , # 
+	         'string', 
+	         'string' )
 
 
 def GetLBColumnOwnerDrawnType(
@@ -10791,8 +10832,8 @@ def GetLBColumnOwnerDrawnType(
 		Gets the list browser column's owner drawn type.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         ownerDrawnType )
+	return ( False  , # 
+	         0       )
 
 
 def GetLBColumnSortState(
@@ -10824,8 +10865,8 @@ def GetLBColumnWidth(
 		Gets the width of the specified column in the specified list browser control.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         width   )
+	return ( False  , # 
+	         0       )
 
 
 def GetLBControlType(
@@ -10872,10 +10913,10 @@ def GetLBEventInfo(
 		Retrieves the last event information for the specified list browser.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         eventType , 
-	         rowIndex  , 
-	         columIndex )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetLBHeaderTextWidth(
@@ -10907,9 +10948,9 @@ def GetLBItemDashStyle(
 		Gets the specified list browser item's dash style.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         styleIndex, 
-	         lineWeight )
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def GetLBItemData(
@@ -10926,7 +10967,7 @@ def GetLBItemData(
 		Retrieves the user data associated with the list browser item.
 	'''
 	pass
-	return ( nUserData )
+	return ( 0 )
 
 
 def GetLBItemDisplayType(
@@ -10959,10 +11000,10 @@ def GetLBItemFillBackColor(
 		Gets the specified list browser item's fill background color.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         redIndex  , 
-	         greenIndex, 
-	         blueIndex  )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetLBItemFillForeColor(
@@ -10979,10 +11020,10 @@ def GetLBItemFillForeColor(
 		Gets the specified list browser item's fill foreground color.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         redIndex  , 
-	         greenIndex, 
-	         blueIndex  )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetLBItemGradientOrImageRefNumber(
@@ -10999,8 +11040,8 @@ def GetLBItemGradientOrImageRefNumber(
 		Gets the specified list browser item's gradient or image.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         refNumber )
+	return ( False  , # 
+	         0       )
 
 
 def GetLBItemInfo(
@@ -11017,9 +11058,28 @@ def GetLBItemInfo(
 		Gets string and image information for a specified item of a List Browser control.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         itemString, 
-	         imageIndex )
+	return ( False   , # 
+	         'string', 
+	         0        )
+
+
+def GetLBItemLineType(
+		dialogID    , # LONGINT - id of the dialog that contains the list browser
+		componentID , # LONGINT - id of the list browser control                 
+		itemIndex   , # INTEGER - the row index                                  
+		subItemIndex  # INTEGER - the column index                               
+		):
+	'''
+		Python: (BOOLEAN, lineType, lineWeight) = vs.GetLBItemLineType(dialogID, componentID, itemIndex, subItemIndex)
+		VectorScript: FUNCTION GetLBItemLineType(dialogID:LONGINT; componentID:LONGINT; itemIndex:INTEGER; subItemIndex:INTEGER; VAR lineType:LONGINT; VAR lineWeight:INTEGER) : BOOLEAN;
+		
+		Category: Dialogs - Modern - Browser
+		Gets the specified list browser item's line type.
+	'''
+	pass
+	return ( False  , # 
+	         0      , 
+	         0       )
 
 
 def GetLBItemOrigName(
@@ -11052,8 +11112,8 @@ def GetLBItemPatternIndex(
 		Gets the specified list browser item's pattern index.
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         outPatIndex )
+	return ( False  , # 
+	         0       )
 
 
 def GetLBItemPenBackColor(
@@ -11070,10 +11130,10 @@ def GetLBItemPenBackColor(
 		Gets the specified list browser item's pen background color.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         redIndex  , 
-	         greenIndex, 
-	         blueIndex  )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetLBItemPenForeColor(
@@ -11090,10 +11150,10 @@ def GetLBItemPenForeColor(
 		Gets the specified list browser item's pen foreground color.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         redIndex  , 
-	         greenIndex, 
-	         blueIndex  )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetLBItemTextColor(
@@ -11110,10 +11170,10 @@ def GetLBItemTextColor(
 		Gets the text color for the specified list browser item.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         redIndex  , 
-	         greenIndex, 
-	         blueIndex  )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetLBItemTextJust(
@@ -11130,8 +11190,8 @@ def GetLBItemTextJust(
 		Gets the text alignment for the specified list browser item.
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         justification )
+	return ( False  , # 
+	         0       )
 
 
 def GetLBItemTextStyle(
@@ -11148,8 +11208,8 @@ def GetLBItemTextStyle(
 		Gets the text style for the specified list browser item.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         textStyle )
+	return ( False  , # 
+	         0       )
 
 
 def GetLBMultImageIndexes(
@@ -11166,10 +11226,10 @@ def GetLBMultImageIndexes(
 		Gets the index of the images within the list browser multi image display.
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         imageIndex0, 
-	         imageIndex1, 
-	         imageIndex2 )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetLBOrigNameClLevel(
@@ -11185,9 +11245,9 @@ def GetLBOrigNameClLevel(
 		This function returns the close levels for an original name in the list browser. If the item for the name is displayed, then all the closeLevels will be false.
 	'''
 	pass
-	return ( level1Closed, 
-	         level2Closed, 
-	         level3Closed )
+	return ( False, 
+	         False, 
+	         False )
 
 
 def GetLBSortColumn(
@@ -11203,6 +11263,54 @@ def GetLBSortColumn(
 	'''
 	pass
 	return 'INTEGER' # 
+
+
+def GetLevelElevation(
+		storyHandle, # HANDLE - The handle of the Story containing the Story Level we would like to know the elevation of.
+		levelType    # STRING - The level type of the Story Level that we would like to know the elevation of.            
+		):
+	'''
+		Python: REAL = vs.GetLevelElevation(storyHandle, levelType)
+		VectorScript: FUNCTION GetLevelElevation(storyHandle:HANDLE; levelType:STRING) : REAL;
+		
+		Category: Layers
+		Gets the elevation of a Story Level, relative to its containing Story.
+	'''
+	pass
+	return 'REAL' # The elevation of the requested Story Level.
+
+
+def GetLevelTemplateInfo(
+		index  # INTEGER - The index of the desired Story Level Template.
+		):
+	'''
+		Python: (BOOLEAN, layerName, scaleFactor, levelType, elevation, wallHeight) = vs.GetLevelTemplateInfo(index)
+		VectorScript: FUNCTION GetLevelTemplateInfo(index:INTEGER; VAR layerName:STRING; VAR scaleFactor:REAL; VAR levelType:STRING; VAR elevation:REAL; VAR wallHeight:REAL) : BOOLEAN;
+		
+		Category: Layers
+		Used to access the properties of the Story Level Template at 'index'.  The name, scaleFactor, levelType, elevation, and wallHeight parameters of the requested Story Level Template will be returned in the appropriate parameters.
+	'''
+	pass
+	return ( False   , # Whether the Story Level Template at 'index' was found and valid.
+	         'string', 
+	         0.0     , 
+	         'string', 
+	         0.0     , 
+	         0.0      )
+
+
+def GetLevelTemplateName(
+		index  # INTEGER - The index of the Story Level Template whose name is to be returned.
+		):
+	'''
+		Python: STRING = vs.GetLevelTemplateName(index)
+		VectorScript: FUNCTION GetLevelTemplateName(index:INTEGER) : STRING;
+		
+		Category: Layers
+		Returns the name of the nth Story Level Template in the file. For example, if 3 is passed in, it will return the name of the 3rd Story Level Template in the file.
+	'''
+	pass
+	return 'STRING' # The name of the Story Level Template at 'index',
 
 
 def GetLevelTypeName(
@@ -11230,9 +11338,9 @@ def GetLightColorRGB(
 		Procedure GetLightColorRGB returns the RGB color values for the referenced light object.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetLightDirection(
@@ -11246,8 +11354,8 @@ def GetLightDirection(
 		Procedure GetLightDirection returns the direction angles of the referenced light object.
 	'''
 	pass
-	return ( panAngleR , 
-	         tiltAngleR )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetLightFalloff(
@@ -11261,8 +11369,8 @@ def GetLightFalloff(
 		Procedure GetLightFalloff returns the fall off attributes for the referenced light object.
 	'''
 	pass
-	return ( distFalloff, 
-	         angFalloff  )
+	return ( 0, 
+	         0 )
 
 
 def GetLightInfo(
@@ -11276,10 +11384,10 @@ def GetLightInfo(
 		Procedure GetLightInfo returns the attributes of the referenced light object.
 	'''
 	pass
-	return ( lightType , 
-	         brightness, 
-	         isOn      , 
-	         castShadow )
+	return ( 0    , 
+	         0    , 
+	         False, 
+	         False )
 
 
 def GetLightLocation(
@@ -11293,7 +11401,7 @@ def GetLightLocation(
 		Procedure GetLightLocation returns the position of the referenced light object.
 	'''
 	pass
-	return ( p )
+	return ( 0,0,0 )
 
 
 def GetLine(
@@ -11306,8 +11414,8 @@ def GetLine(
 		Procedure GetLine returns two user selected points, and draws a temporary "rubberband" line when prompting for the second point. This cannot be used if there is a function anywhere in the calling chain.
 	'''
 	pass
-	return ( p1, 
-	         p2 )
+	return ( 0,0, 
+	         0,0 )
 
 
 def GetLine3D(
@@ -11321,8 +11429,8 @@ def GetLine3D(
 		Procedure GetLine3D returns two user selected points, and draws a temporary "rubberband" 3D line when prompting for the second point. This cannot be used if there is a function anywhere in the calling chain.
 	'''
 	pass
-	return ( p1, 
-	         p2 )
+	return ( 0,0,0, 
+	         0,0,0 )
 
 
 def GetLineAttributeData(
@@ -11337,8 +11445,8 @@ def GetLineAttributeData(
 		Get the current choices for the combined line style and line weight dialog control.  The line style value is an index and the line weight value is in mils.
 	'''
 	pass
-	return ( lineStyle , 
-	         lineWeight )
+	return ( 0, 
+	         0 )
 
 
 def GetLineStyleChoice(
@@ -11353,7 +11461,54 @@ def GetLineStyleChoice(
 		Get current choice of line style popup dialog control.  Choice is an index into list of linestyles available in current document.
 	'''
 	pass
-	return ( lineStyle )
+	return ( 0 )
+
+
+def GetLineTypeAtIndex(
+		dialogID, # LONGINT - The index of the dialog layout containing the control.
+		itemID  , # LONGINT - The index of the line style control.                  
+		index     # INTEGER - The choice index.                                     
+		):
+	'''
+		Python: lineType = vs.GetLineTypeAtIndex(dialogID, itemID, index)
+		VectorScript: PROCEDURE GetLineTypeAtIndex(dialogID:LONGINT; itemID:LONGINT; index:INTEGER; VAR lineType:LONGINT);
+		
+		Category: Dialogs - Modern
+		Get the line type at the specified index in the line style control.
+	'''
+	pass
+	return ( 0 )
+
+
+def GetLineTypeAttriData(
+		dialogID, # LONGINT - The index of the dialog layout containing the control.
+		itemID    # LONGINT - The index of the line attribute control.              
+		):
+	'''
+		Python: (lineType, lineWeight) = vs.GetLineTypeAttriData(dialogID, itemID)
+		VectorScript: PROCEDURE GetLineTypeAttriData(dialogID:LONGINT; itemID:LONGINT; VAR lineType:LONGINT; VAR lineWeight:INTEGER);
+		
+		Category: Dialogs - Modern
+		Get the current choices for the combined line style and line weight dialog control.  The line type value is the line type internal index (reference number). The line weight value is in mils.
+	'''
+	pass
+	return ( 0, 
+	         0 )
+
+
+def GetLineTypeChoice(
+		dialogID, # LONGINT - The index of the dialog layout containing the control.
+		itemID    # LONGINT - The index of the line style control.                  
+		):
+	'''
+		Python: lineType = vs.GetLineTypeChoice(dialogID, itemID)
+		VectorScript: PROCEDURE GetLineTypeChoice(dialogID:LONGINT; itemID:LONGINT; VAR lineType:LONGINT);
+		
+		Category: Dialogs - Modern
+		Get current choice of line style popup dialog control.  Choice is the internal index (reference number) of the line type.
+	'''
+	pass
+	return ( 0 )
 
 
 def GetLineWeightChoice(
@@ -11368,7 +11523,7 @@ def GetLineWeightChoice(
 		Get current choice for a line weight dialog control.  The value is in mils.
 	'''
 	pass
-	return ( lineWeight )
+	return ( 0 )
 
 
 def GetLinkHeightToLayerDeltaZ(
@@ -11412,8 +11567,8 @@ def GetLocalizedPluginChoice(
 		Returns true with outChoice as specified by inPluginName, inParameterName and inChoiceIndex.  Each of the input names are universal names.
 	'''
 	pass
-	return ( BOOLEAN  , # Returns true if the function call succeeded.
-	         outChoice )
+	return ( False   , # Returns true if the function call succeeded.
+	         'string' )
 
 
 def GetLocalizedPluginName(
@@ -11429,8 +11584,8 @@ def GetLocalizedPluginName(
 		If the plug-in has not been localized, then this function will return the universal name.
 	'''
 	pass
-	return ( BOOLEAN, # Returns true if the specified plug-in exists, and false if it is not found.
-	         outName )
+	return ( False   , # Returns true if the specified plug-in exists, and false if it is not found.
+	         'string' )
 
 
 def GetLocalizedPluginParameter(
@@ -11447,8 +11602,8 @@ def GetLocalizedPluginParameter(
 		If the plug-in has not been localized, then this function will return the universal name of the parameter.
 	'''
 	pass
-	return ( BOOLEAN     , # Returns true if the specified plug-in exists, and false if it is not found.
-	         outParameter )
+	return ( False   , # Returns true if the specified plug-in exists, and false if it is not found.
+	         'string' )
 
 
 def GetLocPt(
@@ -11462,7 +11617,7 @@ def GetLocPt(
 		Procedure GetLocPt returns the coordinate location of the referenced locus.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def GetLocus3D(
@@ -11476,7 +11631,7 @@ def GetLocus3D(
 		Procedure GetLocus3D returns the coordinates of the referenced 3D locus object.
 	'''
 	pass
-	return ( p )
+	return ( 0,0,0 )
 
 
 def GetLS(
@@ -11549,20 +11704,6 @@ def GetLW(
 	return 'INTEGER' # 
 
 
-def GetMacCommandKeyTextWidthInPixels(
-		inCommandKeyTextToDraw  # STRING -  
-		):
-	'''
-		Python: INTEGER = vs.GetMacCommandKeyTextWidthInPixels(inCommandKeyTextToDraw)
-		VectorScript: FUNCTION GetMacCommandKeyTextWidthInPixels(inCommandKeyTextToDraw:STRING) : INTEGER;
-		
-		Category: Utility
-		Returns the length of a string consisting of Macintosh Command/Option/Control glpyh characters in the current port based on the port's text settings.
-	'''
-	pass
-	return 'INTEGER' # 
-
-
 def GetMainDisplayBounds(
 		):
 	'''
@@ -11573,10 +11714,10 @@ def GetMainDisplayBounds(
 		Returns the bounds of the main display device (Macintosh Only).
 	'''
 	pass
-	return ( outTop   , 
-	         outLeft  , 
-	         outBottom, 
-	         outRight  )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetMarker(
@@ -11590,10 +11731,10 @@ def GetMarker(
 		Returns marker information on the referenced object.
 	'''
 	pass
-	return ( start, 
-	         end  , 
-	         style, 
-	         size  )
+	return ( False, 
+	         False, 
+	         0    , 
+	         0.0   )
 
 
 def GetMarkerChoice(
@@ -11609,10 +11750,10 @@ def GetMarkerChoice(
 		Get current choice for Marker popup dialog control.
 	'''
 	pass
-	return ( index, 
-	         style, 
-	         angle, 
-	         size  )
+	return ( 0  , 
+	         0  , 
+	         0  , 
+	         0.0 )
 
 
 def GetMarkerPopupSelectedItem(
@@ -11628,10 +11769,10 @@ def GetMarkerPopupSelectedItem(
 		Returns the 1-based index number of the selected item in the specified marker popup menu item.  If return value is 8, a custom marker is selected.
 	'''
 	pass
-	return ( INTEGER, # 
-	         style  , 
-	         angle  , 
-	         size    )
+	return ( 0      , # 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetMarkerValue(
@@ -11646,12 +11787,12 @@ def GetMarkerValue(
 		Gets MarkerPopup value in dialog (replaces MarkerPopup procedures prior to VW2008).
 	'''
 	pass
-	return ( style    , 
-	         angle    , 
-	         length   , 
-	         width    , 
-	         basis    , 
-	         thickness )
+	return ( 0  , 
+	         0  , 
+	         0.0, 
+	         0.0, 
+	         0  , 
+	         0.0 )
 
 
 def GetMeshVertex(
@@ -11666,7 +11807,7 @@ def GetMeshVertex(
 		Return the specified vertex of a mesh object.
 	'''
 	pass
-	return ( outPt )
+	return ( 0,0,0 )
 
 
 def GetMeshVertsCnt(
@@ -11693,7 +11834,7 @@ def GetMouse(
 		Procedure GetMouse tracks and returns the current location of the cursor within the active Vectorworks document, allowing the cursor coordinates to be returned dynamically while moving the cursor onscreen.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def GetMultilineText(
@@ -11708,7 +11849,7 @@ def GetMultilineText(
 		Gets the text that is contained in the given componentID.
 	'''
 	pass
-	return ( text )
+	return ( 'string' )
 
 
 def GetName(
@@ -11752,8 +11893,8 @@ def GetNetAdapterInfo(
 		Return information about the network adapter
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         outMacAddr )
+	return ( False   , # 
+	         'string' )
 
 
 def GetNextElement(
@@ -11768,8 +11909,8 @@ def GetNextElement(
 		Returns the next element (sibling) of the given element.
 	'''
 	pass
-	return ( INTEGER, # 
-	         value   )
+	return ( 0       , # 
+	         'string' )
 
 
 def GetNumberOfComponents(
@@ -11783,8 +11924,8 @@ def GetNumberOfComponents(
 		Gets the number of components in an object.
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         numComponents )
+	return ( False  , # 
+	         0       )
 
 
 def GetNumberOfDLComponents(
@@ -11797,8 +11938,23 @@ def GetNumberOfDLComponents(
 		Gets the number of components in the Double Line Preferences.
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         numComponents )
+	return ( False  , # 
+	         0       )
+
+
+def GetNumDashDataPairs(
+		dashIndex  # INTEGER - The dash style index.
+		):
+	'''
+		Python: (INTEGER, swt) = vs.GetNumDashDataPairs(dashIndex)
+		VectorScript: FUNCTION GetNumDashDataPairs(dashIndex:INTEGER; VAR swt:BOOLEAN) : INTEGER;
+		
+		Category: Document Attributes
+		Function GetNumDashDataPairs returns the number of dash/gap value pairs defined for the specified dash style. The "scale with thickness" setting is also returned. Dash styles support up to 5 dash/gap value pairs.
+	'''
+	pass
+	return ( 0      , # 
+	         False   )
 
 
 def GetNumGradientSegments(
@@ -11842,8 +11998,8 @@ def GetNumHoles(
 		Returns the number of openings in the referenced polyline.
 	'''
 	pass
-	return ( BOOLEAN    , # Returns TRUE if the polyline contains openings, otherwise returns FALSE.
-	         outNumHoles )
+	return ( False  , # Returns TRUE if the polyline contains openings, otherwise returns FALSE.
+	         0       )
 
 
 def GetNumImagePopupItems(
@@ -11919,6 +12075,33 @@ def GetNumLBItems(
 	return 'INTEGER' # Returns the number of items in the list browser. 
 
 
+def GetNumLevelTemplates():
+	'''
+		Python: INTEGER = vs.GetNumLevelTemplates()
+		VectorScript: FUNCTION GetNumLevelTemplates : INTEGER;
+		
+		Category: Layers
+		Returns the number of story level templates in the file. Story Levels contain a level type, elevation, and optional layer to be used to bound objects on stories; Story Level Templates define a generic level that can be added to multiple stories.
+	'''
+	pass
+	return 'INTEGER' # The number of Story Level Templates in the document.
+
+
+def GetNumLineTypeItems(
+		dialogID, # LONGINT - The index of the dialog layout containing the control.
+		itemID    # LONGINT - The index of the line style control.                  
+		):
+	'''
+		Python: INTEGER = vs.GetNumLineTypeItems(dialogID, itemID)
+		VectorScript: FUNCTION GetNumLineTypeItems(dialogID:LONGINT; itemID:LONGINT) : INTEGER;
+		
+		Category: Dialogs - Modern
+		Returns the number of line types in the line style control.
+	'''
+	pass
+	return 'INTEGER' # 
+
+
 def GetNumOfWallBreaks(
 		wallH  # HANDLE -  
 		):
@@ -11930,8 +12113,8 @@ def GetNumOfWallBreaks(
 		Gets the number of breaks in a wall.
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         numWallBreaks )
+	return ( False  , # 
+	         0       )
 
 
 def GetNumRoofElements(
@@ -12028,8 +12211,8 @@ def GetNurbsObjectDistanceFromPoint(
 		Returns the distance from the input point  to the input NURBS Object h.
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         distance )
+	return ( False  , # 
+	         0.0     )
 
 
 def GetObjArrow(
@@ -12043,11 +12226,11 @@ def GetObjArrow(
 		Procedure GetObjArrow returns the arrow style parameters for the indicated object.
 	'''
 	pass
-	return ( style, 
-	         size , 
-	         angle, 
-	         start, 
-	         end   )
+	return ( 0    , 
+	         0.0  , 
+	         0    , 
+	         False, 
+	         False )
 
 
 def GetObjBeginningMarker(
@@ -12061,14 +12244,14 @@ def GetObjBeginningMarker(
 		Gets all properties for an object's beginning marker. Return TRUE if operation was successful.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         style         , 
-	         angle         , 
-	         size          , 
-	         width         , 
-	         thicknessBasis, 
-	         thickness     , 
-	         visibility     )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0.0    , 
+	         0.0    , 
+	         0      , 
+	         0.0    , 
+	         False   )
 
 
 def GetObjBoundElevation(
@@ -12189,8 +12372,8 @@ def GetObjectVariablePoint(
 		For specific object selector index values, see the Appendix.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         outP    )
+	return ( False  , # 
+	         0,0,0   )
 
 
 def GetObjectVariableReal(
@@ -12223,6 +12406,40 @@ def GetObjectVariableString(
 	return 'STRING' # Returns the value of the property as a STRING value.
 
 
+def GetObjectWallHeight(
+		objH , # HANDLE -  
+		wallH  # HANDLE -  
+		):
+	'''
+		Python: (BOOLEAN, height) = vs.GetObjectWallHeight(objH, wallH)
+		VectorScript: FUNCTION GetObjectWallHeight(objH:HANDLE; wallH:HANDLE; VAR height:REAL) : BOOLEAN;
+		
+		Category: Objects - Walls
+		Gets an object's height value in it's break record.
+		The oject (objH) must be contained in wall (wallH)  to succeed.
+	'''
+	pass
+	return ( False  , # True or False upon successfull setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
+	         0.0     )
+
+
+def GetObjectWallOffset(
+		objH , # HANDLE -  
+		wallH  # HANDLE -  
+		):
+	'''
+		Python: (BOOLEAN, offset) = vs.GetObjectWallOffset(objH, wallH)
+		VectorScript: FUNCTION GetObjectWallOffset(objH:HANDLE; wallH:HANDLE; VAR offset:REAL) : BOOLEAN;
+		
+		Category: Objects - Walls
+		Gets an object's offset value in it's break record.
+		The oject (objH) must be contained in wall (wallH)  to succeed.
+	'''
+	pass
+	return ( False  , # True or False upon successfull setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
+	         0.0     )
+
+
 def GetObjEndMarker(
 		object  # HANDLE - Handle to object.
 		):
@@ -12234,14 +12451,14 @@ def GetObjEndMarker(
 		Gets all properties for an object's end marker. Return TRUE if operation was successful.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         style         , 
-	         angle         , 
-	         size          , 
-	         width         , 
-	         thicknessBasis, 
-	         thickness     , 
-	         visibility     )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0.0    , 
+	         0.0    , 
+	         0      , 
+	         0.0    , 
+	         False   )
 
 
 def GetObjExpandTexture(
@@ -12270,9 +12487,9 @@ def GetObjExtentsInWall(
 		Gets the extents of a Plugin object or symbol that is in a wall.  Returns the object's start point and end point along the wall line.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         startPt, 
-	         endPt   )
+	return ( False  , # 
+	         0,0    , 
+	         0,0     )
 
 
 def GetObjStoryBound(
@@ -12287,11 +12504,11 @@ def GetObjStoryBound(
 		Get the data of the specified story bound of this object.
 	'''
 	pass
-	return ( BOOLEAN       , # Return TRUE if the operation is successful.
-	         boundType     , 
-	         boundStory    , 
-	         layerLevelType, 
-	         offset         )
+	return ( False   , # Return TRUE if the operation is successful.
+	         0       , 
+	         0       , 
+	         'string', 
+	         0.0      )
 
 
 def GetObjStoryBoundsAt(
@@ -12334,7 +12551,7 @@ def GetOpacity(
 		Gets the opacity of and object. Opacity is obtained as percentage value in range [0-100].
 	'''
 	pass
-	return ( opacity )
+	return ( 0 )
 
 
 def GetOpacityByClass(
@@ -12348,7 +12565,7 @@ def GetOpacityByClass(
 		Returns whether the object is using the class opacity.
 	'''
 	pass
-	return ( isByClass )
+	return ( False )
 
 
 def GetOrigin(
@@ -12361,8 +12578,8 @@ def GetOrigin(
 		Procedure GetOrigin returns the current origin location relative to the center of the page.
 	'''
 	pass
-	return ( x, 
-	         y )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetOSVersion(
@@ -12375,9 +12592,9 @@ def GetOSVersion(
 		Returns the version of the current operating system.
 	'''
 	pass
-	return ( major, 
-	         minor, 
-	         incr  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetPaletteVisibility(
@@ -12406,9 +12623,9 @@ def GetParameterOnNurbsCurve(
 		Given a NURBS curve handle and a point (in world space), this function returns the parameter of the point obtained by projecting the input point. The function also returns the index of the piece in the piecewise NURBS curve on which the projected point lies.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         parameter, 
-	         index     )
+	return ( False  , # 
+	         0.0    , 
+	         0       )
 
 
 def GetParametricRecord(
@@ -12453,9 +12670,9 @@ def GetPatternData(
 		Get current choice for pattern popup dialog control, and the displayed foreground and background color indexes.
 	'''
 	pass
-	return ( patternIndex, 
-	         foreColor   , 
-	         backColor    )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetPenBack(
@@ -12469,9 +12686,9 @@ def GetPenBack(
 		Procedure GetPenBack returns the pen background color of the referenced object. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetPenFore(
@@ -12485,9 +12702,9 @@ def GetPenFore(
 		Procedure GetPenFore returns the pen foreground color components of the referenced object. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetPickObjectInfo(
@@ -12502,10 +12719,10 @@ def GetPickObjectInfo(
 		Parameter subH returns a handle to a sub-selectable object (e.g., a symbol in a wall) if such an object exists. Parameter message is currently unused, and always returns 0.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         h      , 
-	         subH   , 
-	         message )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetPlanarRef(
@@ -12583,8 +12800,8 @@ def GetPluginChoiceIndex(
 		Returns true with outIndex as specified by inPluginNameand inParameterName.  Each of the input names are universal names.
 	'''
 	pass
-	return ( BOOLEAN , # Returns true if the function succeeded.
-	         outIndex )
+	return ( False  , # Returns true if the function succeeded.
+	         0       )
 
 
 def GetPluginInfo(
@@ -12597,9 +12814,9 @@ def GetPluginInfo(
 		Returns the name and attached parameter record of the currently executing plug-in. Use with menu command or tool item plug-ins.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         pluginName, 
-	         recordHand )
+	return ( False   , # 
+	         'string', 
+	         0        )
 
 
 def GetPluginString(
@@ -12628,10 +12845,10 @@ def GetPointAndParameterOnNurbsCurveAtGivenLength(
 		Gets point, parametric parameter, and curve index of specified location along a NURBS Curve.
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         p       , 
-	         outParam, 
-	         outIndex )
+	return ( False  , # 
+	         0,0,0  , 
+	         0.0    , 
+	         0       )
 
 
 def GetPolylineArcMaxRadius(
@@ -12662,9 +12879,9 @@ def GetPolylineVertex(
 		Note that vertexNum is 1-based for Polygons and Polylines, and 0-based for 3D Polylines.
 	'''
 	pass
-	return ( p         , 
-	         vertexType, 
-	         arcRadius  )
+	return ( 0,0, 
+	         0  , 
+	         0.0 )
 
 
 def GetPolyPt(
@@ -12679,7 +12896,7 @@ def GetPolyPt(
 		Procedure GetPolyPt returns the coordinates of a specified vertex of the referenced object.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def GetPolyPt3D(
@@ -12695,7 +12912,7 @@ def GetPolyPt3D(
 		Error checking for valid index values must be provided by the programmer.
 	'''
 	pass
-	return ( p )
+	return ( 0,0,0 )
 
 
 def GetPopUpChoiceIndex(
@@ -12711,7 +12928,7 @@ def GetPopUpChoiceIndex(
 		Gets the zero based index of the first choice in the pop-up which has itemText name. If there is no choice named itemText in the pop-up itemIndex is set to -1.
 	'''
 	pass
-	return ( itemIndex )
+	return ( 0 )
 
 
 def GetPref(
@@ -12781,9 +12998,9 @@ def GetPrefRGB(
 		Procedure GetPrefRGB return the RGB color components of the specified preference item. The RGB values are in the range of 0 - 65535.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetPrefString(
@@ -12812,8 +13029,8 @@ def GetPreviousElement(
 		Returns the previous element (sibling) of the given element.
 	'''
 	pass
-	return ( INTEGER, # 
-	         value   )
+	return ( 0       , # 
+	         'string' )
 
 
 def GetPrimaryUnitInfo(
@@ -12826,13 +13043,13 @@ def GetPrimaryUnitInfo(
 		Procedure GetPrimaryUnitInfo returns the primary units settings for the active document.
 	'''
 	pass
-	return ( style   , 
-	         prec    , 
-	         dimPrec , 
-	         format  , 
-	         angPrec , 
-	         showMark, 
-	         dispFrac )
+	return ( 0    , 
+	         0    , 
+	         0    , 
+	         0    , 
+	         0    , 
+	         False, 
+	         False )
 
 
 def GetProduct(
@@ -12846,8 +13063,8 @@ def GetProduct(
 		Obsolete as of 10. Use GetEnabledModules instead.
 	'''
 	pass
-	return ( product, 
-	         modules )
+	return ( 0, 
+	         0 )
 
 
 def GetProjection(
@@ -12875,8 +13092,8 @@ def GetProjectionLocName(
 		Get the projection format localized name
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         outProj )
+	return ( False   , # 
+	         'string' )
 
 
 def GetProjectionProj4(
@@ -12891,8 +13108,8 @@ def GetProjectionProj4(
 		Get the projection information in Proj4 format.
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         outProj4 )
+	return ( False   , # 
+	         'string' )
 
 
 def GetProjectionWKT(
@@ -12907,8 +13124,8 @@ def GetProjectionWKT(
 		Get the projection information in Well Known Text (WKT) format..
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         outWKT  )
+	return ( False   , # 
+	         'string' )
 
 
 def GetPt(
@@ -12921,7 +13138,7 @@ def GetPt(
 		Procedure GetPt switches the cursor to selection mode and allows the user to select a point in a Vectorworks document. This cannot be used if there is a function anywhere in the calling chain.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def GetPt3D(
@@ -12935,7 +13152,7 @@ def GetPt3D(
 		Procedure GetPt3D switches the cursor to 3D selection mode and allows the user to select a point in a VectorWorks document. This cannot be used if there is a function anywhere in the calling chain.
 	'''
 	pass
-	return ( p )
+	return ( 0,0,0 )
 
 
 def GetPtInPoly(
@@ -12963,7 +13180,7 @@ def GetPtL(
 		Procedure GetPtL creates a temporary "rubberband" line from a specified point to the user selected end point. This cannot be used if there is a function anywhere in the calling chain.
 	'''
 	pass
-	return ( p2 )
+	return ( 0,0 )
 
 
 def GetPtL3D(
@@ -12978,7 +13195,7 @@ def GetPtL3D(
 		Procedure GetPtL3D creates a temporary "rubberband" 3D line from a specified point to the user selected end point. This cannot be used if there is a function anywhere in the calling chain.
 	'''
 	pass
-	return ( p2 )
+	return ( 0,0,0 )
 
 
 def GetRecord(
@@ -13006,8 +13223,8 @@ def GetRect(
 		Procedure GetRect draws a temporary "rubberband" rectangle onscreen, similar to a selection marquee. The user defines the rectangle by selecting two points which define the top left and bottom right of the rectangle. This cannot be used if there is a function anywhere in the calling chain.
 	'''
 	pass
-	return ( p1, 
-	         p2 )
+	return ( 0,0, 
+	         0,0 )
 
 
 def GetRect3D(
@@ -13021,8 +13238,8 @@ def GetRect3D(
 		Procedure GetRect3D draws a temporary "rubberband" 3D rectangle on the working plane. The user defines the rectangle by selecting two points which define the top left and bottom right of the rectangle. This cannot be used if there is a function anywhere in the calling chain.
 	'''
 	pass
-	return ( p1, 
-	         p2 )
+	return ( 0,0,0, 
+	         0,0,0 )
 
 
 def GetResourceFromList(
@@ -13052,7 +13269,7 @@ def GetResourceString(
 		Returns the specified resource string from a resource file.
 	'''
 	pass
-	return ( theString )
+	return ( 'string' )
 
 
 def GetRField(
@@ -13082,12 +13299,12 @@ def GetRoofAttributes(
 		Function GetRoofAttributes returns the attributes of the referenced roof object.
 	'''
 	pass
-	return ( BOOLEAN     , # 
-	         genGableWall, 
-	         bearingInset, 
-	         roofThick   , 
-	         miterType   , 
-	         vertMiter    )
+	return ( False  , # 
+	         False  , 
+	         0.0    , 
+	         0.0    , 
+	         0      , 
+	         0.0     )
 
 
 def GetRoofEdge(
@@ -13102,11 +13319,11 @@ def GetRoofEdge(
 		Procedure GetRoofEdge returns the definition attributes of a roof edge for the referenced roof object.
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         vertexPt  , 
-	         slope     , 
-	         projection, 
-	         eaveHeight )
+	return ( False  , # 
+	         0,0    , 
+	         0.0    , 
+	         0.0    , 
+	         0.0     )
 
 
 def GetRoofElementType(
@@ -13121,9 +13338,9 @@ def GetRoofElementType(
 		Returns information on the specified roof element.  The dormer type value is one of the following: 1 for Trapezium Dormer, 2 for Saddle Dormer, 3 for Shed Dormer, 4 for Slope Dormer, 5 for Bat Dormer.
 	'''
 	pass
-	return ( edgeIndex , 
-	         isDormer  , 
-	         dormerType )
+	return ( 0    , 
+	         False, 
+	         0     )
 
 
 def GetRoofFaceAttrib(
@@ -13137,12 +13354,12 @@ def GetRoofFaceAttrib(
 		Returns information on the referenced roof face object.
 	'''
 	pass
-	return ( roofRise , 
-	         roofRun  , 
-	         miterType, 
-	         holeStyle, 
-	         vertPart , 
-	         thickness )
+	return ( 0.0, 
+	         0.0, 
+	         0  , 
+	         0  , 
+	         0.0, 
+	         0.0 )
 
 
 def GetRoofFaceCoords(
@@ -13156,10 +13373,10 @@ def GetRoofFaceCoords(
 		Returns the coordinates of the defining geometry of a roof face.
 	'''
 	pass
-	return ( axis1  , 
-	         axis2  , 
-	         Zaxis  , 
-	         upslope )
+	return ( 0,0, 
+	         0,0, 
+	         0.0, 
+	         0,0 )
 
 
 def GetRoofVertices(
@@ -13186,9 +13403,9 @@ def GetRoundingBase(
 		Gets the rounding base (1, 2.5, or 5) for the display, primary units, and secondary units.
 	'''
 	pass
-	return ( display  , 
-	         primary  , 
-	         secondary )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetRRDiam(
@@ -13202,8 +13419,8 @@ def GetRRDiam(
 		Procedure GetRRDiam returns the horizontal and vertical diameters of the rounded corners of a rounded rectangle object.
 	'''
 	pass
-	return ( xDiam, 
-	         yDiam )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetSavedSetting(
@@ -13219,8 +13436,8 @@ def GetSavedSetting(
 		If the settings file is lost or damaged the script should revert to a reasonable default value, and typically this would not warrant an alert dialog.
 	'''
 	pass
-	return ( BOOLEAN, # Returns true is the requested setting is found and read from the saved settings file, false otherwise.  
-	         value   )
+	return ( False   , # Returns true is the requested setting is found and read from the saved settings file, false otherwise.  
+	         'string' )
 
 
 def GetScreen(
@@ -13233,10 +13450,10 @@ def GetScreen(
 		Procedure GetScreen returns the top-left and bottom-right corners of the display screen. These values will change as different sized screens are used. This procedure can be utilized to aid in development of dialog boxes, or as a check of screen size for sizing or displaying custom dialogs.
 	'''
 	pass
-	return ( x1, 
-	         y1, 
-	         x2, 
-	         y2 )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetScriptResource(
@@ -13250,9 +13467,9 @@ def GetScriptResource(
 		Return the script text of the specified script resource.
 	'''
 	pass
-	return ( BOOLEAN, # Return TRUE if the creation was successful. The routine will fail if script with the specified name does't exist.
-	         script , 
-	         python  )
+	return ( False   , # Return TRUE if the creation was successful. The routine will fail if script with the specified name does't exist.
+	         'string', 
+	         False    )
 
 
 def GetSDName(
@@ -13279,11 +13496,11 @@ def GetSecondaryUnitInfo(
 		Procedure GetSecondaryUnitInfo sets the secondary unit parameters for the active document.
 	'''
 	pass
-	return ( style   , 
-	         dimPrec , 
-	         format  , 
-	         showMark, 
-	         dispFrac )
+	return ( 0    , 
+	         0    , 
+	         0    , 
+	         False, 
+	         False )
 
 
 def GetSegPt1(
@@ -13297,7 +13514,7 @@ def GetSegPt1(
 		Procedure GetSegPt1 returns the X-Y coordinates of the start point of the referenced line, wall, or linear dimension object.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def GetSegPt2(
@@ -13311,24 +13528,7 @@ def GetSegPt2(
 		Procedure GetSegPt2 returns the end point of the of the referenced line, wall, or linear dimension object.
 	'''
 	pass
-	return ( p )
-
-
-def GetSelChoice(
-		item    , # INTEGER - Item ID of dialog control.                                                                                               
-		atChoice  # INTEGER - Position in list where search begins (Pass 0 to retrieve the first one; to retrieve the next one, pass choiceNumber + 1).
-		):
-	'''
-		Python: (choiceNumber, choiceString) = vs.GetSelChoice(item, atChoice)
-		VectorScript: PROCEDURE GetSelChoice(item:INTEGER; atChoice:INTEGER; VAR choiceNumber:INTEGER; VAR choiceString:STRING);
-		
-		Category: Dialogs - Handler
-		Procedure GetSelChoice returns the selected value in a VectorScript choice item.
-		Note that choiceNumber is 1-based for Classic dialogs, and 0-based for Modern dialogs.
-	'''
-	pass
-	return ( choiceNumber, 
-	         choiceString )
+	return ( 0,0 )
 
 
 def GetSelectedChoiceIndex(
@@ -13344,7 +13544,7 @@ def GetSelectedChoiceIndex(
 		Gets the index of the selected choice.
 	'''
 	pass
-	return ( outSelectedIndex )
+	return ( 0 )
 
 
 def GetSelectedChoiceInfo(
@@ -13360,8 +13560,8 @@ def GetSelectedChoiceInfo(
 		Gets the index of the selected item and the text of the selected item in a menu.
 	'''
 	pass
-	return ( outSelectedIndex     , 
-	         outSelectedChoiceText )
+	return ( 0       , 
+	         'string' )
 
 
 def GetSelectionRange(
@@ -13376,8 +13576,8 @@ def GetSelectionRange(
 		Returns the range of the current selection for the specified control.
 	'''
 	pass
-	return ( startPos, 
-	         endPos   )
+	return ( 0, 
+	         0 )
 
 
 def GetShaderRecord(
@@ -13407,11 +13607,11 @@ def GetShedAttributes(
 		Procedure GetShedAttributes returns the attributes of a shed dormer in the referenced roof.
 	'''
 	pass
-	return ( useHeight  , 
-	         heightDepth, 
-	         bottomWidth, 
-	         overhang   , 
-	         topSlope    )
+	return ( False, 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0   )
 
 
 def GetSheetLayerUserOrigin(
@@ -13425,9 +13625,9 @@ def GetSheetLayerUserOrigin(
 		Gets the user origin of the specified sheet layer.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         xOrigin, 
-	         yOrigin )
+	return ( False  , # 
+	         0.0    , 
+	         0.0     )
 
 
 def GetSingularConstraint(
@@ -13459,10 +13659,10 @@ def GetSkylight(
 		Function GetSkylight returns the definition attributes of a specified skylight in the referenced roof object.
 	'''
 	pass
-	return ( edgeIndex   , 
-	         cornerOffset, 
-	         perpOffset  , 
-	         symName      )
+	return ( 0  , 
+	         0.0, 
+	         0.0, 
+	         0   )
 
 
 def GetSlabHeight(
@@ -13529,10 +13729,10 @@ def GetSprdSortSum(
 		Procedure GetSprdSortSum returns sorting and summation options for a database row in the referenced worksheet.
 	'''
 	pass
-	return ( sortCol1, 
-	         sortCol2, 
-	         sortCol3, 
-	         sumCol   )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetSprdSortSumColumns(
@@ -13547,12 +13747,12 @@ def GetSprdSortSumColumns(
 		Returns the sorting and summation options for a database row.
 	'''
 	pass
-	return ( sortCol1, 
-	         sortCol2, 
-	         sortCol3, 
-	         sumCol1 , 
-	         sumCol2 , 
-	         sumCol3  )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetSpreadAngle(
@@ -13566,7 +13766,7 @@ def GetSpreadAngle(
 		Procedure GetSpreadAngle returns the spread angle of the referenced spot light.
 	'''
 	pass
-	return ( spreadAngleR )
+	return ( 0.0 )
 
 
 def GetStoryAbove(
@@ -13609,7 +13809,7 @@ def GetStoryBoundChoiceStrings(
 		Gets the choice strings for a story bound control.
 	'''
 	pass
-	return ( strings )
+	return ( 0 )
 
 
 def GetStoryBoundDataFromChoiceString(
@@ -13623,9 +13823,9 @@ def GetStoryBoundDataFromChoiceString(
 		Gets the story bound data from a story bound choice string.
 	'''
 	pass
-	return ( boundType     , 
-	         boundStory    , 
-	         layerLevelType )
+	return ( 0       , 
+	         0       , 
+	         'string' )
 
 
 def GetStoryElevation(
@@ -13653,12 +13853,12 @@ def GetStoryLayerInfo(
 		Returns information on the given story layer template
 	'''
 	pass
-	return ( Boolean          , # Boolean - TRUE if the story at given index was found, FALSE if no story was found at the given index.
-	         name             , 
-	         scaleFactor      , 
-	         layerLevelType   , 
-	         eleveationOffset , 
-	         defaultWallHeight )
+	return ( False   , # Boolean - TRUE if the story at given index was found, FALSE if no story was found at the given index.
+	         'string', 
+	         0.0     , 
+	         'string', 
+	         0.0     , 
+	         0.0      )
 
 
 def GetStoryLayerTemplateName(
@@ -13714,9 +13914,9 @@ def GetSymbolOptionsN(
 		Returns default class, insert  options, and break options for the specified symbol.
 	'''
 	pass
-	return ( insertMode, 
-	         breakMode , 
-	         className  )
+	return ( 0       , 
+	         0       , 
+	         'string' )
 
 
 def GetSymbolType(
@@ -13762,7 +13962,7 @@ def GetSymLoc(
 		Procedure GetSymLoc returns the insertion point of the referenced symbol or plug-in object.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def GetSymLoc3D(
@@ -13776,9 +13976,9 @@ def GetSymLoc3D(
 		Determines the location of a specified symbol or plug-in object in 3D space.
 	'''
 	pass
-	return ( x, 
-	         y, 
-	         z )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def GetSymName(
@@ -13820,8 +14020,8 @@ def GetTexBFeatureEnd(
 		Procedure GetTexBFeatureEnd returns the "feature endpoint" of the referenced texture bitmap.  The point is expressed in pixels from the top left corner of the bitmap.
 	'''
 	pass
-	return ( featureEndX, 
-	         featureEndY )
+	return ( 0, 
+	         0 )
 
 
 def GetTexBFeatureStart(
@@ -13835,8 +14035,8 @@ def GetTexBFeatureStart(
 		Procedure GetTexBFeatureStart returns the "feature startpoint" of the referenced texture bitmap.   The point is expressed in pixels from the top left corner of the bitmap.
 	'''
 	pass
-	return ( featureStartX, 
-	         featureStartY )
+	return ( 0, 
+	         0 )
 
 
 def GetTexBitFeatureSize(
@@ -13864,8 +14064,8 @@ def GetTexBitmapOrigin(
 		Procedure GetTexBitmapOrigin returns the origin of the bitmap applied to the referenced texture bitmap. The origin is measured in pixels, with the top left corner as (0,0).
 	'''
 	pass
-	return ( originX, 
-	         originY )
+	return ( 0, 
+	         0 )
 
 
 def GetTexBitPaintNode(
@@ -14020,8 +14220,8 @@ def GetTexSpace2DOffset(
 		Procedure GetTexSpace2DOffset returns the 2D offset for the referenced texture space in real-world inches.
 	'''
 	pass
-	return ( offsetU, 
-	         offsetV )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetTexSpace2DRadius(
@@ -14105,9 +14305,9 @@ def GetTexSpaceOrientU(
 		Procedure GetTexSpaceOrientU returns the vector that describes the u-axis of the referenced texture (from world space to texture space).
 	'''
 	pass
-	return ( uXAxis, 
-	         uYAxis, 
-	         uZAxis )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def GetTexSpaceOrientV(
@@ -14121,9 +14321,9 @@ def GetTexSpaceOrientV(
 		Procedure GetTexSpaceOrientV returns the vector that describes the v-axis of the referenced texture (from world space to texture space).
 	'''
 	pass
-	return ( vXAxis, 
-	         vYAxis, 
-	         vZAxis )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def GetTexSpaceOrientW(
@@ -14137,9 +14337,9 @@ def GetTexSpaceOrientW(
 		Procedure GetTexSpaceOrientW returns the vector that describes the w-axis of the referenced texture (from world space to texture space).
 	'''
 	pass
-	return ( wXAxis, 
-	         wYAxis, 
-	         wZAxis )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def GetTexSpaceOrigin(
@@ -14153,7 +14353,7 @@ def GetTexSpaceOrigin(
 		Procedure GetTexSpaceOrigin returns the offset of the referenced texture space that takes coordinates from world space to texture space.
 	'''
 	pass
-	return ( offset )
+	return ( 0,0,0 )
 
 
 def GetTexSpacePartID(
@@ -14266,9 +14466,9 @@ def GetTextOrientation(
 		Procedure GetTextOrientation returns the position and orientation attributes of the referenced text object.
 	'''
 	pass
-	return ( textOrigin    , 
-	         textAng       , 
-	         textIsMirrored )
+	return ( 0,0  , 
+	         0.0  , 
+	         False )
 
 
 def GetTextSize(
@@ -14313,6 +14513,37 @@ def GetTextStyle(
 	'''
 	pass
 	return 'INTEGER' # 
+
+
+def GetTextStyleRef(
+		objectId  # HANDLE - handle to object
+		):
+	'''
+		Python: LONGINT = vs.GetTextStyleRef(objectId)
+		VectorScript: FUNCTION GetTextStyleRef(objectId:HANDLE) : LONGINT;
+		
+		Category: Objects - Text
+		Function GetTextStyleRef returns the text style for the referenced object. The integer returned is the internal index of the text style used by this object.
+		If the text object is using class text style, this returns the effective style.  You should use the *TextStyleByClass* functions to check and preserve by-class behavior.
+	'''
+	pass
+	return 'LONGINT' # 
+
+
+def GetTextStyleRefN(
+		objectId, # HANDLE  - handle to text object                
+		position  # INTEGER - Position in text string, zero-based. 
+		):
+	'''
+		Python: LONGINT = vs.GetTextStyleRefN(objectId, position)
+		VectorScript: FUNCTION GetTextStyleRefN(objectId:HANDLE; position:INTEGER) : LONGINT;
+		
+		Category: Objects - Text
+		GetTextStyleRefN returns the text style reference at a specified position within the text object. Reference 0 means Un-Styled.
+		If the text object is using class text style, this returns the effective style.  You should use the *TextStyleByClass* functions to check and preserve by-class behavior.
+	'''
+	pass
+	return 'LONGINT' # Returns the text style reference id for the requested character postion
 
 
 def GetTextureBitmap(
@@ -14515,7 +14746,7 @@ def GetThreeStateCheckBoxState(
 		Retrieves the state of a Layout Manager three state checkbox.
 	'''
 	pass
-	return ( iState )
+	return ( 0 )
 
 
 def GetTickCount():
@@ -14541,9 +14772,9 @@ def GetTileBackgroundColor(
 		Gets the specified tile resource's background color.
 	'''
 	pass
-	return ( red  , 
-	         green, 
-	         blue  )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetTileGeometryGroup(
@@ -14585,7 +14816,7 @@ def GetTileOffsetPoint(
 		Gets the specified tile resource's offset point.
 	'''
 	pass
-	return ( offsetPoint )
+	return ( 0,0 )
 
 
 def GetTileRepetitionPoint(
@@ -14599,7 +14830,7 @@ def GetTileRepetitionPoint(
 		Gets the specified tile resource's repetition point.
 	'''
 	pass
-	return ( repetitionPoint )
+	return ( 0,0 )
 
 
 def GetTopVisibleWS():
@@ -14626,14 +14857,14 @@ def GetTrapeziumAttributes(
 		Procedure GetTrapeziumAttributes returns the attributes of a trapezium dormer in the referenced roof.
 	'''
 	pass
-	return ( useHeight  , 
-	         heightDepth, 
-	         bottomWidth, 
-	         useTopWidth, 
-	         topWidth   , 
-	         leftSlope  , 
-	         rightSlope , 
-	         topSlope    )
+	return ( False, 
+	         0.0  , 
+	         0.0  , 
+	         False, 
+	         0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0.0   )
 
 
 def GetTreeControlItemData(
@@ -14649,7 +14880,7 @@ def GetTreeControlItemData(
 		Retrieves the user data of the specified item from a tree control.
 	'''
 	pass
-	return ( nUserData )
+	return ( 0 )
 
 
 def GetTreeControlItemText(
@@ -14665,8 +14896,8 @@ def GetTreeControlItemText(
 		Retrieves the item text of the specified item from a tree control.
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         itemText )
+	return ( False   , # 
+	         'string' )
 
 
 def GetTreeControlSelectedItem(
@@ -14681,8 +14912,8 @@ def GetTreeControlSelectedItem(
 		Retrieves the itemID of the selected item from a Layout Manager tree control.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         nItemID )
+	return ( False  , # 
+	         0       )
 
 
 def GetTreeControlTextSelectedItem(
@@ -14697,8 +14928,8 @@ def GetTreeControlTextSelectedItem(
 		Retrieves the item text of the selected item from a tree control.
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         itemText )
+	return ( False   , # 
+	         'string' )
 
 
 def GetType(
@@ -14740,12 +14971,12 @@ def GetUnits(
 		More extensive Units information is available using the GetPref routines with the selectors shown in the tables of the VectorScript Appendix.
 	'''
 	pass
-	return ( fraction  , 
-	         display   , 
-	         format    , 
-	         upi       , 
-	         name      , 
-	         squareName )
+	return ( 0       , 
+	         0       , 
+	         0       , 
+	         0.0     , 
+	         'string', 
+	         'string' )
 
 
 def GetVCenter(
@@ -14758,7 +14989,7 @@ def GetVCenter(
 		Procedure GetVCenter returns the Vectorworks document coordinates at the center of the drawing window.
 	'''
 	pass
-	return ( center )
+	return ( 0,0 )
 
 
 def GetVectorFill(
@@ -14772,8 +15003,8 @@ def GetVectorFill(
 		Function GetVectorFill returns if the referenced object has a vector fill assigned.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         hatchName )
+	return ( False   , # 
+	         'string' )
 
 
 def GetVectorFillDefault(
@@ -14786,8 +15017,8 @@ def GetVectorFillDefault(
 		Function GetVectorFillDefault returns TRUE if the the active document contains a default vector fill, and returns the name of the vector fill pattern.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         vectorFillName )
+	return ( False   , # 
+	         'string' )
 
 
 def GetVersion(
@@ -14807,10 +15038,10 @@ def GetVersion(
 		platform: 1
 	'''
 	pass
-	return ( major      , 
-	         minor      , 
-	         maintenance, 
-	         platform    )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetVersionEx(
@@ -14832,11 +15063,11 @@ def GetVersionEx(
 		buildNum: 95668
 	'''
 	pass
-	return ( major      , 
-	         minor      , 
-	         maintenance, 
-	         platform   , 
-	         buildNum    )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetVertexVisibility(
@@ -14878,10 +15109,10 @@ def GetView(
 		Returns information about the current 3D view.
 	'''
 	pass
-	return ( xAngleR, 
-	         yAngelR, 
-	         zAngleR, 
-	         offset  )
+	return ( 0.0  , 
+	         0.0  , 
+	         0.0  , 
+	         0,0,0 )
 
 
 def GetViewMatrix(
@@ -14895,11 +15126,11 @@ def GetViewMatrix(
 		Gets view matrix for layer or viewport object.
 	'''
 	pass
-	return ( BOOLEAN     , # 
-	         offset      , 
-	         rotationXAng, 
-	         rotationYAng, 
-	         rotationZAng )
+	return ( False  , # 
+	         0,0,0  , 
+	         0.0    , 
+	         0.0    , 
+	         0.0     )
 
 
 def GetVPClassVisibility(
@@ -14914,8 +15145,8 @@ def GetVPClassVisibility(
 		Gets the visibility for the specified class in the specified viewport.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         visibilityType )
+	return ( False  , # 
+	         0       )
 
 
 def GetVPClOvrdCount(
@@ -14944,9 +15175,9 @@ def GetVPClOvrdFillBack(
 		Fetches the fill background color of the class override. The color is returned as three RGB components in the range 0 65535.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetVPClOvrdFillFore(
@@ -14961,9 +15192,9 @@ def GetVPClOvrdFillFore(
 		Fetches the fill foreground color of the class override. The color is returned as three RGB components in the range 0 65535.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetVPClOvrdFillOpty(
@@ -15008,9 +15239,9 @@ def GetVPClOvrdPenBack(
 		Fetches the pen background color of the class override. The color is returned as three RGB components in the range 0 65535.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetVPClOvrdPenFore(
@@ -15025,9 +15256,9 @@ def GetVPClOvrdPenFore(
 		Fetches the pen foreground color of the class override. The color is returned as three RGB components in the range 0 65535.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetVPClOvrdPenOpty(
@@ -15104,8 +15335,8 @@ def GetVPLayerVisibility(
 		Gets the visibility for the specified layer in the specified viewport.
 	'''
 	pass
-	return ( BOOLEAN       , # 
-	         visibilityType )
+	return ( False  , # 
+	         0       )
 
 
 def GetVPLrOvrdCount(
@@ -15134,9 +15365,9 @@ def GetVPLrOvrdFillBack(
 		Gets the fill background color from a layer override.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetVPLrOvrdFillFore(
@@ -15151,9 +15382,9 @@ def GetVPLrOvrdFillFore(
 		Gets the fill foreground color from a layer override.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetVPLrOvrdHandle(
@@ -15198,9 +15429,9 @@ def GetVPLrOvrdPenBack(
 		Gets the pen background color from a layer override.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetVPLrOvrdPenFore(
@@ -15215,9 +15446,9 @@ def GetVPLrOvrdPenFore(
 		Gets the pen foreground color from a layer override.
 	'''
 	pass
-	return ( colorRV, 
-	         colorGV, 
-	         colorBV )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetVWRString(
@@ -15232,7 +15463,7 @@ def GetVWRString(
 		Replaces GetResourceString -- load a string from VWR file
 	'''
 	pass
-	return ( outputString )
+	return ( 'string' )
 
 
 def GetWallCapAttributesType(
@@ -15260,9 +15491,9 @@ def GetWallCaps(
 		Gets the wall's caps.
 	'''
 	pass
-	return ( leftCap , 
-	         rightCap, 
-	         round    )
+	return ( False, 
+	         False, 
+	         False )
 
 
 def GetWallCapsOffsets(
@@ -15276,10 +15507,44 @@ def GetWallCapsOffsets(
 		Get the wall's caps' offsets.
 	'''
 	pass
-	return ( leftCapLeftOffset  , 
-	         leftCapRightOffset , 
-	         rightCapLeftOffset , 
-	         rightCapRightOffset )
+	return ( 0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0 )
+
+
+def GetWallCompEndPts(
+		wall          , # HANDLE  - The wall or round wall
+		componentIndex  # INTEGER - The component index   
+		):
+	'''
+		Python: (leftPoint, centerPoint, rightPoint) = vs.GetWallCompEndPts(wall, componentIndex)
+		VectorScript: PROCEDURE GetWallCompEndPts(wall:HANDLE; componentIndex:INTEGER; VAR leftPoint:REAL; VAR centerPoint:REAL; VAR rightPoint:REAL);
+		
+		Category: Objects - Walls
+		Gets the end points of a wall component.
+	'''
+	pass
+	return ( 0,0, 
+	         0,0, 
+	         0,0 )
+
+
+def GetWallCompStartPts(
+		wall          , # HANDLE  - The wall or round wall
+		componentIndex  # INTEGER - The component index   
+		):
+	'''
+		Python: (leftPoint, centerPoint, rightPoint) = vs.GetWallCompStartPts(wall, componentIndex)
+		VectorScript: PROCEDURE GetWallCompStartPts(wall:HANDLE; componentIndex:INTEGER; VAR leftPoint:REAL; VAR centerPoint:REAL; VAR rightPoint:REAL);
+		
+		Category: Objects - Walls
+		Gets the start points of a wall component.
+	'''
+	pass
+	return ( 0,0, 
+	         0,0, 
+	         0,0 )
 
 
 def GetWallControlOffset():
@@ -15305,10 +15570,10 @@ def GetWallCornerHeights(
 		Gets the corner heights of a wall or round wall.
 	'''
 	pass
-	return ( startHeightTop   , 
-	         startHeightBottom, 
-	         endHeightTop     , 
-	         endHeightBottom   )
+	return ( 0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def GetWallHalfBreakInfo(
@@ -15323,10 +15588,10 @@ def GetWallHalfBreakInfo(
 		Gets the start point, center point and end point of a half break in a wall along the wall line.
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         startPt , 
-	         centerPt, 
-	         endPt    )
+	return ( False  , # 
+	         0,0    , 
+	         0,0    , 
+	         0,0     )
 
 
 def GetWallHeight(
@@ -15340,10 +15605,10 @@ def GetWallHeight(
 		Returns the height at the start and at the end of a wall.
 	'''
 	pass
-	return ( dStartTopHght, 
-	         dStartBotHght, 
-	         dEndTopHght  , 
-	         dEndBotHght   )
+	return ( 0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def GetWallHoleTexturePart(
@@ -15371,8 +15636,8 @@ def GetWallOverallHeights(
 		Gets the overall heights of a wall or round wall.
 	'''
 	pass
-	return ( overallHeightTop   , 
-	         overallHeightBottom )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GetWallPeak(
@@ -15387,9 +15652,9 @@ def GetWallPeak(
 		Returns the coordinates of a wall peak in the referenced wall.
 	'''
 	pass
-	return ( xPeak, 
-	         yPeak, 
-	         zPeak )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def GetWallPreferences():
@@ -15441,8 +15706,8 @@ def GetWallThickness(
 		Gets the thickness of a wall
 	'''
 	pass
-	return ( BOOLEAN      , # 
-	         thicknessDist )
+	return ( False  , # 
+	         0.0     )
 
 
 def GetWallWidth():
@@ -15467,12 +15732,12 @@ def GetWorkingPlane(
 		Retrieves the location and orientation of the working plane.
 	'''
 	pass
-	return ( x        , 
-	         y        , 
-	         z        , 
-	         xRotation, 
-	         yRotation, 
-	         zRotation )
+	return ( 0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def GetWorkingPlaneMat(
@@ -15486,9 +15751,9 @@ def GetWorkingPlaneMat(
 		Get the specified working plane matrix.
 	'''
 	pass
-	return ( outCenterPt, 
-	         outNormal  , 
-	         outUVec     )
+	return ( 0,0,0, 
+	         0,0,0, 
+	         0,0,0 )
 
 
 def GetWorkingPlaneN(
@@ -15501,9 +15766,9 @@ def GetWorkingPlaneN(
 		Get the active working plane.
 	'''
 	pass
-	return ( outCenterPt, 
-	         outNormal  , 
-	         outUVec     )
+	return ( 0,0,0, 
+	         0,0,0, 
+	         0,0,0 )
 
 
 def GetWSAutoRecalcState(
@@ -15535,7 +15800,7 @@ def GetWSCellAlignment(
 		Returns the horizontal alignment setting of a cell in the referenced worksheet.
 	'''
 	pass
-	return ( cellAlignment )
+	return ( 0 )
 
 
 def GetWSCellBorder(
@@ -15551,10 +15816,10 @@ def GetWSCellBorder(
 		Returns the cell border of a cell in the referenced worksheet.
 	'''
 	pass
-	return ( top   , 
-	         left  , 
-	         bottom, 
-	         right  )
+	return ( False, 
+	         False, 
+	         False, 
+	         False )
 
 
 def GetWSCellFill(
@@ -15570,10 +15835,10 @@ def GetWSCellFill(
 		Returns the fill style and color of a cell in the referenced worksheet
 	'''
 	pass
-	return ( style      , 
-	         bgcolor    , 
-	         fgcolor    , 
-	         fillpattern )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetWSCellFormula(
@@ -15589,7 +15854,7 @@ def GetWSCellFormula(
 		Returns the formula from a cell in the referenced worksheet.
 	'''
 	pass
-	return ( formula )
+	return ( 'string' )
 
 
 def GetWSCellFormulaN(
@@ -15605,7 +15870,7 @@ def GetWSCellFormulaN(
 		Returns the formula from a cell in the referenced worksheet.
 	'''
 	pass
-	return ( formula )
+	return ( 'string' )
 
 
 def GetWSCellNumberFormat(
@@ -15622,10 +15887,10 @@ def GetWSCellNumberFormat(
 		Specific index values for numeric formats and accuracy are listed in the Appendix.
 	'''
 	pass
-	return ( style        , 
-	         accuracy     , 
-	         leaderString , 
-	         trailerString )
+	return ( 0       , 
+	         0       , 
+	         'string', 
+	         'string' )
 
 
 def GetWSCellString(
@@ -15641,7 +15906,7 @@ def GetWSCellString(
 		Returns the displayed string value of a cell in the referenced worksheet.
 	'''
 	pass
-	return ( cellString )
+	return ( 'string' )
 
 
 def GetWSCellStringN(
@@ -15657,7 +15922,7 @@ def GetWSCellStringN(
 		Returns the displayed string value of a cell in the referenced worksheet.
 	'''
 	pass
-	return ( cellString )
+	return ( 'string' )
 
 
 def GetWSCellTextAngle(
@@ -15673,7 +15938,7 @@ def GetWSCellTextAngle(
 		Returns the text angle of a cell in the referenced worksheet
 	'''
 	pass
-	return ( angle )
+	return ( 0 )
 
 
 def GetWSCellTextColor(
@@ -15689,7 +15954,7 @@ def GetWSCellTextColor(
 		Returns the text color of a cell in the referenced worksheet
 	'''
 	pass
-	return ( color )
+	return ( 0 )
 
 
 def GetWSCellTextFormat(
@@ -15705,9 +15970,9 @@ def GetWSCellTextFormat(
 		Returns text format settings for a cell in the referenced worksheet.
 	'''
 	pass
-	return ( fontIndex, 
-	         size     , 
-	         style     )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def GetWSCellValue(
@@ -15723,7 +15988,7 @@ def GetWSCellValue(
 		Returns the displayed numeric value of a cell in the referenced worksheet.
 	'''
 	pass
-	return ( cellValue )
+	return ( 0.0 )
 
 
 def GetWSCellVertAlignment(
@@ -15739,7 +16004,7 @@ def GetWSCellVertAlignment(
 		Returns the vertical alignment setting of a cell in the referenced worksheet.
 	'''
 	pass
-	return ( vAlignment )
+	return ( 0 )
 
 
 def GetWSCellWrapTextFlag(
@@ -15755,7 +16020,7 @@ def GetWSCellWrapTextFlag(
 		Returns the wrap text state of a cell in the referenced worksheet.
 	'''
 	pass
-	return ( wrapTextFlag )
+	return ( False )
 
 
 def GetWSColumnOperators(
@@ -15770,12 +16035,12 @@ def GetWSColumnOperators(
 		Returns the sort and summarize column operators for a database row in the referenced worksheet.
 	'''
 	pass
-	return ( sort1, 
-	         sort2, 
-	         sort3, 
-	         sum1 , 
-	         sum2 , 
-	         sum3  )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetWSColumnSortPrecedence(
@@ -15822,7 +16087,7 @@ def GetWSColumnWidth(
 		Returns the width of a column in the referenced worksheet.
 	'''
 	pass
-	return ( width )
+	return ( 0 )
 
 
 def GetWSFromImage(
@@ -15866,7 +16131,7 @@ def GetWSImgAngle(
 		Gets the specified worksheet cell's image angle.
 	'''
 	pass
-	return ( NewParam )
+	return ( 0.0 )
 
 
 def GetWSImgMarginSize(
@@ -15882,7 +16147,7 @@ def GetWSImgMarginSize(
 		Gets the worksheet cell's image margin size.
 	'''
 	pass
-	return ( marginSize )
+	return ( 0 )
 
 
 def GetWSImgRenderMode(
@@ -15898,7 +16163,7 @@ def GetWSImgRenderMode(
 		Gets the specified worksheet cell's image render mode
 	'''
 	pass
-	return ( renderMode )
+	return ( 0 )
 
 
 def GetWSImgScale(
@@ -15914,7 +16179,7 @@ def GetWSImgScale(
 		Gets the worksheet cell's image scale.
 	'''
 	pass
-	return ( scale )
+	return ( 0.0 )
 
 
 def GetWSImgSize(
@@ -15930,8 +16195,8 @@ def GetWSImgSize(
 		Gets the specified worksheet cell's image size.
 	'''
 	pass
-	return ( height, 
-	         width  )
+	return ( 0, 
+	         0 )
 
 
 def GetWSImgSizeType(
@@ -15963,7 +16228,7 @@ def GetWSImgType(
 		Gets the specified worksheet cell's image type.
 	'''
 	pass
-	return ( type )
+	return ( 0 )
 
 
 def GetWSImgUseLayScale(
@@ -16011,7 +16276,7 @@ def GetWSImgView(
 		Gets the specified worksheet cell's image view.
 	'''
 	pass
-	return ( view )
+	return ( 0 )
 
 
 def GetWSMergedCellRange(
@@ -16027,11 +16292,11 @@ def GetWSMergedCellRange(
 		Gets the range of cells covered by the specified cell. Returns true if the specified cell is a merged cell.
 	'''
 	pass
-	return ( BOOLEAN    , # 'true' if specified cell is a merged cell[[BR]]'false' otherwise.
-	         topRow     , 
-	         leftColumn , 
-	         bottomRow  , 
-	         rightColumn )
+	return ( False  , # 'true' if specified cell is a merged cell[[BR]]'false' otherwise.
+	         0      , 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def GetWSPlacement(
@@ -16045,10 +16310,10 @@ def GetWSPlacement(
 		Returns the on-screen location of the referenced worksheets' window.
 	'''
 	pass
-	return ( top   , 
-	         left  , 
-	         bottom, 
-	         right  )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetWSRowColumnCount(
@@ -16062,8 +16327,8 @@ def GetWSRowColumnCount(
 		Returns the number of rows and columns in the referenced worksheet.
 	'''
 	pass
-	return ( numRows   , 
-	         numColumns )
+	return ( 0, 
+	         0 )
 
 
 def GetWSRowHeight(
@@ -16078,7 +16343,7 @@ def GetWSRowHeight(
 		Returns the height of a row in the referenced worksheet.
 	'''
 	pass
-	return ( height )
+	return ( 0 )
 
 
 def GetWSRowHLockState(
@@ -16094,7 +16359,7 @@ def GetWSRowHLockState(
 		Note: If a row height is locked, the row will not automatically resize to fit the contents of the cells when text is entered.
 	'''
 	pass
-	return ( lockState )
+	return ( False )
 
 
 def GetWSSelection(
@@ -16109,14 +16374,14 @@ def GetWSSelection(
 		In addition to returning the selection range of a worksheet, GetWSSelection will also return the range of selected database subrows, where applicable.
 	'''
 	pass
-	return ( currentCellRow   , 
-	         currentCellColumn, 
-	         topRangeRow      , 
-	         leftRangeColumn  , 
-	         topRangeSubrow   , 
-	         bottomRangeRow   , 
-	         rightRangeColumn , 
-	         bottomRangeSubrow )
+	return ( 0, 
+	         0, 
+	         0, 
+	         0, 
+	         0, 
+	         0, 
+	         0, 
+	         0 )
 
 
 def GetWSSubrowActualCellString(
@@ -16133,7 +16398,7 @@ def GetWSSubrowActualCellString(
 		Returns the actual string in a database subrow cell.
 	'''
 	pass
-	return ( cellString )
+	return ( 'string' )
 
 
 def GetWSSubrowActualStringN(
@@ -16150,7 +16415,7 @@ def GetWSSubrowActualStringN(
 		Returns the actual string in a database subrow cell.
 	'''
 	pass
-	return ( cellString )
+	return ( 'string' )
 
 
 def GetWSSubrowCellString(
@@ -16167,7 +16432,7 @@ def GetWSSubrowCellString(
 		Returns the displayed string in a database subrow cell.
 	'''
 	pass
-	return ( cellString )
+	return ( 'string' )
 
 
 def GetWSSubrowCellStrN(
@@ -16184,7 +16449,7 @@ def GetWSSubrowCellStrN(
 		Returns the displayed string in a database subrow cell.
 	'''
 	pass
-	return ( cellString )
+	return ( 'string' )
 
 
 def GetWSSubrowCellValue(
@@ -16201,7 +16466,7 @@ def GetWSSubrowCellValue(
 		Returns the displayed numeric value in a database subrow cell.
 	'''
 	pass
-	return ( cellValue )
+	return ( 0.0 )
 
 
 def GetWSSubrowCount(
@@ -16216,7 +16481,7 @@ def GetWSSubrowCount(
 		Returns a count of displayed subrows for a specified database row.
 	'''
 	pass
-	return ( numSubrows )
+	return ( 0 )
 
 
 def GetWSSubrowHeight(
@@ -16232,7 +16497,7 @@ def GetWSSubrowHeight(
 		Return the height of a database subrow in the referenced worksheet.
 	'''
 	pass
-	return ( height )
+	return ( 0 )
 
 
 def GetXPropVersion(
@@ -16244,7 +16509,7 @@ def GetXPropVersion(
 		Category: Object Events
 	'''
 	pass
-	return ( outVersion )
+	return ( 0 )
 
 
 def GetZatXY(
@@ -16260,8 +16525,8 @@ def GetZatXY(
 		Returns the Z elevation of a point X,Y on the specified object. If hObject = NIL then searches all visible objects; hObject = layer - all objects on the layer
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         outZ    )
+	return ( False  , # 
+	         0.0     )
 
 
 def GetZoom():
@@ -16286,8 +16551,8 @@ def GetZVals(
 		Procedure GetZVals returns the Z (layer base elevation) and delta Z (layer thickness) values for the active layer.
 	'''
 	pass
-	return ( zVal     , 
-	         deltaZVal )
+	return ( 0.0, 
+	         0.0 )
 
 
 def GrayClass(
@@ -16353,18 +16618,18 @@ def GroupToMesh(
 
 
 def GS_EdSh_ConstructLayout(
-		shaderNameCStr, # LONGINT -  
-		paramsPtr       # LONGINT -  
+		shaderNameCStr, # PROCEDURE -  
+		paramsPtr     , # PROCEDURE -  
+		libraryDataPtr  # PROCEDURE -  
 		):
 	'''
-		Python: libraryDataPtr = vs.GS_EdSh_ConstructLayout(shaderNameCStr, paramsPtr)
-		VectorScript: PROCEDURE GS_EdSh_ConstructLayout(shaderNameCStr:LONGINT; paramsPtr:LONGINT; VAR libraryDataPtr:LONGINT);
+		Python: vs.GS_EdSh_ConstructLayout(shaderNameCStr, paramsPtr, libraryDataPtr)
+		VectorScript: PROCEDURE GS_EdSh_ConstructLayout(shaderNameCStr:PROCEDURE; paramsPtr:PROCEDURE; libraryDataPtr:PROCEDURE);
 		
 		Category: Textures
 		Creates a dialog layout for editing a shader's parameter values.
 	'''
 	pass
-	return ( libraryDataPtr )
 
 
 def GS_EdSh_PopulateMenu(
@@ -16384,17 +16649,17 @@ def GS_EdSh_PopulateMenu(
 
 
 def GS_EdSh_RunDialog(
-		libraryDataPtr  # LONGINT -  
 		):
 	'''
-		Python: userHitOK = vs.GS_EdSh_RunDialog(libraryDataPtr)
-		VectorScript: PROCEDURE GS_EdSh_RunDialog(VAR userHitOK:BOOLEAN; libraryDataPtr:LONGINT);
+		Python: (userHitOK, libraryDataPtr) = vs.GS_EdSh_RunDialog()
+		VectorScript: PROCEDURE GS_EdSh_RunDialog(VAR userHitOK:BOOLEAN; VAR libraryDataPtr:BOOLEAN);
 		
 		Category: Textures
 		Runs an edit shader dialog layout.
 	'''
 	pass
-	return ( userHitOK )
+	return ( False, 
+	         False )
 
 
 def HAngle(
@@ -16507,8 +16772,8 @@ def HasPlugin(
 		Returns whether tool item or menu command is in current workspace.
 	'''
 	pass
-	return ( BOOLEAN    , # Returns true if the plug-in is found in the workspace; false otherwise.
-	         PaletteName )
+	return ( False   , # Returns true if the plug-in is found in the workspace; false otherwise.
+	         'string' )
 
 
 def HasWSColumnOperator(
@@ -16539,7 +16804,7 @@ def HCenter(
 		Procedure HCenter returns the logical center point of the object specified in h. For most objects, this is the center of the bounding box. For circles, arcs, and round walls HCenter returns the arc center of the object.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def HDuplicate(
@@ -16715,7 +16980,7 @@ def HierLBItemOpened(
 		This function is called when the user clicks on a container item to open it. It wil redisplay items inside the container that were hidden (unless they are inside a lower level container that is closed), but only with the hierarchical name set. If other data needs to be redisplayed, it will need to be done with other functions. numbRedisplItems indicates how many non-container items were redisplayed.
 	'''
 	pass
-	return ( numbRedisplItems )
+	return ( 0 )
 
 
 def HLength(
@@ -16934,6 +17199,7 @@ def IFC_AttachPset(
 		VectorScript: FUNCTION IFC_AttachPset(hObject:HANDLE; inStrPsetName:STRING) : BOOLEAN;
 		
 		Category: IFC
+		Attaches a property set to the object
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -16947,6 +17213,7 @@ def IFC_ClearIFCInfo(
 		VectorScript: FUNCTION IFC_ClearIFCInfo(hObject:HANDLE) : BOOLEAN;
 		
 		Category: IFC
+		Removes all IFC data
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -16962,6 +17229,7 @@ def IFC_CopyIFCData(
 		VectorScript: FUNCTION IFC_CopyIFCData(hSource:HANDLE; hDestination:HANDLE; inMode:INTEGER) : BOOLEAN;
 		
 		Category: IFC
+		Copies IFC data from one object to another
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -16975,6 +17243,7 @@ def IFC_ExportWithUI(
 		VectorScript: PROCEDURE IFC_ExportWithUI(bExpSingleObj:BOOLEAN);
 		
 		Category: IFC
+		Exports IFC file, showing Export IFC Project dialog
 	'''
 	pass
 
@@ -16987,13 +17256,14 @@ def IFC_GetEntityColor(
 		VectorScript: FUNCTION IFC_GetEntityColor(inStrIfcType:STRING; VAR outRed:INTEGER; VAR outGreen:INTEGER; VAR outBlue:INTEGER; VAR outTransp:INTEGER) : BOOLEAN;
 		
 		Category: IFC
+		Gets the default color for an IFC entity type
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         outRed   , 
-	         outGreen , 
-	         outBlue  , 
-	         outTransp )
+	return ( False  , # 
+	         0      , 
+	         0      , 
+	         0      , 
+	         0       )
 
 
 def IFC_GetEntityProp(
@@ -17005,11 +17275,12 @@ def IFC_GetEntityProp(
 		VectorScript: FUNCTION IFC_GetEntityProp(hObject:HANDLE; inStrPropName:STRING; VAR outStrPropValue:STRING; VAR outTypeSelect:INTEGER) : BOOLEAN;
 		
 		Category: IFC
+		Gets the value and type of a selected property from the IFC entity
 	'''
 	pass
-	return ( BOOLEAN        , # 
-	         outStrPropValue, 
-	         outTypeSelect   )
+	return ( False   , # 
+	         'string', 
+	         0        )
 
 
 def IFC_GetIFCEntity(
@@ -17020,10 +17291,11 @@ def IFC_GetIFCEntity(
 		VectorScript: FUNCTION IFC_GetIFCEntity(hObject:HANDLE; VAR outStrName:STRING) : BOOLEAN;
 		
 		Category: IFC
+		Gets IFC entity type
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         outStrName )
+	return ( False   , # 
+	         'string' )
 
 
 def IFC_GetNumPsets(
@@ -17034,10 +17306,11 @@ def IFC_GetNumPsets(
 		VectorScript: FUNCTION IFC_GetNumPsets(hObject:HANDLE; VAR outNumPsets:INTEGER) : BOOLEAN;
 		
 		Category: IFC
+		Gets the number of property sets, attached to the object
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         outNumPsets )
+	return ( False  , # 
+	         0       )
 
 
 def IFC_GetPsetName(
@@ -17050,9 +17323,10 @@ def IFC_GetPsetName(
 		VectorScript: PROCEDURE IFC_GetPsetName(hObject:HANDLE; inPsetIndex:INTEGER; VAR outStrPsetName:STRING; RETURN:BOOLEAN);
 		
 		Category: IFC
+		Gets the name of the property set at that index
 	'''
 	pass
-	return ( outStrPsetName )
+	return ( 'string' )
 
 
 def IFC_GetPsetProp(
@@ -17065,11 +17339,27 @@ def IFC_GetPsetProp(
 		VectorScript: FUNCTION IFC_GetPsetProp(hObject:HANDLE; inStrPsetName:STRING; inStrPropName:STRING; VAR outStrPropValue:STRING; VAR outTypeSelect:INTEGER) : BOOLEAN;
 		
 		Category: IFC
+		Gets the value and type of a selected property from a property set
 	'''
 	pass
-	return ( BOOLEAN        , # 
-	         outStrPropValue, 
-	         outTypeSelect   )
+	return ( False   , # 
+	         'string', 
+	         0        )
+
+
+def IFC_ImportLibrary(
+		strFilePath   , # STRING  -  
+		bKeepHierarchy  # BOOLEAN -  
+		):
+	'''
+		Python: BOOLEAN = vs.IFC_ImportLibrary(strFilePath, bKeepHierarchy)
+		VectorScript: FUNCTION IFC_ImportLibrary(strFilePath:STRING; bKeepHierarchy:BOOLEAN) : BOOLEAN;
+		
+		Category: IFC
+		Imports IFC Library of objects
+	'''
+	pass
+	return 'BOOLEAN' # 
 
 
 def IFC_ImportNoUI(
@@ -17080,6 +17370,7 @@ def IFC_ImportNoUI(
 		VectorScript: PROCEDURE IFC_ImportNoUI(strFilePath:STRING);
 		
 		Category: IFC
+		Imports IFC file, silent mode
 	'''
 	pass
 
@@ -17090,6 +17381,7 @@ def IFC_ImportWithUI():
 		VectorScript: PROCEDURE IFC_ImportWithUI;
 		
 		Category: IFC
+		Imports IFC file with user interface
 	'''
 	pass
 
@@ -17106,6 +17398,7 @@ def IFC_SetEntityColor(
 		VectorScript: FUNCTION IFC_SetEntityColor(inStrIfcType:STRING; inRed:INTEGER; inGreen:INTEGER; inBlue:INTEGER; inTransp:INTEGER) : BOOLEAN;
 		
 		Category: IFC
+		Sets the default color for an IFC entity type
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -17121,6 +17414,7 @@ def IFC_SetEntityProp(
 		VectorScript: FUNCTION IFC_SetEntityProp(hObject:HANDLE; inStrPropName:STRING; inStrPropValue:STRING) : BOOLEAN;
 		
 		Category: IFC
+		Sets the value of a selected property from the IFC entity
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -17135,6 +17429,7 @@ def IFC_SetIFCEntity(
 		VectorScript: FUNCTION IFC_SetIFCEntity(hObject:HANDLE; inStrIfcName:STRING) : BOOLEAN;
 		
 		Category: IFC
+		Sets IFC entity type
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -17151,6 +17446,7 @@ def IFC_SetPsetProp(
 		VectorScript: FUNCTION IFC_SetPsetProp(hObject:HANDLE; inStrPsetName:STRING; inStrPropName:STRING; inStrPropValue:STRING) : BOOLEAN;
 		
 		Category: IFC
+		Sets the value of a selected property from a property set
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -17168,11 +17464,12 @@ def ImportDXFDWG():
 
 
 def ImportDXFDWGFile(
-		fileName  # STRING -  
+		fileName, # DYNARRAY[] of CHAR -  
+		isBatch   # BOOLEAN            -  
 		):
 	'''
-		Python: INTEGER = vs.ImportDXFDWGFile(fileName)
-		VectorScript: FUNCTION ImportDXFDWGFile(fileName:STRING) : INTEGER;
+		Python: INTEGER = vs.ImportDXFDWGFile(fileName, isBatch)
+		VectorScript: FUNCTION ImportDXFDWGFile(fileName:DYNARRAY of CHAR; isBatch:BOOLEAN) : INTEGER;
 		
 		Category: ImportExport
 		Import specific DXF/DWG file
@@ -17208,6 +17505,22 @@ def ImportImageFile(
 	'''
 	pass
 	return 'HANDLE' # 
+
+
+def ImportImageFileN(
+		filePath, # DYNARRAY[] of CHAR - Import file path.                                                                                                                                                                        
+		importPt, # POINT              - The import location.                                                                                                                                                                     
+		mode      # INTEGER            - Import mode: 0 - import using import option dialog; 1 - import using the last options. if the call was never made with option dialog, then the firt time it will show the options dialog.
+		):
+	'''
+		Python: HANDLE = vs.ImportImageFileN(filePath, importPt, mode)
+		VectorScript: FUNCTION ImportImageFileN(filePath:DYNARRAY of CHAR; importPtX, importPtY:REAL; mode:INTEGER) : HANDLE;
+		
+		Category: Utility
+		Import the specified image file as an Image object in Vectorworks.This funciton allow controlling the options when importing the image.
+	'''
+	pass
+	return 'HANDLE' # Return the imported image handle, or NIL if the import failed.
 
 
 def ImportResourceToCurrentFile(
@@ -17327,22 +17640,7 @@ def Insert(
 		Procedure Insert will insert the specified string into a destination string.
 	'''
 	pass
-	return ( dest )
-
-
-def InsertChoice(
-		item  , # INTEGER - Item ID of dialog control.                       
-		before, # INTEGER - Position in list where new item will be inserted.
-		choice  # STRING  - String value of new item.                        
-		):
-	'''
-		Python: vs.InsertChoice(item, before, choice)
-		VectorScript: PROCEDURE InsertChoice(item:INTEGER; before:INTEGER; choice:STRING);
-		
-		Category: Dialogs - Handler
-		Procedure InsertChoice adds a new value to a dialog choice item list.
-	'''
-	pass
+	return ( 'string' )
 
 
 def InsertEnhancedPullDownMenuItem(
@@ -17377,6 +17675,26 @@ def InsertEnhanPullDownMenuItem(
 	'''
 	pass
 	return 'INTEGER' # 
+
+
+def InsertGradientData(
+		gradient        , # HANDLE  - Gradient into which a segment is to be inserted.                                  
+		spotPosition    , # POINT   - Position of the segment's color spot relative to left-most point of the gradient. 
+		midpointPosition, # POINT   - Position of the segment's midpoint relative to color spot immediately to left.    
+		red             , # LONGINT - Red component of the color spot's color.                                          
+		green           , # LONGINT - Green component of the color spot's color.                                        
+		blue            , # LONGINT - Blue component of the color spot's color.                                         
+		opacity           # INTEGER - Opacity of the color spot.                                                        
+		):
+	'''
+		Python: INTEGER = vs.InsertGradientData(gradient, spotPosition, midpointPosition, red, green, blue, opacity)
+		VectorScript: FUNCTION InsertGradientData(gradient:HANDLE; spotPosition:REAL; midpointPosition:REAL; red:LONGINT; green:LONGINT; blue:LONGINT; opacity:INTEGER) : INTEGER;
+		
+		Category: Document Attributes
+		A segment consists of a single color spot and the single midpoint immediately to the right of the color spot.
+	'''
+	pass
+	return 'INTEGER' # Returns the index of the newly created segment; 0 otherwise. [[BR]]Note: segment indexes begin with 1. [[BR]]
 
 
 def InsertGradientSegment(
@@ -17416,6 +17734,25 @@ def InsertGradientSliderSegment(
 	'''
 	pass
 	return 'INTEGER' # Returns index to new segment.
+
+
+def InsertGradientSliSeg(
+		dialogID    , # LONGINT - Index to the dialog layout that contains the gradient slider component.                                                                                                           
+		componentID , # LONGINT - Index to a specific gradient slider component.                                                                                                                                    
+		spotPosition, # POINT   - Position of the segment's color marker relative to left-most point of the slider. The value should be >= 0.0 and <= 1.0, which represents a percentage distance across the slider.
+		red         , # LONGINT - Red component of the color spot's color.                                                                                                                                          
+		green       , # LONGINT - Green component of the color spot's color.                                                                                                                                        
+		blue        , # LONGINT - Blue component of the color spot's color.                                                                                                                                         
+		opacity       # INTEGER - Opacity for the color at the spot position.                                                                                                                                       
+		):
+	'''
+		Python: INTEGER = vs.InsertGradientSliSeg(dialogID, componentID, spotPosition, red, green, blue, opacity)
+		VectorScript: FUNCTION InsertGradientSliSeg(dialogID:LONGINT; componentID:LONGINT; spotPosition:REAL; red:LONGINT; green:LONGINT; blue:LONGINT; opacity:INTEGER) : INTEGER;
+		
+		Category: Dialogs - Modern
+	'''
+	pass
+	return 'INTEGER' # Returns index to new segment. 
 
 
 def InsertImagePopupObjectItem(
@@ -17724,8 +18061,8 @@ def IntersectSolid(
 		Function IntersectSolid creates a new solid intersection object from the referenced source objects.
 	'''
 	pass
-	return ( INTEGER , # 
-	         newSolid )
+	return ( 0      , # 
+	         0       )
 
 
 def IntersectSurface(
@@ -17771,6 +18108,20 @@ def IsCoPlanar(
 	'''
 	pass
 	return 'BOOLEAN' # 
+
+
+def IsCurtainWall(
+		hWall  # HANDLE - Handle to a wall object to check for curtain wall status
+		):
+	'''
+		Python: BOOLEAN = vs.IsCurtainWall(hWall)
+		VectorScript: FUNCTION IsCurtainWall(hWall:HANDLE) : BOOLEAN;
+		
+		Category: Objects - Walls
+		Use to check whether wall is being used as a curtain wall.
+	'''
+	pass
+	return 'BOOLEAN' # Will return TRUE if hWall is set to be a curtain wall.[[BR]]Will retrun FALSE if hWall is not a wall node or the wall is not set to be a curtain wall.
 
 
 def IsFillColorByClass(
@@ -17898,8 +18249,8 @@ def IsLayerReferenced(
 		Returns whether a layer is workgroup referenced, and if so, the path to the source document is returned.
 	'''
 	pass
-	return ( BOOLEAN , # Returns true if the layer is referenced, false otherwise.
-	         pathname )
+	return ( False   , # Returns true if the layer is referenced, false otherwise.
+	         'string' )
 
 
 def IsLBColumnTrackingEnabled(
@@ -18105,6 +18456,35 @@ def IsRW():
 	return 'BOOLEAN' # Returns true if RenderWorks is available, false otherwise.
 
 
+def IsTextStyleByClass(
+		objectId  # HANDLE - handle to object
+		):
+	'''
+		Python: BOOLEAN = vs.IsTextStyleByClass(objectId)
+		VectorScript: FUNCTION IsTextStyleByClass(objectId:HANDLE) : BOOLEAN;
+		
+		Category: Object Attributes
+		Procedure IsTextStyleByClass returns whether the class text style is used for the referenced object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def IsTextStyleByClassN(
+		objectId, # HANDLE  - handle to text object                
+		position  # INTEGER - Position in text string, zero-based. 
+		):
+	'''
+		Python: BOOLEAN = vs.IsTextStyleByClassN(objectId, position)
+		VectorScript: FUNCTION IsTextStyleByClassN(objectId:HANDLE; position:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Text
+		IsTextStyleByClassN returns whether the class text style is used at a specified position within the text object.
+	'''
+	pass
+	return 'BOOLEAN' # Returns True if the requested character postion uses the class text style
+
+
 def IsTextureableObject(
 		obj  # HANDLE - Handle to object.
 		):
@@ -18144,8 +18524,8 @@ def IsUserColor(
 		Returns True if the color is a user color.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         ColorName )
+	return ( False   , # 
+	         'string' )
 
 
 def IsValidWSCell(
@@ -18340,20 +18720,6 @@ def IsWSVisible(
 	return 'BOOLEAN' # Returns a BOOLEAN indicating the current visibility of the worksheet.
 
 
-def ItemSel(
-		fieldID  # INTEGER - Item ID of dialog control whose state will be returned.
-		):
-	'''
-		Python: BOOLEAN = vs.ItemSel(fieldID)
-		VectorScript: FUNCTION ItemSel(fieldID:INTEGER) : BOOLEAN;
-		
-		Category: Dialogs - Handler
-		Function ItemSel returns TRUE if the specified checkbox or radio button is selected. This procedure is used to return the status of check boxes or radio buttons when exiting a custom dialog.
-	'''
-	pass
-	return 'BOOLEAN' # 
-
-
 def JoinWalls(
 		firstWall   , # HANDLE  - The first wall of the join operation. For T joins this is the wall that is extended to meet the second wall. 
 		secondWall  , # HANDLE  - The second wall of the join operation.                                                                       
@@ -18385,8 +18751,8 @@ def KeyDown(
 		Modifier keys are the Caps Lock, Command, Control, Option, and Shift keys.
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         asciiCode )
+	return ( False  , # 
+	         0       )
 
 
 def LActLayer():
@@ -18436,6 +18802,32 @@ def LckObjs():
 		Category: General Edit
 		Procedure LckObjs locks the selected objects. When an object is locked, it
 		may be copied or duplicated, but it may not be changed in any other way.
+	'''
+	pass
+
+
+def LDevice_Reset(
+		h  # HANDLE -  
+		):
+	'''
+		Python: vs.LDevice_Reset(h)
+		VectorScript: PROCEDURE LDevice_Reset(h:HANDLE);
+		
+		Category: Spotlight
+		Reset the specified lighting device object.
+	'''
+	pass
+
+
+def LDevice_ResetVisual(
+		h  # HANDLE -  
+		):
+	'''
+		Python: vs.LDevice_ResetVisual(h)
+		VectorScript: PROCEDURE LDevice_ResetVisual(h:HANDLE);
+		
+		Category: Spotlight
+		Cleans up the visual/drawing cache for the specified lighting device object.
 	'''
 	pass
 
@@ -18569,6 +18961,52 @@ def LightingDevParamEdit():
 	pass
 
 
+def LightingInvExport():
+	'''
+		Python: vs.LightingInvExport()
+		VectorScript: PROCEDURE LightingInvExport;
+		
+		Category: Spotlight
+		Exports Lighting inventory to data exchange file.
+	'''
+	pass
+
+
+def LightingInvImport():
+	'''
+		Python: BOOLEAN = vs.LightingInvImport()
+		VectorScript: FUNCTION LightingInvImport : BOOLEAN;
+		
+		Category: Spotlight
+		Imports Lighting inventory from data exchange file. Returns TRUE if items were imported.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def LightingUnivExport():
+	'''
+		Python: vs.LightingUnivExport()
+		VectorScript: PROCEDURE LightingUnivExport;
+		
+		Category: Spotlight
+		Exports Lighting universe settings to data exchange file.
+	'''
+	pass
+
+
+def LightingUnivImport():
+	'''
+		Python: BOOLEAN = vs.LightingUnivImport()
+		VectorScript: FUNCTION LightingUnivImport : BOOLEAN;
+		
+		Category: Spotlight
+		Imports Lighting universe settings from data exchange file. Returns TRUE if any universes were changed.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def LimitTolerance(
 		showVal    , # BOOLEAN           - Dimension text display flag.  
 		boxText    , # BOOLEAN           - Boxed text display flag.      
@@ -18635,9 +19073,9 @@ def LineCircleIntersect(
 		Finds the intersection points of a line and a circle.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         pt1    , 
-	         pt2     )
+	return ( False  , # 
+	         0,0,0  , 
+	         0,0,0   )
 
 
 def LineEllipseIntersect(
@@ -18654,10 +19092,10 @@ def LineEllipseIntersect(
 		Calculates the intersection between the specified line and ellipse.
 	'''
 	pass
-	return ( int1  , 
-	         legal1, 
-	         int2  , 
-	         legal2 )
+	return ( 0,0  , 
+	         False, 
+	         0,0  , 
+	         False )
 
 
 def LineLineIntersection(
@@ -18674,9 +19112,9 @@ def LineLineIntersection(
 		Returns intersection point of the two specified lines.  parallel is true if the lines are parallel. intOnLines is true if the intersection is on both lines.
 	'''
 	pass
-	return ( parallel  , 
-	         intOnLines, 
-	         sectpt     )
+	return ( False, 
+	         False, 
+	         0,0   )
 
 
 def LineTo(
@@ -18877,6 +19315,19 @@ def MakeCornerWindow(
 	pass
 
 
+def MakeModifierClass(
+		modifierClass  # STRING -  
+		):
+	'''
+		Python: vs.MakeModifierClass(modifierClass)
+		VectorScript: PROCEDURE MakeModifierClass(modifierClass:STRING);
+		
+		Category: SiteModel Interface Library
+		Creates special class for modifiers (if it not exists).
+	'''
+	pass
+
+
 def MakePolygon(
 		inSourceObject  # HANDLE - inSource object should be a 2D object that can be polygonalized.
 		):
@@ -18997,7 +19448,7 @@ def ModelPt2DToScreenPt(
 		Transforms a point from world coordinate to the screen coordinates in plan rotation.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def ModelVecToScreenVec(
@@ -19011,7 +19462,7 @@ def ModelVecToScreenVec(
 		Takes Data from one space to another.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def ModifySlab(
@@ -19042,10 +19493,10 @@ def Moments3D(
 		Returns the moments of inertia of a 3D object about the x, y, and z axes of a point at the center of gravity of the object.
 	'''
 	pass
-	return ( BOOLEAN, # Returns true if the function succeeded.
-	         lxx    , 
-	         lyy    , 
-	         lzz     )
+	return ( False  , # Returns true if the function succeeded.
+	         0.0    , 
+	         0.0    , 
+	         0.0     )
 
 
 def MouseDown(
@@ -19058,8 +19509,8 @@ def MouseDown(
 		Function MouseDown returns TRUE if a mouse down event has occurred within the active document window.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         p       )
+	return ( False  , # 
+	         0,0     )
 
 
 def Move(
@@ -19169,7 +19620,7 @@ def MoveWallByOffset(
 		Available in Architect only. Moves the wall perpendicular to its definition line by the specified offset and maintains all wall connections. Wall movement may be constrained by the surrounding geometry so the actual amount of the offset is returned.
 	'''
 	pass
-	return ( offset )
+	return ( 0.0 )
 
 
 def MoveWSColumnOperator(
@@ -19445,20 +19896,6 @@ def Num2StrF(
 	return 'STRING' # 
 
 
-def NumChoices(
-		item  # INTEGER - Item ID of dialog choice item control.
-		):
-	'''
-		Python: INTEGER = vs.NumChoices(item)
-		VectorScript: FUNCTION NumChoices(item:INTEGER) : INTEGER;
-		
-		Category: Dialogs - Handler
-		Function NumChoices returns the number of values available in the specified VectorScript dialog choice item list.
-	'''
-	pass
-	return 'INTEGER' # 
-
-
 def NumColors():
 	'''
 		Python: INTEGER = vs.NumColors()
@@ -19604,7 +20041,7 @@ def NurbsCurveEvalPt(
 		The index is zero based (0 to number of knots - 1). The u value can range from 0 to the value of the last knot in the curve segment.
 	'''
 	pass
-	return ( p )
+	return ( 0,0,0 )
 
 
 def NurbsCurveGetNumPieces(
@@ -19634,7 +20071,7 @@ def NurbsCurveType(
 		The index is zero based (0 to number of segments - 1).
 	'''
 	pass
-	return ( isByFit )
+	return ( False )
 
 
 def NurbsDegree(
@@ -19701,7 +20138,7 @@ def NurbsGetPt3D(
 		The index is zero based (0 to number of points - 1).
 	'''
 	pass
-	return ( p )
+	return ( 0,0,0 )
 
 
 def NurbsGetWeight(
@@ -19720,7 +20157,7 @@ def NurbsGetWeight(
 		The index is zero based (0 to number of points - 1).
 	'''
 	pass
-	return ( weight )
+	return ( 0.0 )
 
 
 def NurbsKnot(
@@ -19739,7 +20176,7 @@ def NurbsKnot(
 		The index is zero based (0 to number of knots - 1).
 	'''
 	pass
-	return ( knot )
+	return ( 0.0 )
 
 
 def NurbsNumKnots(
@@ -19827,7 +20264,7 @@ def NurbsSurfaceEvalPt(
 		The u vand v values can range from 0 to the value of the last knot in each direction.
 	'''
 	pass
-	return ( p )
+	return ( 0,0,0 )
 
 
 def ObjArea(
@@ -19931,7 +20368,7 @@ def OffsetPoly(
 		VectorScript: FUNCTION OffsetPoly(h:HANDLE; offsetDistance:REAL; numberOfOffsets:INTEGER; consolidateVertices:BOOLEAN; sharpCorners:BOOLEAN; conversionRes:INTEGER; consolidationTolerance:REAL) : HANDLE;
 		
 		Category: Graphic Calculation
-		Offsets a polygon or polyline. Must handle open & closed polys. A positive distance offsets to the outside; negative to the inside. Should remove self-intersecting segments from the result. Should support "smooth" vs. "sharp" offsets.
+		Offsets a polygon or polyline. Must handle open & closed polys. A positive distance offsets to the outside; negative to the inside. Should remove self-intersecting segments from the result. Should support smooth vs. sharp offsets.
 	'''
 	pass
 	return 'HANDLE' # 
@@ -20120,9 +20557,9 @@ def OverlapLineArc(
 		Finds the overlap of a line and an arc. Returns the overlapping segment if it exists.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         lapPt1 , 
-	         lapPt2  )
+	return ( False  , # 
+	         0,0,0  , 
+	         0,0,0   )
 
 
 def OverlapLineLine(
@@ -20140,9 +20577,28 @@ def OverlapLineLine(
 		Returns two points the lap zone of two lines.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         lapPt1 , 
-	         lapPt2  )
+	return ( False  , # 
+	         0,0,0  , 
+	         0,0,0   )
+
+
+def PDF_AnnotationsFromBlob(
+		inBlobPtr , # PROCEDURE -  
+		inBlobSize, # LONGINT   -  
+		inCurPage , # LONGINT   -  
+		boundsX   , # POINT     -  
+		boundsY   , # POINT     -  
+		ioSnapGeom  # HANDLE    -  
+		):
+	'''
+		Python: BOOLEAN = vs.PDF_AnnotationsFromBlob(inBlobPtr, inBlobSize, inCurPage, boundsX, boundsY, ioSnapGeom)
+		VectorScript: FUNCTION PDF_AnnotationsFromBlob(inBlobPtr:PROCEDURE; inBlobSize:LONGINT; inCurPage:LONGINT; boundsX:REAL; boundsY:REAL; ioSnapGeom:HANDLE) : BOOLEAN;
+		
+		Category: PDF
+		Draws annotations from the PDF Blob
+	'''
+	pass
+	return 'BOOLEAN' # 
 
 
 def PDF_CreateBlob(
@@ -20157,6 +20613,24 @@ def PDF_CreateBlob(
 		
 		Category: PDF
 		Creates a memory blob representation of a specified document and page.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def PDF_CreatePDFABlobFromBlob(
+		inBlobPtr   , # PROCEDURE -  
+		inBlobSize  , # LONGINT   -  
+		inPDFAFormat, # LONGINT   -  
+		ioBlobPtr   , # PROCEDURE -  
+		ioBlobSize    # PROCEDURE -  
+		):
+	'''
+		Python: BOOLEAN = vs.PDF_CreatePDFABlobFromBlob(inBlobPtr, inBlobSize, inPDFAFormat, ioBlobPtr, ioBlobSize)
+		VectorScript: FUNCTION PDF_CreatePDFABlobFromBlob(inBlobPtr:PROCEDURE; inBlobSize:LONGINT; inPDFAFormat:LONGINT; ioBlobPtr:PROCEDURE; ioBlobSize:PROCEDURE) : BOOLEAN;
+		
+		Category: PDF
+		Takes Blob Data and creates a PDFA blob
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -20191,25 +20665,6 @@ def PDF_DrawDCFromBlob(
 		
 		Category: PDF
 		Draws PDF DocID into passed DC
-	'''
-	pass
-	return 'BOOLEAN' # 
-
-
-def PDF_DrawObjectsFromBlob(
-		inBlobPtr , # PROCEDURE -  
-		inBlobSize, # LONGINT   -  
-		inCurPage , # LONGINT   -  
-		inMatrix  , # PROCEDURE -  
-		boundsX   , # POINT     -  
-		boundsY     # POINT     -  
-		):
-	'''
-		Python: BOOLEAN = vs.PDF_DrawObjectsFromBlob(inBlobPtr, inBlobSize, inCurPage, inMatrix, boundsX, boundsY)
-		VectorScript: FUNCTION PDF_DrawObjectsFromBlob(inBlobPtr:PROCEDURE; inBlobSize:LONGINT; inCurPage:LONGINT; inMatrix:PROCEDURE; boundsX:REAL; boundsY:REAL) : BOOLEAN;
-		
-		Category: PDF
-		Draws vector graphic and bounding boxes from the PDF Blob
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -20340,6 +20795,25 @@ def PDF_SetProgressBar(
 	return 'BOOLEAN' # 
 
 
+def PDF_SnapGeomFromBlob(
+		inBlobPtr , # PROCEDURE -  
+		inBlobSize, # LONGINT   -  
+		inCurPage , # LONGINT   -  
+		boundsX   , # POINT     -  
+		boundsY   , # POINT     -  
+		ioSnapGeom  # HANDLE    -  
+		):
+	'''
+		Python: BOOLEAN = vs.PDF_SnapGeomFromBlob(inBlobPtr, inBlobSize, inCurPage, boundsX, boundsY, ioSnapGeom)
+		VectorScript: FUNCTION PDF_SnapGeomFromBlob(inBlobPtr:PROCEDURE; inBlobSize:LONGINT; inCurPage:LONGINT; boundsX:REAL; boundsY:REAL; ioSnapGeom:HANDLE) : BOOLEAN;
+		
+		Category: PDF
+		Collects vector graphic into ioSnapGeom from the PDF Blob
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def PDF_VerifyLibrary():
 	'''
 		Python: BOOLEAN = vs.PDF_VerifyLibrary()
@@ -20412,7 +20886,7 @@ def PenLoc(
 		Returns the current coordinate location of the graphics pen.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def PenPat(
@@ -20524,8 +20998,8 @@ def PlanarPtTo3DModelPt(
 		Transform a 2D point on the specified plane into a 3D point.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         outPt3D )
+	return ( False  , # 
+	         0,0,0   )
 
 
 def PlanarPtToScreenPlanePt(
@@ -20540,8 +21014,8 @@ def PlanarPtToScreenPlanePt(
 		Projects a 2D point from the specified plane onto the screen plane.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         outPt   )
+	return ( False  , # 
+	         0,0     )
 
 
 def Plant_CreateDupPlant(
@@ -20686,9 +21160,9 @@ def PointAlongPoly(
 		Returns a point at the specified distance along the poly, and a vector tangent to the poly at that point.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         pt     , 
-	         tangent )
+	return ( False  , # 
+	         0,0,0  , 
+	         0,0,0   )
 
 
 def PointAlongPolyN(
@@ -20704,9 +21178,9 @@ def PointAlongPolyN(
 		Returns a point at the specified distance along the poly, and a vector tangent to the poly at that point. Similar to PointAlongPoly with an addition of an epsilon value.
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         pt     , 
-	         tangent )
+	return ( False  , # 
+	         0,0,0  , 
+	         0,0,0   )
 
 
 def PolyMedialAxis(
@@ -20887,10 +21361,139 @@ def Products3D(
 		Returns the products of inertia of a 3D object for the xy, yz, and zx planes passing through a point at the center of gravity of the object.
 	'''
 	pass
-	return ( BOOLEAN, # Returns true if the function succeeds.
-	         lxy    , 
-	         lyz    , 
-	         lzx     )
+	return ( False  , # Returns true if the function succeeds.
+	         0.0    , 
+	         0.0    , 
+	         0.0     )
+
+
+def ProgressDlgClose():
+	'''
+		Python: vs.ProgressDlgClose()
+		VectorScript: PROCEDURE ProgressDlgClose;
+		
+		Category: Utility
+		Close the progress dialog opened with ProgressDlgOpen.
+	'''
+	pass
+
+
+def ProgressDlgEnd():
+	'''
+		Python: vs.ProgressDlgEnd()
+		VectorScript: PROCEDURE ProgressDlgEnd;
+		
+		Category: Utility
+		End a progress context started with ProgressDlgStart. This will make the progress jump to the percentage declared when started.
+	'''
+	pass
+
+
+def ProgressDlgHasCancel():
+	'''
+		Python: BOOLEAN = vs.ProgressDlgHasCancel()
+		VectorScript: FUNCTION ProgressDlgHasCancel : BOOLEAN;
+		
+		Category: Utility
+		Determine if the dialog has been canceled. The dialog must have cancelation enabled when created.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def ProgressDlgOpen(
+		title    , # STRING  -  
+		canCancel  # BOOLEAN -  
+		):
+	'''
+		Python: vs.ProgressDlgOpen(title, canCancel)
+		VectorScript: PROCEDURE ProgressDlgOpen(title:STRING; canCancel:BOOLEAN);
+		
+		Category: Utility
+		Show a progress dialog that doesn't interrupt the script. ProgressDlgClose must be used to close the dialog.
+	'''
+	pass
+
+
+def ProgressDlgOpenDelay(
+		title    , # STRING  -  
+		canCancel, # BOOLEAN -  
+		delaySec   # INTEGER -  
+		):
+	'''
+		Python: vs.ProgressDlgOpenDelay(title, canCancel, delaySec)
+		VectorScript: PROCEDURE ProgressDlgOpenDelay(title:STRING; canCancel:BOOLEAN; delaySec:INTEGER);
+		
+		Category: Utility
+		Show a progress dialog that doesn't interrupt the script. The dialog will be displaed after specified dealy time (in miliseconds). ProgressDlgClose must be used to close the dialog.
+	'''
+	pass
+
+
+def ProgressDlgSetBotMsg(
+		message  # STRING -  
+		):
+	'''
+		Python: vs.ProgressDlgSetBotMsg(message)
+		VectorScript: PROCEDURE ProgressDlgSetBotMsg(message:STRING);
+		
+		Category: Utility
+		Set bottom message of a progress dialog.
+	'''
+	pass
+
+
+def ProgressDlgSetMeter(
+		message  # STRING -  
+		):
+	'''
+		Python: vs.ProgressDlgSetMeter(message)
+		VectorScript: PROCEDURE ProgressDlgSetMeter(message:STRING);
+		
+		Category: Utility
+		Set progress meter message of a progress dialog.
+	'''
+	pass
+
+
+def ProgressDlgSetTopMsg(
+		message  # STRING -  
+		):
+	'''
+		Python: vs.ProgressDlgSetTopMsg(message)
+		VectorScript: PROCEDURE ProgressDlgSetTopMsg(message:STRING);
+		
+		Category: Utility
+		Set top message of a progress dialog.
+	'''
+	pass
+
+
+def ProgressDlgStart(
+		Percentage, # POINT   -  
+		LoopCount   # LONGINT -  
+		):
+	'''
+		Python: vs.ProgressDlgStart(Percentage, LoopCount)
+		VectorScript: PROCEDURE ProgressDlgStart(Percentage:REAL; LoopCount:LONGINT);
+		
+		Category: Utility
+		Start a progress context. This defines progress percentage and loop count for ProgressDlgYeld calls. LoopCount is fit in the Percentage of the progress
+	'''
+	pass
+
+
+def ProgressDlgYeld(
+		count  # LONGINT -  
+		):
+	'''
+		Python: vs.ProgressDlgYeld(count)
+		VectorScript: PROCEDURE ProgressDlgYeld(count:LONGINT);
+		
+		Category: Utility
+		Increases the progress. This must be called between ProgressDlgStart and ProgressDlgEnd and defines the LoopCount index.
+	'''
+	pass
 
 
 def Projection(
@@ -20924,8 +21527,8 @@ def PtDialog(
 		Procedure PtDialog displays a dialog box which requests the user to enter a coordinate (point) value.
 	'''
 	pass
-	return ( x, 
-	         y )
+	return ( 0.0, 
+	         0.0 )
 
 
 def PtDialog3D(
@@ -20942,9 +21545,9 @@ def PtDialog3D(
 		Procedure PtDialog3D displays a dialog box which requests the user to enter a 3D coordinate (point) value.
 	'''
 	pass
-	return ( xPt, 
-	         yPt, 
-	         zPt )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def PtInPoly(
@@ -21069,7 +21672,7 @@ def PutFile(
 		Procedure PutFile displays a standard file dialog which requests the user to select or create a text file for output.
 	'''
 	pass
-	return ( fileName )
+	return ( 'string' )
 
 
 def PythonBeginContext():
@@ -21159,8 +21762,8 @@ def QTGetMovieOptions(
 		Retrieves the QuickTime movie frame rate and key frame rate for the referenced movie stream.
 	'''
 	pass
-	return ( frameRate   , 
-	         keyFrameRate )
+	return ( 0.0, 
+	         0   )
 
 
 def QTInitialize():
@@ -21691,6 +22294,22 @@ def RemoveRoofElement(
 	pass
 
 
+def RemoveStoryLevel(
+		storyHandle , # HANDLE  - The handle of the story we want to deleted a Story Level from.                                                   
+		levelType   , # STRING  - The level type of the Story Level we want to remove from 'storyHandle'.                                          
+		bDeleteLayer  # BOOLEAN - If this is true, and the requested Story Level has a layer associated with it, the layer will be deleted as well.
+		):
+	'''
+		Python: BOOLEAN = vs.RemoveStoryLevel(storyHandle, levelType, bDeleteLayer)
+		VectorScript: FUNCTION RemoveStoryLevel(storyHandle:HANDLE; levelType:STRING; bDeleteLayer:BOOLEAN) : BOOLEAN;
+		
+		Category: Layers
+		Removes the Story Level matching 'levelType'  from a Story.  If 'bDeleteLayer' is true and the Story Level has an associated layer, the layer will be deleted as well.
+	'''
+	pass
+	return 'BOOLEAN' # Whether a Story Level with 'layerType' was found in the Story and successfully removed.
+
+
 def RemoveTreeControlItem(
 		nDialogID   , # LONGINT -  
 		nComponentID, # LONGINT -  
@@ -21780,6 +22399,20 @@ def ResetBBox(
 	pass
 
 
+def ResetDefStoryLevels(
+		bDeleteExisting  # BOOLEAN - Whether to delete existing default story levels before reloading the original defaults.
+		):
+	'''
+		Python: BOOLEAN = vs.ResetDefStoryLevels(bDeleteExisting)
+		VectorScript: FUNCTION ResetDefStoryLevels(bDeleteExisting:BOOLEAN) : BOOLEAN;
+		
+		Category: Layers
+		Clears default story levels and repopulates the list from XML data files on disk.
+	'''
+	pass
+	return 'BOOLEAN' # Whether clearing the previous default story levels and loading the default list from disk succeeded.
+
+
 def ResetObject(
 		objectHandle  # HANDLE - Handle to the object to be reset.
 		):
@@ -21846,15 +22479,15 @@ def RetrieveCustomRWPrefs(
 		Retrieves the current custom RenderWorks rendering preferences from data stored in the current drawing.
 	'''
 	pass
-	return ( useTextures        , 
-	         useTransparency    , 
-	         useShadows         , 
-	         useRayTracing      , 
-	         useAntiAliasing    , 
-	         useDithering       , 
-	         tessellationDetail , 
-	         shadowStyle        , 
-	         rayTracingRecursion )
+	return ( False, 
+	         False, 
+	         False, 
+	         False, 
+	         False, 
+	         False, 
+	         0    , 
+	         0    , 
+	         0     )
 
 
 def RetrieveHLPrefs(
@@ -21867,10 +22500,10 @@ def RetrieveHLPrefs(
 		Retrieves the current Hidden Line rendering preferences from data stored in the current drawing.
 	'''
 	pass
-	return ( smoothingAngle  , 
-	         lineStyle       , 
-	         shadeFactorIndex, 
-	         doIntersections  )
+	return ( 0.0  , 
+	         0    , 
+	         0    , 
+	         False )
 
 
 def RetrieveOpenGLPrefs(
@@ -21883,9 +22516,9 @@ def RetrieveOpenGLPrefs(
 		Retrieves the current OpenGL rendering preferences from data stored in the current drawing.
 	'''
 	pass
-	return ( useTextures       , 
-	         tessellationDetail, 
-	         useNURBS           )
+	return ( False, 
+	         0    , 
+	         False )
 
 
 def ReverseWallSides(
@@ -21943,7 +22576,7 @@ def RGBToColorIndex(
 		Procedure RGBToColorIndex converts the Vectorworks palette colors from its' red, green, and blue component values to the colors' palette position index. Parameters red, green, and blue return the color components of the swatch, and parameter color is the palette position ID of the color swatch. RGB values are in the range of 0 65535.
 	'''
 	pass
-	return ( color )
+	return ( 0 )
 
 
 def RGBToColorIndexN(
@@ -21960,7 +22593,7 @@ def RGBToColorIndexN(
 		Procedure RGBToColorIndexN converts the Vectorworks palette colors from its' red, green, and blue component values to the Vectorworks color index. Parameters red, green, and blue return the color components of the swatch, and parameter color is the Vectorworks color index. RGB values are in the range of 0 65535. Parameter ignoreBlackBackground specifies whether the black background preference should be ignored. If set to TRUE, black and white indexes will not be inverted in black background.
 	'''
 	pass
-	return ( color )
+	return ( 0 )
 
 
 def RightBound(
@@ -21989,6 +22622,49 @@ def RightBoundN(
 	'''
 	pass
 	return 'REAL' # 
+
+
+def Road_GetStationCount(
+		hRoadwayObject  # HANDLE -  
+		):
+	'''
+		Python: LONGINT = vs.Road_GetStationCount(hRoadwayObject)
+		VectorScript: FUNCTION Road_GetStationCount(hRoadwayObject:HANDLE) : LONGINT;
+		
+		Category: Roadway Interface Library
+		Return count of stations of the Roadway (Poly) object.
+	'''
+	pass
+	return 'LONGINT' # 
+
+
+def Road_GetStationPoint(
+		hRoadwayObject, # HANDLE  -  
+		index           # LONGINT -  
+		):
+	'''
+		Python: RETURN = vs.Road_GetStationPoint(hRoadwayObject, index)
+		VectorScript: PROCEDURE Road_GetStationPoint(hRoadwayObject:HANDLE; index:LONGINT; VAR RETURNX, RETURNY, RETURNZ:REAL);
+		
+		Category: Roadway Interface Library
+		Return 3D point of the station that is related with the Roadway (Poly) object.
+	'''
+	pass
+	return ( 0,0,0 )
+
+
+def Road_InsertStation(
+		hRoadwayObject, # HANDLE  -  
+		point           # POINT3D -  
+		):
+	'''
+		Python: vs.Road_InsertStation(hRoadwayObject, point)
+		VectorScript: PROCEDURE Road_InsertStation(hRoadwayObject:HANDLE; pointX, pointY, pointZ:REAL);
+		
+		Category: Roadway Interface Library
+		Insert a new station to the Roadway (Poly) object.
+	'''
+	pass
 
 
 def RoofArea_Heated(
@@ -22358,9 +23034,9 @@ def RunPickClrFromPal(
 		Picks a color from a color palette
 	'''
 	pass
-	return ( BOOLEAN , # 
-	         filename, 
-	         index    )
+	return ( False   , # 
+	         'string', 
+	         0        )
 
 
 def RunTempTool(
@@ -22433,7 +23109,7 @@ def ScreenPlanePtToPlanarPt(
 		Projects a 2D point from the screen plane onto the specified plane.
 	'''
 	pass
-	return ( outPt )
+	return ( 0,0 )
 
 
 def ScreenPtToModelPt2D(
@@ -22447,7 +23123,7 @@ def ScreenPtToModelPt2D(
 		Transforms a point from screen coordinate in plan rotation to the model coordinates.
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def ScreenVecToModelVec(
@@ -22461,7 +23137,7 @@ def ScreenVecToModelVec(
 		Takes data from one space to another
 	'''
 	pass
-	return ( p )
+	return ( 0,0 )
 
 
 def SecondaryUnits(
@@ -22478,21 +23154,6 @@ def SecondaryUnits(
 		Category: Units
 		Procedure SecondaryUnits sets the secondary unit parameters for the active document. The secondary units setting is used primarily for display of alternate dimensions in
 		when a dual dimension standard is active.
-	'''
-	pass
-
-
-def SelChoice(
-		item  , # INTEGER - Item ID of dialog control.                               
-		choice, # INTEGER - Position (0-based) in list of item to be set as selected.
-		select  # BOOLEAN - Selection status of list item.                           
-		):
-	'''
-		Python: vs.SelChoice(item, choice, select)
-		VectorScript: PROCEDURE SelChoice(item:INTEGER; choice:INTEGER; select:BOOLEAN);
-		
-		Category: Dialogs - Handler
-		Procedure SelChoice makes a specified list value the selected value for the choice item. To make no item selected, supply -1 as the choice parameter.
 	'''
 	pass
 
@@ -22605,19 +23266,6 @@ def SelectTreeControlItem(
 		
 		Category: Dialogs - Modern
 		Selects the specified tree control item.
-	'''
-	pass
-
-
-def SelField(
-		fieldID  # INTEGER - Item ID of dialog field to highlight/select.
-		):
-	'''
-		Python: vs.SelField(fieldID)
-		VectorScript: PROCEDURE SelField(fieldID:INTEGER);
-		
-		Category: Dialogs - Handler
-		Procedure SelField activates and highlights the specified text field. This call is useful for highlighting a default field value so it can be deleted and replaced by a user-input value.
 	'''
 	pass
 
@@ -23062,6 +23710,20 @@ def SetClPenFore(
 	pass
 
 
+def SetClTextStyleRef(
+		clasName    , # STRING  - Name of class          
+		textStyleRef  # LONGINT - text style reference id
+		):
+	'''
+		Python: vs.SetClTextStyleRef(className, textStyleRef)
+		VectorScript: PROCEDURE SetClTextStyleRef(className:STRING; textStyleRef:LONGINT);
+		
+		Category: Classes
+		Function SetClTextStyleRef sets the text style of the specified class.  The integer style is the internal index of the text style.
+	'''
+	pass
+
+
 def SetClTextureC(
 		clasName  , # STRING  - Class name.                   
 		textureRef  # LONGINT - Texture reference index value.
@@ -23160,6 +23822,20 @@ def SetClUseGraphic(
 	pass
 
 
+def SetClUseTextStyle(
+		clasName , # STRING  - Name of class                 
+		use        # BOOLEAN - Use text style on-off setting.
+		):
+	'''
+		Python: vs.SetClUseTextStyle(className, use)
+		VectorScript: PROCEDURE SetClUseTextStyle(className:STRING; use:BOOLEAN);
+		
+		Category: Classes
+		Controls whether the text style of the specified class is used at object creation.
+	'''
+	pass
+
+
 def SetClUseTexture(
 		clasName , # STRING  - Name of class.                        
 		use        # BOOLEAN - Use texture attributes on-off setting.
@@ -23250,10 +23926,26 @@ def SetColorName(
 	return 'BOOLEAN' # 'true' if the operation was successful.[[BR]]'false' otherwise.[[BR]]
 
 
+def SetCompBotIsRelStory(
+		object                 , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
+		componentIndex         , # INTEGER - The index of the component.                                                
+		bottomIsRelativeToStory  # BOOLEAN - Whether or not the component bottom is relative to a story.                
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompBotIsRelStory(object, componentIndex, bottomIsRelativeToStory)
+		VectorScript: FUNCTION SetCompBotIsRelStory(object:HANDLE; componentIndex:INTEGER; bottomIsRelativeToStory:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets whether or not the component bottom is relative to a story.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def SetComponentAutoBoundEdgeOffset(
-		object             , # HANDLE  - The object. Can be a  slab, Slab Style, or the Slab Preferences.
-		componentIndex     , # INTEGER - The index of the component.                                     
-		autoBoundEdgeOffset  # INTEGER -                                                                 
+		object             , # HANDLE  - The object. Can be a  slab, Slab Style, or the Slab Preferences.                                                                                                                                                                                               
+		componentIndex     , # INTEGER - The index of the component.                                                                                                                                                                                                                                    
+		autoBoundEdgeOffset  # INTEGER -            The auto-bound edge offset.            0 - Inner face           1 - Outer face of inner component           2 - Inner face of core           3 - Center of core           4 - Outer face of core           5 - Inner face of outer component        
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentAutoBoundEdgeOffset(object, componentIndex, autoBoundEdgeOffset)
@@ -23562,6 +24254,22 @@ def SetComponentWidth(
 	return 'BOOLEAN' # 
 
 
+def SetCompTopIsRelStory(
+		object              , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
+		componentIndex      , # INTEGER - The index of the component.                                                
+		topIsRelativeToStory  # BOOLEAN - Whether or not the component top is relative to a story.                   
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompTopIsRelStory(object, componentIndex, topIsRelativeToStory)
+		VectorScript: FUNCTION SetCompTopIsRelStory(object:HANDLE; componentIndex:INTEGER; topIsRelativeToStory:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets whether or not the component top is relative to a story.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def SetConstrain(
 		str  # STRING - Constraint constant string.
 		):
@@ -23747,15 +24455,15 @@ def SetCustomRWPrefs(
 		Sets the current custom RenderWorks rendering preferences from data passed in.
 	'''
 	pass
-	return ( useTextures        , 
-	         useTransparency    , 
-	         useShadows         , 
-	         useRayTracing      , 
-	         useAntiAliasing    , 
-	         useDithering       , 
-	         tessellationDetail , 
-	         shadowStyle        , 
-	         rayTracingRecursion )
+	return ( False, 
+	         False, 
+	         False, 
+	         False, 
+	         False, 
+	         False, 
+	         0    , 
+	         0    , 
+	         0     )
 
 
 def SetDashStyle(
@@ -23948,6 +24656,36 @@ def SetDefStoryLayerName(
 	'''
 	pass
 	return 'BOOLEAN' # Whether the setting of the name of the default story layer succeeded. It will fail if passed an invalid index. The name must not have more than 63 characters and must not be used by another default story layer in the file.
+
+
+def SetDescriptionText(
+		hObject        , # HANDLE             - Handle of the object for which the description should be set.
+		descriptionText  # DYNARRAY[] of CHAR - The description text to be set for the object                
+		):
+	'''
+		Python: BOOLEAN = vs.SetDescriptionText(hObject, descriptionText)
+		VectorScript: FUNCTION SetDescriptionText(hObject:HANDLE; descriptionText:DYNARRAY of CHAR) : BOOLEAN;
+		
+		Category: Object Attributes
+		Sets the user-supplied description for an object.
+		Adds the description data node if one does not already exist.
+	'''
+	pass
+	return 'BOOLEAN' # true if text was successfully set; false if error occurred.
+
+
+def SetDimNote(
+		h   , # HANDLE - Handle to dimension.
+		note  # STRING - Note string.        
+		):
+	'''
+		Python: vs.SetDimNote(h, note)
+		VectorScript: PROCEDURE SetDimNote(h:HANDLE; note:STRING);
+		
+		Category: Dimensions
+		Procedure SetDimNote sets the note text of the referenced dimension to the specified value.
+	'''
+	pass
 
 
 def SetDimStd(
@@ -24349,16 +25087,15 @@ def SetEntityMatrix(
 	return 'BOOLEAN' # Returns true if the object passed is a planar object.
 
 
-def SetField(
-		fieldID, # INTEGER            - Item ID of dialog field to be updated.
-		str      # DYNARRAY[] of CHAR - New string value for field.           
+def SetFenceAttrs(
+		fFenceHandle  # HANDLE -  
 		):
 	'''
-		Python: vs.SetField(fieldID, str)
-		VectorScript: PROCEDURE SetField(fieldID:INTEGER; str:DYNARRAY of CHAR);
+		Python: vs.SetFenceAttrs(fFenceHandle)
+		VectorScript: PROCEDURE SetFenceAttrs(fFenceHandle:HANDLE);
 		
-		Category: Dialogs - Handler
-		Procedure SetField updates the text in the specified text field. Static or editable fields may be updated using this call, which can only be used while the dialog is displayed on screen.
+		Category: SiteModel Interface Library
+		Applies fence attributes to input handle.
 	'''
 	pass
 
@@ -24590,7 +25327,28 @@ def SetGradientData(
 		Note: you must use a variable, initialized to the segment index, to pass as a parameter. After the data has been set, this variable will contain the index of the segment, which may have changed because of the spot position specified.
 	'''
 	pass
-	return ( segmentIndex )
+	return ( 0 )
+
+
+def SetGradientDataN(
+		gradient        , # HANDLE         - Gradient that contains the segment.                                               
+		segmentIndex    , # in/out INTEGER - Segment for which to set the data.                                                
+		spotPosition    , # POINT          - Position of the segment's color spot relative to left-most point of the gradient. 
+		midpointPosition, # POINT          - Position of the segment's midpoint relative to color spot immediately to left.    
+		red             , # LONGINT        - Red component of the color spot's color.                                          
+		green           , # LONGINT        - Green component of the color spot's color.                                        
+		blue            , # LONGINT        - Blue component of the color spot's color.                                         
+		opacity           # INTEGER        - Opacity of the color spot.                                                        
+		):
+	'''
+		Python: segmentIndex = vs.SetGradientDataN(gradient, segmentIndex, spotPosition, midpointPosition, red, green, blue, opacity)
+		VectorScript: PROCEDURE SetGradientDataN(gradient:HANDLE; VAR segmentIndex:INTEGER; spotPosition:REAL; midpointPosition:REAL; red:LONGINT; green:LONGINT; blue:LONGINT; opacity:INTEGER);
+		
+		Category: Document Attributes
+		Note: you must use a variable, initialized to the segment index, to pass as a parameter. After the data has been set, this variable will contain the index of the segment, which may have changed because of the spot position specified.
+	'''
+	pass
+	return ( 0 )
 
 
 def SetGradientMidpointPosition(
@@ -24606,6 +25364,42 @@ def SetGradientMidpointPosition(
 		Sets the midpoint position of the specified gradient segment.
 	'''
 	pass
+
+
+def SetGradientOpacity(
+		gradient    , # HANDLE  - Gradient that contains the segment.
+		segmentIndex, # INTEGER - Segment for which to set the data. 
+		opacity       # INTEGER - Opacity at the spot position.      
+		):
+	'''
+		Python: vs.SetGradientOpacity(gradient, segmentIndex, opacity)
+		VectorScript: PROCEDURE SetGradientOpacity(gradient:HANDLE; segmentIndex:INTEGER; opacity:INTEGER);
+		
+		Category: Document Attributes
+	'''
+	pass
+
+
+def SetGradientSlider(
+		dialogID        , # LONGINT        - Index to the dialog layout that contains the gradient slider component.                
+		componentID     , # LONGINT        - Index to a specific gradient slider component.                                         
+		segmentIndex    , # in/out INTEGER - Segment for which to set the data.                                                     
+		spotPosition    , # POINT          - Position of the segment's color marker relative to left-most point of the slider.      
+		midpointPosition, # POINT          - Position of the segment's midpoint marker relative to color marker immediately to left.
+		red             , # LONGINT        - Red component of the color spot's color.                                               
+		green           , # LONGINT        - Green component of the color spot's color.                                             
+		blue            , # LONGINT        - Blue component of the color spot's color.                                              
+		opacity           # INTEGER        - Opacity for the color at the spot position.                                            
+		):
+	'''
+		Python: segmentIndex = vs.SetGradientSlider(dialogID, componentID, segmentIndex, spotPosition, midpointPosition, red, green, blue, opacity)
+		VectorScript: PROCEDURE SetGradientSlider(dialogID:LONGINT; componentID:LONGINT; VAR segmentIndex:INTEGER; spotPosition:REAL; midpointPosition:REAL; red:LONGINT; green:LONGINT; blue:LONGINT; opacity:INTEGER);
+		
+		Category: Dialogs - Modern
+		Note: you must use a variable, initialized to the segment index, to pass as a parameter. After the data has been set, this variable will contain the index of the segment, which may have changed because of the spot position specified.
+	'''
+	pass
+	return ( 0 )
 
 
 def SetGradientSliderData(
@@ -24627,7 +25421,7 @@ def SetGradientSliderData(
 		Note: you must use a variable, initialized to the segment index, to pass as a parameter. After the data has been set, this variable will contain the index of the segment, which may have changed because of the spot position specified.
 	'''
 	pass
-	return ( segmentIndex )
+	return ( 0 )
 
 
 def SetGradientSliderSelectedMarker(
@@ -24678,7 +25472,7 @@ def SetGradientSpotPosition(
 		Note: you must use a variable, initialized to the segment index, to pass as a parameter. After the data has been set, this variable will contain the index of the segment, which may have changed because of the spot position specified.
 	'''
 	pass
-	return ( segmentIndex )
+	return ( 0 )
 
 
 def SetHDef(
@@ -24705,20 +25499,6 @@ def SetHeight(
 		
 		Category: Object Info
 		Set height of the passed object.
-	'''
-	pass
-
-
-def SetHelpString(
-		itemID    , # INTEGER - The index of the dialog control item for which this help string will be displayed.
-		helpString  # STRING  - The help string for the control item.                                             
-		):
-	'''
-		Python: vs.SetHelpString(itemID, helpString)
-		VectorScript: PROCEDURE SetHelpString(itemID:INTEGER; helpString:STRING);
-		
-		Category: Dialogs - Handler
-		Sets the help string for the specified dialog control item.  When the custom dialog is displayed and the cursor is moved over this item, the string will be displayed in the help item.  Prior to calling this function, a help item must have been defined with AddHelpItem.
 	'''
 	pass
 
@@ -24850,21 +25630,6 @@ def SetImagePopupSelectedItem(
 	pass
 
 
-def SetItem(
-		fieldID, # INTEGER - Item ID of dialog control to be selected or deselected.
-		select   # BOOLEAN - Selection status to be assigned to button.             
-		):
-	'''
-		Python: vs.SetItem(fieldID, select)
-		VectorScript: PROCEDURE SetItem(fieldID:INTEGER; select:BOOLEAN);
-		
-		Category: Dialogs - Handler
-		Procedure SetItem selects or deselects the specified check box or radio button.
-		Auto button styles do not require this call for activation/deactivation.
-	'''
-	pass
-
-
 def SetItemClickable(
 		dialogID   , # LONGINT -  
 		componentID, # LONGINT -  
@@ -24876,21 +25641,6 @@ def SetItemClickable(
 		
 		Category: Dialogs - Modern
 		Sets the specified item to generate events when clicked.  Currently only static text and images are supported.
-	'''
-	pass
-
-
-def SetItemEnable(
-		item  , # INTEGER - Item ID of dialog control whose enable state will be modified.
-		enable  # BOOLEAN - New enable state of dialog control.                           
-		):
-	'''
-		Python: vs.SetItemEnable(item, enable)
-		VectorScript: PROCEDURE SetItemEnable(item:INTEGER; enable:BOOLEAN);
-		
-		Category: Dialogs - Handler
-		Procedure SetItemEnable sets the enable state of a custom dialog item. When an item is enabled, it is available as a valid choice in the dialog; when disabled, an item is grayed and cannot be chosen by the user. SetItemEnable supports all custom dialog controls in VectorScript.
-		<I>Enable States of Dialog Items</I><P>
 	'''
 	pass
 
@@ -25413,6 +26163,25 @@ def SetLBItemInfo(
 	return 'BOOLEAN' # 
 
 
+def SetLBItemLineType(
+		dialogID    , # LONGINT - id of the dialog that contains the list browser
+		componentID , # LONGINT - id of the list browser control                 
+		itemIndex   , # INTEGER - the row index                                  
+		subItemIndex, # INTEGER - the column index                               
+		lineType    , # LONGINT - the line type internal index (reference number)
+		lineWeight    # INTEGER - the line weight                                
+		):
+	'''
+		Python: BOOLEAN = vs.SetLBItemLineType(dialogID, componentID, itemIndex, subItemIndex, lineType, lineWeight)
+		VectorScript: FUNCTION SetLBItemLineType(dialogID:LONGINT; componentID:LONGINT; itemIndex:INTEGER; subItemIndex:INTEGER; lineType:LONGINT; lineWeight:INTEGER) : BOOLEAN;
+		
+		Category: Dialogs - Modern - Browser
+		Sets the specified list browser item's line type.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def SetLBItemPatternIndex(
 		dialogID    , # LONGINT - id of the dialog that contains the list browser   
 		componentID , # LONGINT - id of the list browser control                    
@@ -25637,6 +26406,37 @@ def SetLBSortColumn(
 	pass
 
 
+def SetLevelElevation(
+		storyHandle , # HANDLE - The handle of the Story with the desired Story Level.        
+		levelType   , # STRING - The level type of the Story Level to change the elevation of.
+		newElevation  # POINT  - The new elevation for the Story Level.                       
+		):
+	'''
+		Python: BOOLEAN = vs.SetLevelElevation(storyHandle, levelType, newElevation)
+		VectorScript: FUNCTION SetLevelElevation(storyHandle:HANDLE; levelType:STRING; newElevation:REAL) : BOOLEAN;
+		
+		Category: Layers
+		Sets the elevation of a Story Level relative to its Story.
+	'''
+	pass
+	return 'BOOLEAN' # Whether the Story Level was found and successfully updated.
+
+
+def SetLevelTemplateName(
+		index, # INTEGER - The index of the Story Level Template.               
+		name   # STRING  - The new name for the Story Level Template at 'index'.
+		):
+	'''
+		Python: BOOLEAN = vs.SetLevelTemplateName(index, name)
+		VectorScript: FUNCTION SetLevelTemplateName(index:INTEGER; name:STRING) : BOOLEAN;
+		
+		Category: Layers
+		Sets the name of the Story Level Template at 'index' to be 'name'.
+	'''
+	pass
+	return 'BOOLEAN' # Whether the function succeeded in setting the name.
+
+
 def SetLevelTypeName(
 		index, # INTEGER - The index of the level type whose name is being set.
 		name   # STRING  - The name the indicated level type should be set to. 
@@ -25757,6 +26557,37 @@ def SetLineStyleChoice(
 		
 		Category: Dialogs - Modern
 		Set the current choice of the line style popup dialog control to the specified index.
+	'''
+	pass
+
+
+def SetLineTypeAttriData(
+		dialogID  , # LONGINT - The index of the dialog layout containing the control. 
+		itemID    , # LONGINT - The index of the line attribute control.               
+		lineType  , # LONGINT - The internal index (reference number) of the line type.
+		lineWeight  # INTEGER - The line weight.The value is in mils.                  
+		):
+	'''
+		Python: vs.SetLineTypeAttriData(dialogID, itemID, lineType, lineWeight)
+		VectorScript: PROCEDURE SetLineTypeAttriData(dialogID:LONGINT; itemID:LONGINT; lineType:LONGINT; lineWeight:INTEGER);
+		
+		Category: Dialogs - Modern
+		Set current choices for the line attribute dialog control.  Both the line type and the line weight in mils can be specified.
+	'''
+	pass
+
+
+def SetLineTypeChoice(
+		dialogID, # LONGINT - The index of the dialog layout containing the control. 
+		itemID  , # LONGINT - The index of the line style control.                   
+		lineType  # LONGINT - The internal index (reference number) of the line type.
+		):
+	'''
+		Python: vs.SetLineTypeChoice(dialogID, itemID, lineType)
+		VectorScript: PROCEDURE SetLineTypeChoice(dialogID:LONGINT; itemID:LONGINT; lineType:LONGINT);
+		
+		Category: Dialogs - Modern
+		Set the current choice of the line style popup dialog control to the specified line type.
 	'''
 	pass
 
@@ -26214,6 +27045,23 @@ def SetObjectVariableString(
 	pass
 
 
+def SetObjectWallHeight(
+		objH  , # HANDLE            -  
+		wallH , # HANDLE            -  
+		height  # REAL (Coordinate) -  
+		):
+	'''
+		Python: BOOLEAN = vs.SetObjectWallHeight(objH, wallH, height)
+		VectorScript: FUNCTION SetObjectWallHeight(objH:HANDLE; wallH:HANDLE; height:REAL (Coordinate)) : BOOLEAN;
+		
+		Category: Objects - Walls
+		Sets an object's height value in it's break record.
+		The oject (objH) must be contained in wall (wallH)  to succeed.
+	'''
+	pass
+	return 'BOOLEAN' # True or False upon successfull setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
+
+
 def SetObjectWallOffset(
 		objH  , # HANDLE            - Handle of object to set a new offset value for.        
 		wallH , # HANDLE            - Handle of wall containing the object refernces in objH.
@@ -26345,9 +27193,9 @@ def SetOpenGLPrefs(
 		Sets the current OpenGL rendering preferences from data passed in.
 	'''
 	pass
-	return ( useTextures       , 
-	         tessellationDetail, 
-	         useNURBS           )
+	return ( False, 
+	         0    , 
+	         False )
 
 
 def SetOrigin(
@@ -26376,6 +27224,19 @@ def SetOriginAbsolute(
 		
 		Category: Document Settings
 		Procedure SetOriginAbsolute sets the position of the origin relative to the center of the document drawing space.
+	'''
+	pass
+
+
+def SetPadAttrs(
+		hPadHandle  # HANDLE -  
+		):
+	'''
+		Python: vs.SetPadAttrs(hPadHandle)
+		VectorScript: PROCEDURE SetPadAttrs(hPadHandle:HANDLE);
+		
+		Category: SiteModel Interface Library
+		Applies pad attributes to input handle.
 	'''
 	pass
 
@@ -27629,20 +28490,6 @@ def SetTextAdorner(
 	return 'Boolean' # - 'true' if the operation was successful.[[BR]]- 'false' otherwise.[[BR]]    
 
 
-def SetTextEditable(
-		item    , # INTEGER - the id of the item 
-		editable  # BOOLEAN - editable state     
-		):
-	'''
-		Python: vs.SetTextEditable(item, editable)
-		VectorScript: PROCEDURE SetTextEditable(item:INTEGER; editable:BOOLEAN);
-		
-		Category: Dialogs - Handler
-		Sets the editable state of a text field in an existing dialog.  This function should be called from the event handler for the dialog, not during the dialog setup.
-	'''
-	pass
-
-
 def SetTextFont(
 		objectHd, # HANDLE  - Handle to text object.        
 		Start   , # INTEGER - Start position in text string.
@@ -27761,6 +28608,66 @@ def SetTextStyle(
 		Procedure SetTextStyle sets the text style of a specified substring in the referenced text object.
 	'''
 	pass
+
+
+def SetTextStyleByClass(
+		objectId  # HANDLE - handle to object
+		):
+	'''
+		Python: vs.SetTextStyleByClass(objectId)
+		VectorScript: PROCEDURE SetTextStyleByClass(objectId:HANDLE);
+		
+		Category: Object Attributes
+		SetTextStyleByClass sets the referenced object to use the class text style.  To undo this, use SetTextStyleRef on the object.
+	'''
+	pass
+
+
+def SetTextStyleByClassN(
+		objectId, # HANDLE  - handle to text object                     
+		start   , # INTEGER - Start position in text string, zero-based.
+		count     # INTEGER - Length of substring.                      
+		):
+	'''
+		Python: BOOLEAN = vs.SetTextStyleByClassN(objectId, start, count)
+		VectorScript: FUNCTION SetTextStyleByClassN(objectId:HANDLE; start:INTEGER; count:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Text
+		SetTextStyleByClassN sets a specified substring of a text object to use the class text style. To undo this, use SetTextStyleRef or SetTextStyleRefN on the text.
+	'''
+	pass
+	return 'BOOLEAN' # Returns False if object is not a text object, or if part of the substring is past the end of existing text. Otherwise returns true.
+
+
+def SetTextStyleRef(
+		objectId    , # HANDLE  - handle to object       
+		textStyleRef  # LONGINT - text style reference id
+		):
+	'''
+		Python: vs.SetTextStyleRef(objectId, textStyleRef)
+		VectorScript: PROCEDURE SetTextStyleRef(objectId:HANDLE; textStyleRef:LONGINT);
+		
+		Category: Objects - Text
+		Procedure SetTextStyleRef sets the text style of an object to the referenced style. Reference 0 means Un-Styled.  This procedure will replace by-class styling.
+	'''
+	pass
+
+
+def SetTextStyleRefN(
+		objectId    , # HANDLE  - handle to text object                      
+		start       , # INTEGER - Start position in text string, zero-based. 
+		count       , # INTEGER - Length of substring.                       
+		textStyleRef  # LONGINT - text style reference id                    
+		):
+	'''
+		Python: BOOLEAN = vs.SetTextStyleRefN(objectId, start, count, textStyleRef)
+		VectorScript: FUNCTION SetTextStyleRefN(objectId:HANDLE; start:INTEGER; count:INTEGER; textStyleRef:LONGINT) : BOOLEAN;
+		
+		Category: Objects - Text
+		SetTextStyleRefN sets the text style of a specified substring of a text object to the referenced style. Reference 0 means Un-Styled. This procedure will replace by-class styling.
+	'''
+	pass
+	return 'BOOLEAN' # Returns False if object is not a text object, or if part of the substring is past the end of existing text. Otherwise returns true.
 
 
 def SetTextureBitmap(
@@ -27988,19 +28895,6 @@ def SetTileRepetitionPoint(
 		
 		Category: Document Attributes
 		Sets the specified tile resource's repetition point.
-	'''
-	pass
-
-
-def SetTitle(
-		theTitle  # STRING - Title string of dialog.
-		):
-	'''
-		Python: vs.SetTitle(theTitle)
-		VectorScript: PROCEDURE SetTitle(theTitle:STRING);
-		
-		Category: Dialogs - Classic
-		Sets the title of custom dialogs in VectorScript. The title will be displayed in the dialogs' title bar.
 	'''
 	pass
 
@@ -29622,7 +30516,7 @@ def ShowEditTileSettingsDialog(
 		Displays the edit tile settings dialog for the specified tile.
 	'''
 	pass
-	return ( tileHandle )
+	return ( 0 )
 
 
 def ShowEnhancedPullDownMenuGroupIcon(
@@ -29652,7 +30546,7 @@ def ShowGradientEditorDialog(
 		To create and edit a new gradient resource, pass in a handle variable initialized to nil. If successful, the handle variable will be initialized with the handle to the new gradient resource.
 	'''
 	pass
-	return ( gradient )
+	return ( 0 )
 
 
 def ShowItem(
@@ -29677,6 +30571,21 @@ def ShowLayer():
 		
 		Category: Layers
 		Procedure ShowLayer sets the visibility status of the active layer to visible. Newly created layers always defaulted to the Show mode.
+	'''
+	pass
+
+
+def ShowLBHeader(
+		dialogID   , # LONGINT -  
+		componentID, # LONGINT -  
+		show         # BOOLEAN -  
+		):
+	'''
+		Python: vs.ShowLBHeader(dialogID, componentID, show)
+		VectorScript: PROCEDURE ShowLBHeader(dialogID:LONGINT; componentID:LONGINT; show:BOOLEAN);
+		
+		Category: Dialogs - Modern - Browser
+		Shows or hides header row for a list browser control in a dialog
 	'''
 	pass
 
@@ -29873,6 +30782,233 @@ def Space(
 	pass
 
 
+def Space_AssignZone(
+		space   , # HANDLE -  
+		zoneType, # STRING -  
+		zoneName  # STRING -  
+		):
+	'''
+		Python: vs.Space_AssignZone(space, zoneType, zoneName)
+		VectorScript: PROCEDURE Space_AssignZone(space:HANDLE; zoneType:STRING; zoneName:STRING);
+		
+		Category: SpaceObjectCoreTools
+		Assign Zone to the space object.
+	'''
+	pass
+
+
+def Space_CountAssignedZones(
+		space  # HANDLE -  
+		):
+	'''
+		Python: INTEGER = vs.Space_CountAssignedZones(space)
+		VectorScript: FUNCTION Space_CountAssignedZones(space:HANDLE) : INTEGER;
+		
+		Category: SpaceObjectCoreTools
+		Returns count of assigned zones of the space object
+	'''
+	pass
+	return 'INTEGER' # 
+
+
+def Space_CountAvailableZones():
+	'''
+		Python: INTEGER = vs.Space_CountAvailableZones()
+		VectorScript: FUNCTION Space_CountAvailableZones : INTEGER;
+		
+		Category: SpaceObjectCoreTools
+		Returns count of available zones of the space tool
+	'''
+	pass
+	return 'INTEGER' # 
+
+
+def Space_CreateSpace(
+		space      , # HANDLE -  
+		spaceHeight  # POINT  -  
+		):
+	'''
+		Python: HANDLE = vs.Space_CreateSpace(space, spaceHeight)
+		VectorScript: FUNCTION Space_CreateSpace(space:HANDLE; spaceHeight:REAL) : HANDLE;
+		
+		Category: SpaceObjectCoreTools
+		Creates a new space with the passed polygon
+	'''
+	pass
+	return 'HANDLE' # 
+
+
+def Space_GetGrossArea(
+		space  # HANDLE -  
+		):
+	'''
+		Python: REAL = vs.Space_GetGrossArea(space)
+		VectorScript: FUNCTION Space_GetGrossArea(space:HANDLE) : REAL;
+		
+		Category: SpaceObjectCoreTools
+		Returns gross area of given space object
+	'''
+	pass
+	return 'REAL' # 
+
+
+def Space_GetGrossPoly(
+		space  # HANDLE -  
+		):
+	'''
+		Python: HANDLE = vs.Space_GetGrossPoly(space)
+		VectorScript: FUNCTION Space_GetGrossPoly(space:HANDLE) : HANDLE;
+		
+		Category: SpaceObjectCoreTools
+		Returns gross poly of given space object
+	'''
+	pass
+	return 'HANDLE' # 
+
+
+def Space_GetGrossVolume(
+		space  # HANDLE -  
+		):
+	'''
+		Python: REAL = vs.Space_GetGrossVolume(space)
+		VectorScript: FUNCTION Space_GetGrossVolume(space:HANDLE) : REAL;
+		
+		Category: SpaceObjectCoreTools
+		Returns gross volume of given space object
+	'''
+	pass
+	return 'REAL' # 
+
+
+def Space_GetNetArea(
+		space  # HANDLE -  
+		):
+	'''
+		Python: REAL = vs.Space_GetNetArea(space)
+		VectorScript: FUNCTION Space_GetNetArea(space:HANDLE) : REAL;
+		
+		Category: SpaceObjectCoreTools
+		Returns net area of given space object
+	'''
+	pass
+	return 'REAL' # 
+
+
+def Space_GetNetPoly(
+		space  # HANDLE -  
+		):
+	'''
+		Python: HANDLE = vs.Space_GetNetPoly(space)
+		VectorScript: FUNCTION Space_GetNetPoly(space:HANDLE) : HANDLE;
+		
+		Category: SpaceObjectCoreTools
+		Returns net poly of given space object
+	'''
+	pass
+	return 'HANDLE' # 
+
+
+def Space_GetNetVolume(
+		space  # HANDLE -  
+		):
+	'''
+		Python: REAL = vs.Space_GetNetVolume(space)
+		VectorScript: FUNCTION Space_GetNetVolume(space:HANDLE) : REAL;
+		
+		Category: SpaceObjectCoreTools
+		Returns net volume of given space object
+	'''
+	pass
+	return 'REAL' # 
+
+
+def Space_Gross3DBoundary(
+		space  # HANDLE -  
+		):
+	'''
+		Python: HANDLE = vs.Space_Gross3DBoundary(space)
+		VectorScript: FUNCTION Space_Gross3DBoundary(space:HANDLE) : HANDLE;
+		
+		Category: SpaceObjectCoreTools
+		Returns gross 3D boundary of given space object
+	'''
+	pass
+	return 'HANDLE' # 
+
+
+def Space_ItemAssignedZones(
+		space, # HANDLE  -  
+		item   # INTEGER -  
+		):
+	'''
+		Python: STRING = vs.Space_ItemAssignedZones(space, item)
+		VectorScript: FUNCTION Space_ItemAssignedZones(space:HANDLE; item:INTEGER) : STRING;
+		
+		Category: SpaceObjectCoreTools
+		Returns assigned zone (item) of space object
+	'''
+	pass
+	return 'STRING' # 
+
+
+def Space_ItemAvailableZones(
+		item  # INTEGER -  
+		):
+	'''
+		Python: STRING = vs.Space_ItemAvailableZones(item)
+		VectorScript: FUNCTION Space_ItemAvailableZones(item:INTEGER) : STRING;
+		
+		Category: SpaceObjectCoreTools
+		Returns available zone (item) of space tool
+	'''
+	pass
+	return 'STRING' # 
+
+
+def Space_Net3DBoundary(
+		space  # HANDLE -  
+		):
+	'''
+		Python: HANDLE = vs.Space_Net3DBoundary(space)
+		VectorScript: FUNCTION Space_Net3DBoundary(space:HANDLE) : HANDLE;
+		
+		Category: SpaceObjectCoreTools
+		Returns net 3D boundary of given space object
+	'''
+	pass
+	return 'HANDLE' # 
+
+
+def Space_Set3DGrossHeightOffset(
+		space , # HANDLE  -  
+		offset, # POINT   -  
+		selObj  # BOOLEAN -  
+		):
+	'''
+		Python: vs.Space_Set3DGrossHeightOffset(space, offset, selObj)
+		VectorScript: PROCEDURE Space_Set3DGrossHeightOffset(space:HANDLE; offset:REAL; selObj:BOOLEAN);
+		
+		Category: SpaceObjectCoreTools
+		Set the gross offset height of 3D space object.
+	'''
+	pass
+
+
+def Space_Set3DNetHeightOffset(
+		space , # HANDLE  -  
+		offset, # POINT   -  
+		selObj  # BOOLEAN -  
+		):
+	'''
+		Python: vs.Space_Set3DNetHeightOffset(space, offset, selObj)
+		VectorScript: PROCEDURE Space_Set3DNetHeightOffset(space:HANDLE; offset:REAL; selObj:BOOLEAN);
+		
+		Category: SpaceObjectCoreTools
+		Set the net offset height of 3D space object.
+	'''
+	pass
+
+
 def Split2DObjectByLine(
 		objectHd, # HANDLE -  
 		p1      , # POINT  -  
@@ -29886,29 +31022,7 @@ def Split2DObjectByLine(
 		Splits objectHd along a line defined by the two points.
 	'''
 	pass
-	return ( listHds )
-
-
-def SpotlightCacheClear():
-	'''
-		Python: vs.SpotlightCacheClear()
-		VectorScript: PROCEDURE SpotlightCacheClear;
-		
-		Category: Spotlight
-		Clean the spotlight rendering cache of the unused objects.
-	'''
-	pass
-
-
-def SpotlightCacheDump():
-	'''
-		Python: vs.SpotlightCacheDump()
-		VectorScript: PROCEDURE SpotlightCacheDump;
-		
-		Category: Spotlight
-		Delete the entire spotlight rendering cache.
-	'''
-	pass
+	return ( 0 )
 
 
 def SprdAlign(
@@ -29968,8 +31082,8 @@ def SprdSize(
 		Procedure SprdSize returns the number of rows and columns in the referenced worksheet.
 	'''
 	pass
-	return ( row, 
-	         col )
+	return ( 0, 
+	         0 )
 
 
 def SprdWidth(
@@ -30195,8 +31309,8 @@ def SubtractSolid(
 		Function SubtractSolid creates a new solid subtraction object from the referenced source objects.
 	'''
 	pass
-	return ( INTEGER , # 
-	         newSolid )
+	return ( 0      , # 
+	         0       )
 
 
 def SurfaceArea(
@@ -30531,8 +31645,8 @@ def TrackObject(
 		The callback function return true if the passed handle can be returned.
 	'''
 	pass
-	return ( outObj, 
-	         p      )
+	return ( 0    , 
+	         0,0,0 )
 
 
 def TrackObjectN(
@@ -30555,8 +31669,8 @@ def TrackObjectN(
 		The callback function return true if the passed handle can be returned.
 	'''
 	pass
-	return ( outObj, 
-	         p      )
+	return ( 0    , 
+	         0,0,0 )
 
 
 def TrimNurbsSurface(
@@ -30585,8 +31699,8 @@ def TrueTypeToPoly(
 		TrueTypeToPoly converts handle to Text object into handle to Group of poly objects with similar shape.
 	'''
 	pass
-	return ( LONGINT        , # 
-	         polyGroupHandle )
+	return ( 0      , # 
+	         0       )
 
 
 def Trunc(
@@ -30642,8 +31756,8 @@ def UnionRect(
 		Procedure UnionRect returns a rectangle based on the boundary enclosing the two specified rectangles.
 	'''
 	pass
-	return ( p5, 
-	         p6 )
+	return ( 0,0, 
+	         0,0 )
 
 
 def Units(
@@ -30769,7 +31883,7 @@ def UprString(
 		Procedure UprString converts all characters in the specified string to upper case.
 	'''
 	pass
-	return ( str )
+	return ( 'string' )
 
 
 def UseDefaultFileErrorHandling(
@@ -30797,8 +31911,8 @@ def ValidAngStr(
 		Function ValidAngStr returns TRUE if the specified value can be converted into a numeric angle value. If TRUE, the value (in decimal degrees) of the string is returned.
 	'''
 	pass
-	return ( BOOLEAN, # Returns TRUE if the specified string can be converted into a angle value.
-	         value   )
+	return ( False  , # Returns TRUE if the specified string can be converted into a angle value.
+	         0.0     )
 
 
 def ValidNumStr(
@@ -30812,8 +31926,8 @@ def ValidNumStr(
 		Function ValidNumStr returns TRUE if the specified string can be converted into a numeric value. If TRUE, the numeric value is returned.
 	'''
 	pass
-	return ( BOOLEAN, # Returns TRUE if specified string can be converted into a numeric value.
-	         value   )
+	return ( False  , # Returns TRUE if specified string can be converted into a numeric value.
+	         0.0     )
 
 
 def VDelete(
@@ -31038,14 +32152,15 @@ def vsoAppendWidget(
 
 def vsoContextM_Add(
 		locName, # STRING  -  
-		itemID   # INTEGER -  
+		itemID , # INTEGER -  
+		helpID   # STRING  -  
 		):
 	'''
-		Python: vs.vsoContextM_Add(locName, itemID)
-		VectorScript: PROCEDURE vsoContextM_Add(locName:STRING; itemID:INTEGER);
+		Python: vs.vsoContextM_Add(locName, itemID, helpID)
+		VectorScript: PROCEDURE vsoContextM_Add(locName:STRING; itemID:INTEGER; helpID:STRING);
 		
 		Category: Object Events
-		Add an item to the context menu of the object during kObjOnContextMenuInit event.
+		Add an item to the context menu of the object during ObjectContextMenuEvent::kAction_Init event.
 	'''
 	pass
 
@@ -31058,7 +32173,7 @@ def vsoContextM_AddSep(
 		VectorScript: PROCEDURE vsoContextM_AddSep(itemID:INTEGER);
 		
 		Category: Object Events
-		Add a separator to the context menu of the object during kObjOnContextMenuInit event.
+		Add a separator to the context menu of the object during ObjectContextMenuEvent::kAction_Init event.
 	'''
 	pass
 
@@ -31072,7 +32187,7 @@ def vsoContextM_Check(
 		VectorScript: PROCEDURE vsoContextM_Check(itemID:INTEGER; check:BOOLEAN);
 		
 		Category: Object Events
-		Check an item in the context menu of the object during kObjOnContextMenuInit event.
+		Check an item in the context menu of the object during ObjectContextMenuEvent::kAction_Init event.
 	'''
 	pass
 
@@ -31086,7 +32201,7 @@ def vsoContextM_Enable(
 		VectorScript: PROCEDURE vsoContextM_Enable(itemID:INTEGER; enable:BOOLEAN);
 		
 		Category: Object Events
-		Enable an item in the context menu of the object during kObjOnContextMenuInit event.
+		Enable an item in the context menu of the object during ObjectContextMenuEvent::kAction_Init event.
 	'''
 	pass
 
@@ -31097,10 +32212,27 @@ def vsoContextM_GetItem():
 		VectorScript: FUNCTION vsoContextM_GetItem : INTEGER;
 		
 		Category: Object Events
-		Get selected object context menu item during kObjOnContextMenuEvent event.
+		Get selected object context menu item during ObjectContextMenuEvent::kAction_Event event.
 	'''
 	pass
 	return 'INTEGER' # 
+
+
+def vsoGetCWInfo(
+		):
+	'''
+		Python: (width, height, centerX, centerY, index) = vs.vsoGetCWInfo()
+		VectorScript: PROCEDURE vsoGetCWInfo(VAR width:REAL; VAR height:REAL; VAR centerX:REAL; VAR centerY:REAL; VAR index:INTEGER);
+		
+		Category: Object Events
+		Gets the information about the panel and position of an object being inserted by the curtain wall tool
+	'''
+	pass
+	return ( 0.0, 
+	         0.0, 
+	         0.0, 
+	         0.0, 
+	         0   )
 
 
 def vsoGetEventInfo(
@@ -31113,8 +32245,8 @@ def vsoGetEventInfo(
 		Gets the complete message information associated with an object event.
 	'''
 	pass
-	return ( outObjEvent , 
-	         outEventData )
+	return ( 0, 
+	         0 )
 
 
 def vsoInsertAllParams():
@@ -31175,8 +32307,8 @@ def vsoPrmName2WidgetID(
 		Category: Object Events
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         outWidgetID )
+	return ( False  , # 
+	         0       )
 
 
 def vsoSetEventResult(
@@ -31191,6 +32323,19 @@ def vsoSetEventResult(
 	pass
 
 
+def vsoSetInCurtainWall(
+		inCurtainWall  # BOOLEAN -  
+		):
+	'''
+		Python: vs.vsoSetInCurtainWall(inCurtainWall)
+		VectorScript: PROCEDURE vsoSetInCurtainWall(inCurtainWall:BOOLEAN);
+		
+		Category: Object Events
+		Used during event 52 to retrun whether an object is aCurtain Wall object
+	'''
+	pass
+
+
 def vsoSetObjToolName(
 		eventData, # LONGINT -  
 		toolName   # STRING  -  
@@ -31200,7 +32345,20 @@ def vsoSetObjToolName(
 		VectorScript: PROCEDURE vsoSetObjToolName(eventData:LONGINT; toolName:STRING);
 		
 		Category: Object Events
-		Set ToolName for similar object creation. Used inside kObjOnGetToolName event.
+		Set ToolName for similar object creation. Used inside ParametricGetToolNameMessage::kAction event.
+	'''
+	pass
+
+
+def vsoSetSubtractPanels(
+		inSubtractPanels  # BOOLEAN -  
+		):
+	'''
+		Python: vs.vsoSetSubtractPanels(inSubtractPanels)
+		VectorScript: PROCEDURE vsoSetSubtractPanels(inSubtractPanels:BOOLEAN);
+		
+		Category: Object Events
+		Used during event 58 to retrun whether a curtain wall object will have the wall subtract the panel from the frames
 	'''
 	pass
 
@@ -31255,8 +32413,8 @@ def vsoStateGetExitGroup(
 		Category: Object Events
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         outGrpType )
+	return ( False  , # 
+	         0       )
 
 
 def vsoStateGetLayrChng(
@@ -31269,10 +32427,10 @@ def vsoStateGetLayrChng(
 		Category: Object Events
 	'''
 	pass
-	return ( BOOLEAN     , # 
-	         outOldScale , 
-	         outNewScale , 
-	         outScaleText )
+	return ( False  , # 
+	         0.0    , 
+	         0.0    , 
+	         False   )
 
 
 def vsoStateGetNameChng(
@@ -31285,9 +32443,9 @@ def vsoStateGetNameChng(
 		Category: Object Events
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         outOldName, 
-	         outNewName )
+	return ( False   , # 
+	         'string', 
+	         'string' )
 
 
 def vsoStateGetObjChng(
@@ -31300,8 +32458,8 @@ def vsoStateGetObjChng(
 		Category: Object Events
 	'''
 	pass
-	return ( BOOLEAN    , # 
-	         outChangeID )
+	return ( False  , # 
+	         0       )
 
 
 def vsoStateGetParamChng(
@@ -31314,10 +32472,10 @@ def vsoStateGetParamChng(
 		Category: Object Events
 	'''
 	pass
-	return ( BOOLEAN  , # 
-	         outWidgID, 
-	         outPrmIdx, 
-	         outOldVal )
+	return ( False   , # 
+	         0       , 
+	         0       , 
+	         'string' )
 
 
 def vsoStateGetPos(
@@ -31330,11 +32488,11 @@ def vsoStateGetPos(
 		Category: Object Events
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         outX   , 
-	         outY   , 
-	         outZ   , 
-	         outIs3D )
+	return ( False  , # 
+	         0.0    , 
+	         0.0    , 
+	         0.0    , 
+	         False   )
 
 
 def vsoStateGetRot(
@@ -31347,9 +32505,9 @@ def vsoStateGetRot(
 		Category: Object Events
 	'''
 	pass
-	return ( BOOLEAN   , # 
-	         outDiffAng, 
-	         outIs3D    )
+	return ( False  , # 
+	         0.0    , 
+	         False   )
 
 
 def vsoWidgetGetEnable(
@@ -31441,8 +32599,8 @@ def vsoWidgetPopupGet(
 		Category: Object Events
 	'''
 	pass
-	return ( outId  , 
-	         outText )
+	return ( 'string', 
+	         'string' )
 
 
 def vsoWidgetPopupGetCnt(
@@ -31610,8 +32768,8 @@ def vstCustomProcNNA(
 		Category: Tool Events
 	'''
 	pass
-	return ( BOOLEAN     , # 
-	         outEvtResult )
+	return ( False  , # 
+	         0       )
 
 
 def vstDefault2DToolDraw():
@@ -31763,8 +32921,8 @@ def vstGetCurrPt2D(
 		Category: Tool Events
 	'''
 	pass
-	return ( outX, 
-	         outY )
+	return ( 0.0, 
+	         0.0 )
 
 
 def vstGetCurrPt3D(
@@ -31777,9 +32935,9 @@ def vstGetCurrPt3D(
 		Category: Tool Events
 	'''
 	pass
-	return ( outX, 
-	         outY, 
-	         outZ )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def vstGetDataLong(
@@ -31792,8 +32950,8 @@ def vstGetDataLong(
 		Category: Tool Events
 	'''
 	pass
-	return ( outData, 
-	         result  )
+	return ( 0    , 
+	         False )
 
 
 def vstGetDataReal(
@@ -31806,8 +32964,8 @@ def vstGetDataReal(
 		Category: Tool Events
 	'''
 	pass
-	return ( outData, 
-	         result  )
+	return ( 0.0  , 
+	         False )
 
 
 def vstGetDataString(
@@ -31820,8 +32978,8 @@ def vstGetDataString(
 		Category: Tool Events
 	'''
 	pass
-	return ( outData, 
-	         result  )
+	return ( 'string', 
+	         False    )
 
 
 def vstGetEventInfo(
@@ -31834,9 +32992,9 @@ def vstGetEventInfo(
 		Gets the VS Tool Event Parameters.
 	'''
 	pass
-	return ( outAction  , 
-	         outMessage1, 
-	         outMessage2 )
+	return ( 0, 
+	         0, 
+	         0 )
 
 
 def vstGetEventResult(
@@ -31848,7 +33006,7 @@ def vstGetEventResult(
 		Category: Tool Events
 	'''
 	pass
-	return ( outGetVal )
+	return ( 0 )
 
 
 def vstGetInitObject(
@@ -31859,7 +33017,7 @@ def vstGetInitObject(
 		VectorScript: FUNCTION vstGetInitObject(message1:LONGINT) : HANDLE;
 		
 		Category: Tool Events
-		Return HANDLE to the object that this tool should copy. Part of 'similar object createion'. Used inside kToolInitByObject event.
+		Return HANDLE to the object that this tool should copy. Part of 'similar object createion'. Used inside ToolInitByObjectMessage::kAction event.
 	'''
 	pass
 	return 'HANDLE' # 
@@ -31874,7 +33032,7 @@ def vstGetModeHelpBase(
 		Category: Tool Events
 	'''
 	pass
-	return ( outTextRsrcIDBase )
+	return ( 0 )
 
 
 def vstGetModeValue(
@@ -31887,7 +33045,7 @@ def vstGetModeValue(
 		Category: Tool Events
 	'''
 	pass
-	return ( outValue )
+	return ( 0 )
 
 
 def vstGetPickObject():
@@ -31912,8 +33070,8 @@ def vstGetPt2D(
 		Category: Tool Events
 	'''
 	pass
-	return ( outX, 
-	         outY )
+	return ( 0.0, 
+	         0.0 )
 
 
 def vstGetPt3D(
@@ -31927,9 +33085,9 @@ def vstGetPt3D(
 		Category: Tool Events
 	'''
 	pass
-	return ( outX, 
-	         outY, 
-	         outZ )
+	return ( 0.0, 
+	         0.0, 
+	         0.0 )
 
 
 def vstGetRsrcFileID(
@@ -31941,7 +33099,7 @@ def vstGetRsrcFileID(
 		Category: Tool Events
 	'''
 	pass
-	return ( outFileID )
+	return ( 0 )
 
 
 def vstGetString(
@@ -31956,7 +33114,7 @@ def vstGetString(
 		Access string stored in tool's resource file.
 	'''
 	pass
-	return ( outString )
+	return ( 'string' )
 
 
 def vstGetToolObject():
@@ -31992,7 +33150,7 @@ def vstNumPts(
 		Category: Tool Events
 	'''
 	pass
-	return ( outNumPts )
+	return ( 0 )
 
 
 def vstRestoreWPHybridTool(
@@ -32042,7 +33200,7 @@ def vstSetDataLong(
 		Category: Tool Events
 	'''
 	pass
-	return ( result )
+	return ( False )
 
 
 def vstSetDataReal(
@@ -32056,7 +33214,7 @@ def vstSetDataReal(
 		Category: Tool Events
 	'''
 	pass
-	return ( result )
+	return ( False )
 
 
 def vstSetDataString(
@@ -32070,7 +33228,7 @@ def vstSetDataString(
 		Category: Tool Events
 	'''
 	pass
-	return ( result )
+	return ( False )
 
 
 def vstSetEventInfo(
@@ -32187,9 +33345,9 @@ def VWCoordToGeog(
 		Get geographical coordinates of a point(latitude and longitude).
 	'''
 	pass
-	return ( BOOLEAN, # 
-	         outLat , 
-	         outLon  )
+	return ( False  , # 
+	         0.0    , 
+	         0.0     )
 
 
 def Wait(
@@ -32305,8 +33463,8 @@ def WallHeight(
 		Procedure WallHeight returns the wall heights of the referenced wall object.
 	'''
 	pass
-	return ( startHt, 
-	         endHt   )
+	return ( 0.0, 
+	         0.0 )
 
 
 def WallPeak(
@@ -32443,8 +33601,8 @@ def WriteXMLMemory(
 		Creates XML data from an internal DOM tree.
 	'''
 	pass
-	return ( INTEGER, # 
-	         XMLData )
+	return ( 0       , # 
+	         'string' )
 
 
 def XCenter(
@@ -32590,8 +33748,8 @@ def XMLSAXEndDocMemory(
 		Write XML using SAX, end of a document. XMLSAXBeginDocMemory begins a document.
 	'''
 	pass
-	return ( INTEGER, # 
-	         XMLData )
+	return ( 0       , # 
+	         'string' )
 
 
 def XMLSAXEndNode(
