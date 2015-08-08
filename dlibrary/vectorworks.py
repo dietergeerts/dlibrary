@@ -46,6 +46,21 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
         self.__version = value
 
 
+class ActivePlugInInfo(object):
+    """
+    Decorator to initialize the active plugin. This should be used on the main run method of the plugin!
+    """
+
+    def __init__(self, version: str):
+        self.__version = version
+
+    def __call__(self, function: callable) -> callable:
+        def initialize_active_plugin_function(*args, **kwargs):
+            ActivePlugIn().version = self.__version
+            function(*args, **kwargs)
+        return initialize_active_plugin_function
+
+
 class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
     def __init__(self, active_plugin_type: str):

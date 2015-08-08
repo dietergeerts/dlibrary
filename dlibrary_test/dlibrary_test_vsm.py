@@ -6,16 +6,11 @@ from dlibrary.utility import AbstractViewModel, ViewModelList, ObservableField, 
     ObservableMethod, ObservableCommand, VSException
 
 # pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True, suspend=False)
-from dlibrary.vectorworks import ActivePlugInType, ActivePlugIn
+from dlibrary.vectorworks import ActivePlugInType, ActivePlugInInfo
 
 
-def initialize():
-    ActivePlugIn().version = '2015.5.8'
-
-
+@ActivePlugInInfo(version='2015.5.8')
 def run():
-    initialize()
-
     try:
         items = create_items()
         dialog = Dialog(DLibraryTestDialogXmlFile(), DLibraryTestVsmViewModel(items))
