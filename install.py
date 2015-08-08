@@ -25,7 +25,6 @@ def ask_for_folder(initial_folder: str, message: str) -> str:
         filedialog.askdirectory(**{'initialdir': initial_folder, 'mustexist': True, 'title': message}))
 
 
-
 # SET DESTINATION FOLDER ###############################################################################################
 # By default, VW will copy all plugin files into the users' plugin folder. This is not always desired. For example when
 # more than one user will use your plugin, the office can place them on a network drive and point each VW installation
@@ -140,8 +139,6 @@ def update_to_or_install_dlibrary_version(required_version: str):
     directory_path = ask_for_folder('', 'Please select the directory for dlibrary, make sure VW doesn\'t scan this '
                                         'folder. We need write access to the folder for the installation to succeed!')
 
-    vs.AlrtDialog(directory_path)
-
     if directory_path != '':  # '' means cancel was chosen!
         if os.path.exists(os.path.join(directory_path, 'dlibrary')):
             if update_dlibrary_needed(directory_path):
@@ -155,10 +152,10 @@ def update_to_or_install_dlibrary_version(required_version: str):
 
 
 # ADD TO WORKSPACES ####################################################################################################
-# In most cases, we also want to add our plugins to the users' workspace, so he doens't have to go through that. This
+# In most cases, we also want to add our plugins to the users' workspace, so he doesn't have to go through that. This
 # will get him started immediately.
 # ----------------------------------------------------------------------------------------------------------------------
-# REMARK: This doesn't work. We'll just show a message to the user he has to do it untill we find out how to do it!
+# REMARK: This doesn't work, yet. We'll just show a message to the user he has to do it until we find out how to do it!
 # ----------------------------------------------------------------------------------------------------------------------
 
 def add_plugins_to_workspaces(plugins_structure: dict):
@@ -188,6 +185,6 @@ def add_plugins_to_workspaces(plugins_structure: dict):
 
 # INSTALLATION STEPS ###################################################################################################
 
-# set_destination_folder_for('DProjectInfo')
+set_destination_folder_for('MyPluginName')
 update_to_or_install_dlibrary_version('2015.0.1')
-# add_plugins_to_workspaces({'Menus': {'MyMenu': ['MyPluginName']}})
+add_plugins_to_workspaces({'Menus': {'MyMenu': ['MyPluginName']}})  # NOT WORKING YET!
