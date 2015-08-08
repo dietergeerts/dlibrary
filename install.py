@@ -1,6 +1,7 @@
 import os
 import re
 import shutil
+from tkinter import filedialog, Tk
 import urllib.request
 from xml.etree import ElementTree
 import vs
@@ -9,6 +10,20 @@ import vs
 # make it easier for your users to install. To add certain steps/functionality, just (un)comment them at the end.
 # An install script must go at the top level of your .zip file in order for Vectorworks to pick it up. For more
 # information about install files, see: http://developer.vectorworks.net/index.php/VS:Implementing_Installation_Script
+
+
+# SOME COMMON METHODS, AS WE CAN'T RELY ON DLIBRARY YET ################################################################
+# ----------------------------------------------------------------------------------------------------------------------
+
+def ask_for_folder(initial_folder: str, message: str) -> str:
+
+    def correct_windows_path(path: str) -> str:
+        return path.replace('/', '\\') if os.name == 'nt' else path
+
+    Tk().withdraw()  # To hide the tkinter root window!
+    return correct_windows_path(
+        filedialog.askdirectory(**{'initialdir': initial_folder, 'mustexist': True, 'title': message}))
+
 
 
 # SET DESTINATION FOLDER ###############################################################################################
@@ -32,10 +47,9 @@ def set_destination_folder_for(plugin_folder_name: str):
 
     def install_in_custom_folder():
         user_plugin_folder = vs.GetFolderPath(-2)
-        # result, directory_path = vs.GetFolder('Please select the install directory. '
-        #                                       'Cancelling will install in your user folder.')
-        result, directory_path = 0, 'D:\\DWorks\\Vectorworks\\2015\\Resources\\Plug-Ins'
-        if result == 0:  # Directory is chosen with ok button.
+        directory_path = ask_for_folder(user_plugin_folder, 'Please select the install directory. '
+                                                            'Cancelling will install in your user folder.')
+        if directory_path != '':  # '' means cancel was chosen!
             if os.path.exists(os.path.join(directory_path, plugin_folder_name)):
                 shutil.rmtree(os.path.join(directory_path, plugin_folder_name))
             shutil.move(os.path.join(user_plugin_folder, plugin_folder_name), directory_path)
@@ -94,6 +108,7 @@ def update_to_or_install_dlibrary_version(required_version: str):
             # vs.ProgressDlgSetMeter('Installing dlibrary v' + required_version + '...')
             vs.AlrtDialog('We\'ll start installing `dlibrary`. This can take a while.')
             urllib.request.urlretrieve(dlibrary_url, dlibrary_zip)
+            urllib.request.urlretrieve(dlibrary_url, dlibrary_zip)
             shutil.unpack_archive(dlibrary_zip, libraries_folder)
             unzipped_dir = get_unzipped_dir(libraries_folder)
             shutil.move(os.path.join(libraries_folder, unzipped_dir, 'dlibrary'), libraries_folder)
@@ -112,22 +127,28 @@ def update_to_or_install_dlibrary_version(required_version: str):
         unzipped_repo_folders = [f for f in os.listdir(libraries_folder) if f.startswith('dieterdworks-vw-dlibrary')]
         return unzipped_repo_folders[0] if len(unzipped_repo_folders) > 0 else ''
 
-    vs.AlrtDialog(
-        'This plugin requires the \'dlibrary\' library, version ' + required_version + '. We would like to install or '
-        'update it. Please select its directory or the one where we can install it in the next dialog. Cancel that '
-        'dialog to manually install the library.')
+    def update_python_search_path(libraries_folder: str):
+        search_path = vs.PythonGetSearchPath()
+        library_path = os.path.join(libraries_folder, '')
+        if library_path not in search_path.split(';'):
+            vs.PythonSetSearchPath('%s%s' % (search_path, library_path))
 
-    # result, directory_path = vs.GetFolder(
-    #     'Please select the directory where we can find dlibaray, or where we may install it. '
-    #     'Also make sure we have write access to that folder, otherwise the installation will fail!')
-    result, directory_path = 0, 'D:\\DWorks\\Vectorworks\\2015\\Plug-In libraries'
+    vs.AlrtDialog('This plugin requires the \'dlibrary\' library, version ' + required_version + '. We would like to '
+                  'install or update it. Please select its parent directory or the one where we can install it in the '
+                  'next dialog. Cancel that dialog to manually install the library.')
 
-    if result == 0:  # Directory is set with ok button.
+    directory_path = ask_for_folder('', 'Please select the directory for dlibrary, make sure VW doesn\'t scan this '
+                                        'folder. We need write access to the folder for the installation to succeed!')
+
+    vs.AlrtDialog(directory_path)
+
+    if directory_path != '':  # '' means cancel was chosen!
         if os.path.exists(os.path.join(directory_path, 'dlibrary')):
             if update_dlibrary_needed(directory_path):
                 update_dlibrary(directory_path)
         else:
             install_dlibrary(directory_path)
+        update_python_search_path(directory_path)
     else:
         vs.AlrtDialog('Don\'t forget to manually install `dlibrary`. It can be found at: '
                       'https://bitbucket.org/dieterdworks/vw-dlibrary/get/v' + required_version + '.zip')
@@ -167,6 +188,6 @@ def add_plugins_to_workspaces(plugins_structure: dict):
 
 # INSTALLATION STEPS ###################################################################################################
 
-set_destination_folder_for('MyPluginName')
-update_to_or_install_dlibrary_version('2015.0.0')
-add_plugins_to_workspaces({'Menus': {'MyMenu': ['MyPluginName']}})
+# set_destination_folder_for('DProjectInfo')
+update_to_or_install_dlibrary_version('2015.0.1')
+# add_plugins_to_workspaces({'Menus': {'MyMenu': ['MyPluginName']}})
