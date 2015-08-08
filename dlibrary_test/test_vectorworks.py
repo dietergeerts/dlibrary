@@ -1,5 +1,5 @@
 from unittest import TestCase
-from dlibrary.vectorworks import Vectorworks
+from dlibrary.vectorworks import Vectorworks, ActivePlugIn
 from dlibrary_test.testing import VectorworksInstance
 
 
@@ -25,3 +25,22 @@ class VectorworksTest(TestCase):
         """
         VectorworksInstance().serial_number = '123456-654321'
         self.assertEqual(Vectorworks().dongle, '654321')
+
+
+class ActivePlugInTest(TestCase):
+
+    def test_name_property(self):
+        """
+        The name should give back the name of the currently running plugin, hence active.
+        """
+        VectorworksInstance().active_plugin_name = 'MyPlugIn'
+        self.assertEqual(ActivePlugIn().name, 'MyPlugIn')
+
+    def test_version_property(self):
+        """
+        It should be possible to specify a version number to a plugin, if the author wants this.
+        As this is optional, the version will be an empty string at first. When set, it will hold that value.
+        """
+        self.assertEqual(ActivePlugIn().version, '')
+        ActivePlugIn().version = '2015.5.8'
+        self.assertEqual(ActivePlugIn().version, '2015.5.8')

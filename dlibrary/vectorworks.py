@@ -28,6 +28,7 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
 
     def __init__(self):
         self.__name = None
+        self.__version = ''
 
     @property
     def name(self):
@@ -37,6 +38,14 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
         if not succeeded:
             raise VSException('GetPluginInfo')
         return self.__name
+
+    @property
+    def version(self):
+        return self.__version
+
+    @version.setter
+    def version(self, value):
+        self.__version = value
 
 
 class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile, metaclass=ABCMeta):
