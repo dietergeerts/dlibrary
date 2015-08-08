@@ -1,8 +1,6 @@
 from abc import ABCMeta
-from dlibrary.dialog.predefined.alert import Alert, AlertType
-from dlibrary.utility.exception import VSException
-from dlibrary.utility.singleton import SingletonMeta
-from dlibrary.utility.xmltodict import AbstractXmlFile
+from dlibrary.dialog_predefined import AlertType, Alert
+from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException
 import vs
 
 
@@ -31,7 +29,7 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
         self.__version = ''
 
     @property
-    def name(self):
+    def name(self) -> str:
         # Singletons will keep it's data throughout the entire Vectorworks session!
         # This result isn't the same during that session, it depends on the active plugin!
         succeeded, self.__name, _ = vs.GetPluginInfo()
@@ -40,11 +38,11 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
         return self.__name
 
     @property
-    def version(self):
+    def version(self) -> str:
         return self.__version
 
     @version.setter
-    def version(self, value):
+    def version(self, value: str):
         self.__version = value
 
 
@@ -73,7 +71,7 @@ class Security(object):
     def __create_no_license_alert():
         return Alert(AlertType.WARNING,
                      'You have no rights to use this plugin.',
-                     'Contact the plugin distributor to aquire a license.')
+                     'Contact the plugin distributor to acquire a license.')
 
     @staticmethod
     def __create_other_license_alert(version: str):

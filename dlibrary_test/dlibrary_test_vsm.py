@@ -1,30 +1,32 @@
-import pydevd
+from dlibrary.dialog_custom import Dialog, AbstractActivePlugInDialogXmlFile
+from dlibrary.dialog_predefined import AlertType, Alert, PlugInFileVsExceptionAlert, PlugInFileFileNotFoundErrorAlert, \
+    PlugInFilePermissionErrorAlert, PlugInFileOsErrorAlert
+from dlibrary.document import RecordDefinitionResourceList
+from dlibrary.utility import AbstractViewModel, ViewModelList, ObservableField, LinkedObservableField, ObservableList, \
+    ObservableMethod, ObservableCommand, VSException
 
-from dlibrary.dialog.dialog import Dialog
-from dlibrary.resource.definition.definitions.record import RecordDefinitionResourceList
-from dlibrary.utility.observable import ObservableField, LinkedObservableField, ObservableCommand, ObservableList, \
-    ObservableMethod
-from dlibrary.dialog.predefined.alert import Alert
-from dlibrary.dialog.predefined.alert import AlertType
-from dlibrary.dialog.predefined.alerts.alert_plugin import PlugInAlerts
-from dlibrary.dialog.viewmodel import AbstractViewModel, ViewModelList
-from dlibrary.utility.exception import VSException
+# pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True, suspend=False)
+from dlibrary.vectorworks import ActivePlugInType, ActivePlugIn
 
-pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True, suspend=False)
+
+def initialize():
+    ActivePlugIn().version = '2015.5.8'
 
 
 def run():
+    initialize()
+
     try:
         items = create_items()
-        dialog = Dialog('Main', DLibraryTestVsmViewModel(items))
+        dialog = Dialog(DLibraryTestDialogXmlFile(), DLibraryTestVsmViewModel(items))
     except VSException:
-        PlugInAlerts().on_plugin_file_vsexception.show()
+        PlugInFileVsExceptionAlert().show()
     except FileNotFoundError:
-        PlugInAlerts().on_plugin_file_filenotfounderror.show()
+        PlugInFileFileNotFoundErrorAlert().show()
     except PermissionError:
-        PlugInAlerts().on_plugin_file_permissionerror.show()
+        PlugInFilePermissionErrorAlert().show()
     except OSError:
-        PlugInAlerts().on_plugin_file_oserror.show()
+        PlugInFileOsErrorAlert().show()
     else:
         if dialog.show():
             Alert(AlertType.INFO, 'You closed the dialog through the OK button').show()
@@ -34,6 +36,12 @@ def run():
         for item in items:
             message += item['@prop_one'] + ' ' + str(item['@prop_two']) + ' | '
         Alert(AlertType.INFO, message).show()
+
+
+class DLibraryTestDialogXmlFile(AbstractActivePlugInDialogXmlFile):
+
+    def __init__(self):
+        super().__init__('Main', ActivePlugInType.MENU)
 
 
 class ChoiceItem(object):
@@ -51,10 +59,10 @@ choice3 = ChoiceItem(2, 'two')
 choice4 = ChoiceItem(4, 'four')
 
 
-def create_items() -> list: return [
-    create_item('Some', choice1),
-    create_item('Another', choice1),
-    create_item('One', choice3)]
+def create_items() -> list:
+    return [create_item('Some', choice1),
+            create_item('Another', choice1),
+            create_item('One', choice3)]
 
 
 def create_item(prop_one: str='', prop_two: object=choice4) -> dict:
@@ -81,21 +89,21 @@ class PredefinedDialogsViewModel(object):
         self.__dialog_text = ObservableField()
         self.__dialog_advice = ObservableField()
         self.__show_alert_critical = ObservableCommand(
-            lambda: self.__show_alert(AlertType.CRITICAL), self.__can_show_alert, {self.dialog_text})
+            lambda: self.__show_alert(AlertType.CRITICAL), self.__can_show_alert, [self.dialog_text])
         self.__show_alert_warning = ObservableCommand(
-            lambda: self.__show_alert(AlertType.WARNING), self.__can_show_alert, {self.dialog_text})
+            lambda: self.__show_alert(AlertType.WARNING), self.__can_show_alert, [self.dialog_text])
         self.__show_alert_info = ObservableCommand(
-            lambda: self.__show_alert(AlertType.INFO), self.__can_show_alert, {self.dialog_text})
+            lambda: self.__show_alert(AlertType.INFO), self.__can_show_alert, [self.dialog_text])
         self.__show_alert_success = ObservableCommand(
-            lambda: self.__show_alert(AlertType.SUCCESS), self.__can_show_alert, {self.dialog_text})
+            lambda: self.__show_alert(AlertType.SUCCESS), self.__can_show_alert, [self.dialog_text])
         self.__show_plugin_alert_vsexception = ObservableCommand(
-            lambda: PlugInAlerts().on_plugin_file_vsexception.show())
+            lambda: PlugInFileVsExceptionAlert().show())
         self.__show_plugin_alert_filenotfounderror = ObservableCommand(
-            lambda: PlugInAlerts().on_plugin_file_filenotfounderror.show())
+            lambda: PlugInFileFileNotFoundErrorAlert().show())
         self.__show_plugin_alert_permissionerror = ObservableCommand(
-            lambda: PlugInAlerts().on_plugin_file_permissionerror.show())
+            lambda: PlugInFilePermissionErrorAlert().show())
         self.__show_plugin_alert_oserror = ObservableCommand(
-            lambda: PlugInAlerts().on_plugin_file_oserror.show())
+            lambda: PlugInFileOsErrorAlert().show())
 
     @property
     def dialog_text(self) -> ObservableField:
@@ -124,8 +132,8 @@ class PredefinedDialogsViewModel(object):
     def __can_show_alert(self):
         return self.__dialog_text.value is not None and self.__dialog_text.value != ''
 
-    def __show_alert(self, type: AlertType):
-        Alert(type, self.__dialog_text.value, self.__dialog_advice.value).show()
+    def __show_alert(self, alert_type: int):
+        Alert(alert_type, self.__dialog_text.value, self.__dialog_advice.value).show()
 
     @property
     def show_plugin_alert_vsexception(self) -> ObservableCommand:
@@ -169,12 +177,13 @@ class RecordDefinitionsViewModel(object):
         return self.__selected_record_definition_field
 
     # noinspection PyUnusedLocal
-    def __on_selected_record_definition_changed(self, oldValue, newValue):
+    def __on_selected_record_definition_changed(self, old_value, new_value):
         self.selected_record_definition_field.value = None
         self.record_definition_fields.suspend_events()
         self.record_definition_fields.clear()
-        record_definition = self.__record_definitions.get_resource(newValue)
+        record_definition = self.__record_definitions.get_resource(new_value)
         if record_definition is not None:
+            # noinspection PyUnresolvedReferences
             self.record_definition_fields.extend(record_definition.fields)
         self.record_definition_fields.resume_events()
 
@@ -208,5 +217,6 @@ class DLibraryTestVsmViewModel(object):
     def record_definitions(self) -> ObservableField:
         return self.__record_definitions
 
-    def __can_add_item(self, item):
+    @staticmethod
+    def __can_add_item(item):
         return item['@prop_one'] is not None and item['@prop_one'] != ''

@@ -1,4 +1,4 @@
-from dlibrary.utility.singleton import SingletonMeta
+from dlibrary.utility import SingletonMeta
 import vs
 
 

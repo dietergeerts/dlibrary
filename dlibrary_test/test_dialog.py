@@ -1,17 +1,8 @@
 from abc import ABCMeta
 from unittest import TestCase
-from dlibrary.dialog.control import AbstractDataContext, Align, AlignMode, Layout, TextStyleEnum
-from dlibrary.dialog.controls.button import Button
-from dlibrary.dialog.controls.edittext import EditText
-from dlibrary.dialog.controls.groupbox import GroupBox
-from dlibrary.dialog.controls.listbox import ListBox
-from dlibrary.dialog.controls.listbrowser import ListBrowser
-from dlibrary.dialog.controls.pulldownmenu import PullDownMenu
-from dlibrary.dialog.controls.separator import Separator
-from dlibrary.dialog.controls.statictext import StaticText
-from dlibrary.dialog.controls.tabcontrol import TabControl
-from dlibrary.dialog.controls.tabpane import TabPane
-from dlibrary.utility.observable import ObservableCommand, ObservableList
+from dlibrary.dialog_custom import Layout, AlignMode, Align, TextStyleEnum, AbstractDataContext, Button, EditText, GroupBox, \
+    ListBox, ListBrowser, PullDownMenu, Separator, StaticText, TabControl, TabPane
+from dlibrary.utility import ObservableList, ObservableCommand
 
 
 class AbstractControlTest(TestCase, metaclass=ABCMeta):
