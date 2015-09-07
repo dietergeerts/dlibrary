@@ -25,6 +25,22 @@ def ask_for_folder(initial_folder: str, message: str) -> str:
         filedialog.askdirectory(**{'initialdir': initial_folder, 'mustexist': True, 'title': message}))
 
 
+def get_folder_path(folder_id: int) -> str:
+    """
+    Patrick Stanford <patstanford@coviana.com> on the VectorScript Discussion List:
+    Since Mac OS 10, as they're rewritten it using UNIX kernel, the mac uses Posix natively.
+    Since VW predates that, the old calls use HFS paths and need to be converted for newer APIs.
+    You can ask VW to do the conversion, as simply replacing the characters are not enough (Posix uses volume mounting
+    instead of drive names). This can be done through vs.ConvertHSF2PosixPath().
+    """
+
+    folder_path = vs.GetFolderPath(folder_id)
+    major, minor, maintenance, platform = vs.GetVersion()
+    if platform == 1:
+        _, folder_path = vs.ConvertHSF2PosixPath(folder_path)
+    return folder_path
+
+
 # SET DESTINATION FOLDER ###############################################################################################
 # By default, VW will copy all plugin files into the users' plugin folder. This is not always desired. For example when
 # more than one user will use your plugin, the office can place them on a network drive and point each VW installation
@@ -45,7 +61,7 @@ def set_destination_folder_for(plugin_folder_name: str):
         pass
 
     def install_in_custom_folder():
-        user_plugin_folder = vs.GetFolderPath(-2)
+        user_plugin_folder = get_folder_path(-2)
         directory_path = ask_for_folder(user_plugin_folder, 'Please select the install directory. '
                                                             'Cancelling will install in your user folder.')
         if directory_path != '':  # '' means cancel was chosen!
@@ -55,7 +71,7 @@ def set_destination_folder_for(plugin_folder_name: str):
             vs.AlrtDialog('Don\'t forget to Let Vectorworks know about your custom folder!')
 
     def already_installed_in_custom_folder():
-        user_plugin_folder = vs.GetFolderPath(-2)
+        user_plugin_folder = get_folder_path(-2)
         shutil.rmtree(os.path.join(user_plugin_folder, plugin_folder_name))
 
     {
@@ -161,7 +177,7 @@ def update_to_or_install_dlibrary_version(required_version: str):
 def add_plugins_to_workspaces(plugins_structure: dict):
 
     def get_or_create_and_get_user_workspace_path():
-        user_workspace_path = vs.GetFolderPath(-4)
+        user_workspace_path = get_folder_path(-4)
         if not os.path.exists(os.path.join(user_workspace_path)):
             os.makedirs(os.path.join(user_workspace_path))
         return user_workspace_path
