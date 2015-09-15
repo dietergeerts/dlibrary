@@ -4,16 +4,48 @@ from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException
 import vs
 
 
+class Platform(object):
+    MAC_OS = 1
+    WINDOWS = 2
+
+
 class Vectorworks(object, metaclass=SingletonMeta):
 
     @property
     def version(self) -> str:
-        (major, _, _, _, _) = vs.GetVersionEx()
+        major, _, _, _, _ = vs.GetVersionEx()
         return str(major + 1995 if major > 12 else major)
+
+    @property
+    def platform(self) -> int:
+        _, _, _, platform, _ = vs.GetVersionEx()
+        return platform
 
     @property
     def dongle(self) -> str:
         return vs.GetActiveSerialNumber()[-6:]
+
+    def get_folder_path_of_plugin_file(self, filename: str) -> str:
+        _, file_path = vs.FindFileInPluginFolder(filename)
+        return self.__get_os_independent_file_path(file_path)
+
+    def get_folder_path_of_active_document(self) -> str:
+        return self.get_file_path_of_active_document()[:-len(vs.GetFName())]
+
+    def get_file_path_of_active_document(self) -> str:
+        return self.__get_os_independent_file_path(vs.GetFPathName())
+
+    def __get_os_independent_file_path(self, file_path: str) -> str:
+        """
+        Patrick Stanford <patstanford@coviana.com> on the VectorScript Discussion List:
+        Since Mac OS 10, as they're rewritten it using UNIX kernel, the mac uses Posix natively.
+        Since VW predates that, the old calls use HFS paths and need to be converted for newer APIs.
+        You can ask VW to do the conversion, as simply replacing the characters are not enough (Posix uses volume
+        mounting instead of drive names). This can be done through vs.ConvertHSF2PosixPath().
+        """
+        if self.platform == Platform.MAC_OS:
+            _, file_path = vs.ConvertHSF2PosixPath(file_path)
+        return file_path
 
 
 class ActivePlugInType(object):
@@ -67,14 +99,14 @@ class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile, metaclass=ABCMeta):
         """
         :type active_plugin_type: ActivePlugInType(Enum)
         """
-        _, file_path = vs.FindFileInPluginFolder(ActivePlugIn().name + active_plugin_type)
+        file_path = Vectorworks().get_folder_path_of_plugin_file(ActivePlugIn().name + active_plugin_type)
         super().__init__(file_path + ActivePlugIn().name + 'Prefs.xml')
 
 
 class AbstractActivePlugInDrawingXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
     def __init__(self):
-        super().__init__(vs.GetFPathName()[:-len(vs.GetFName())] + ActivePlugIn().name + '.xml')
+        super().__init__(Vectorworks().get_folder_path_of_active_document() + ActivePlugIn().name + '.xml')
 
 
 class Security(object):

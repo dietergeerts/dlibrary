@@ -4,7 +4,7 @@ from dlibrary.document import AbstractResourceList
 from dlibrary.utility import XmlFileLists, Event, VSException, Convert, SingletonMeta, AbstractPropertyClassDecorator, \
     ObservableField, ObservableMethod, ObservableList, XmlDict
 from dlibrary.utility import AbstractXmlFile
-from dlibrary.vectorworks import ActivePlugIn
+from dlibrary.vectorworks import ActivePlugIn, Vectorworks
 import vs
 
 
@@ -15,7 +15,7 @@ class AbstractActivePlugInDialogXmlFile(AbstractXmlFile, metaclass=ABCMeta):
         """
         :type active_plugin_type: ActivePlugInType(Enum)
         """
-        _, file_path = vs.FindFileInPluginFolder(ActivePlugIn().name + active_plugin_type)
+        file_path = Vectorworks().get_folder_path_of_plugin_file(ActivePlugIn().name + active_plugin_type)
         super().__init__(file_path + ActivePlugIn().name + dialog_name + 'Dialog.xml')
 
 
