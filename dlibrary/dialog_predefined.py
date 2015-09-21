@@ -28,32 +28,32 @@ class Alert(object):
 
 class PlugInFileVsExceptionAlert(Alert):
 
-    def __init__(self):
+    def __init__(self, plugin_name: str):
         super().__init__(AlertType.CRITICAL,
-                         'Something went wrong with this plug-in. It may be corrupt.',
+                         'Something went wrong with the %s plug-in. It may be corrupt.' % plugin_name,
                          'Please contact the distributor.')
 
 
 class PlugInFileFileNotFoundErrorAlert(Alert):
 
-    def __init__(self):
+    def __init__(self, filename: str):
         super().__init__(AlertType.CRITICAL,
-                         'A plug-in file could not be found.',
-                         'Make sure all provided plug-in files are in the plug-in folder.')
+                         'The plug-in file `%s` could not be found.' % filename,
+                         'Make sure the plug-in file is in the plug-in folder.')
 
 
 class PlugInFilePermissionErrorAlert(Alert):
 
-    def __init__(self):
+    def __init__(self, filename: str):
         super().__init__(AlertType.CRITICAL,
-                         'A plug-in file could not be read.',
-                         'Make sure all provided plug-in files have read/write permissions.')
+                         'The plug-in file `%s` could not be read.' % filename,
+                         'Make sure the plug-in file has read/write permissions.')
 
 
 class PlugInFileOsErrorAlert(Alert):
 
-    def __init__(self):
+    def __init__(self, filename: str):
         super().__init__(AlertType.CRITICAL,
-                         'Something went wrong while loading a plug-in file.',
-                         'Make sure all plug-in files are in the plug-in folder, '
-                         'have read/write permissions and are not corrupt.')
+                         'Something went wrong while loading the plug-in file `%s`.' % filename,
+                         'Make sure the plug-in file is in the plug-in folder, '
+                         'have read/write permissions and is not corrupt.')

@@ -6,7 +6,7 @@ from dlibrary.utility import AbstractViewModel, ViewModelList, ObservableField, 
     ObservableMethod, ObservableCommand, VSException
 
 # pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True, suspend=False)
-from dlibrary.vectorworks import ActivePlugInType, ActivePlugInInfo
+from dlibrary.vectorworks import ActivePlugInType, ActivePlugInInfo, ActivePlugIn
 
 
 @ActivePlugInInfo(version='2015.5.8')
@@ -15,13 +15,13 @@ def run():
         items = create_items()
         dialog = Dialog(DLibraryTestDialogXmlFile(), DLibraryTestVsmViewModel(items))
     except VSException:
-        PlugInFileVsExceptionAlert().show()
-    except FileNotFoundError:
-        PlugInFileFileNotFoundErrorAlert().show()
-    except PermissionError:
-        PlugInFilePermissionErrorAlert().show()
-    except OSError:
-        PlugInFileOsErrorAlert().show()
+        PlugInFileVsExceptionAlert(ActivePlugIn().name).show()
+    except FileNotFoundError as e:
+        PlugInFileFileNotFoundErrorAlert(e.filename).show()
+    except PermissionError as e:
+        PlugInFilePermissionErrorAlert(e.filename).show()
+    except OSError as e:
+        PlugInFileOsErrorAlert(e.filename).show()
     else:
         if dialog.show():
             Alert(AlertType.INFO, 'You closed the dialog through the OK button').show()
@@ -92,13 +92,13 @@ class PredefinedDialogsViewModel(object):
         self.__show_alert_success = ObservableCommand(
             lambda: self.__show_alert(AlertType.SUCCESS), self.__can_show_alert, [self.dialog_text])
         self.__show_plugin_alert_vsexception = ObservableCommand(
-            lambda: PlugInFileVsExceptionAlert().show())
+            lambda: PlugInFileVsExceptionAlert(ActivePlugIn().name).show())
         self.__show_plugin_alert_filenotfounderror = ObservableCommand(
-            lambda: PlugInFileFileNotFoundErrorAlert().show())
+            lambda: PlugInFileFileNotFoundErrorAlert('filex.xml').show())
         self.__show_plugin_alert_permissionerror = ObservableCommand(
-            lambda: PlugInFilePermissionErrorAlert().show())
+            lambda: PlugInFilePermissionErrorAlert('filex.xml').show())
         self.__show_plugin_alert_oserror = ObservableCommand(
-            lambda: PlugInFileOsErrorAlert().show())
+            lambda: PlugInFileOsErrorAlert('filex.xml').show())
 
     @property
     def dialog_text(self) -> ObservableField:

@@ -4,6 +4,7 @@ import shutil
 from tkinter import filedialog, Tk
 import urllib.request
 from xml.etree import ElementTree
+import sys
 import vs
 
 # This installation file can be used for your own plugin. It contains several possible steps you can include. This will
@@ -14,6 +15,11 @@ import vs
 
 # SOME COMMON METHODS, AS WE CAN'T RELY ON DLIBRARY YET ################################################################
 # ----------------------------------------------------------------------------------------------------------------------
+
+major, minor, maintenance, platform = vs.GetVersion()
+if platform == 1:
+    sys.argv = ['']  # This is needed to make Tkinter happy on mac!
+
 
 def ask_for_folder(initial_folder: str, message: str) -> str:
 
@@ -35,7 +41,6 @@ def get_folder_path(folder_id: int) -> str:
     """
 
     folder_path = vs.GetFolderPath(folder_id)
-    major, minor, maintenance, platform = vs.GetVersion()
     if platform == 1:
         _, folder_path = vs.ConvertHSF2PosixPath(folder_path)
     return folder_path
