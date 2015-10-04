@@ -1,4 +1,5 @@
 from abc import ABCMeta
+import os
 from dlibrary.dialog_predefined import AlertType, Alert
 from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException
 import vs
@@ -100,13 +101,13 @@ class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile, metaclass=ABCMeta):
         :type active_plugin_type: ActivePlugInType(Enum)
         """
         file_path = Vectorworks().get_folder_path_of_plugin_file(ActivePlugIn().name + active_plugin_type)
-        super().__init__(file_path + ActivePlugIn().name + 'Prefs.xml')
+        super().__init__(os.path.join(file_path, ActivePlugIn().name + 'Prefs.xml'))
 
 
 class AbstractActivePlugInDrawingXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
     def __init__(self):
-        super().__init__(Vectorworks().get_folder_path_of_active_document() + ActivePlugIn().name + '.xml')
+        super().__init__(os.path.join(Vectorworks().get_folder_path_of_active_document(), ActivePlugIn().name + '.xml'))
 
 
 class Security(object):
