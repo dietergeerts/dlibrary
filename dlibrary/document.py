@@ -21,7 +21,7 @@ class Document(object, metaclass=SingletonMeta):
         layer_handles = []
         for count in range(vs.NumLayers()):
             layer_handles.append(vs.FLayer() if count == 0 else vs.NextLayer(layer_handles[count - 1]))
-        return {Layer.create(layer_handle) for layer_handle in layer_handles}
+        return {Layer.get(layer_handle) for layer_handle in layer_handles}
 
     @property
     def design_layers(self) -> set:
@@ -117,7 +117,7 @@ class Units(object, metaclass=SingletonMeta):
 class Layer(object):
 
     @staticmethod
-    def create(layer_handle):
+    def get(layer_handle):
         return {1: DesignLayer, 2: SheetLayer}.get(vs.GetObjectVariableInt(layer_handle, 154))(layer_handle)
 
     def __init__(self, handle):
