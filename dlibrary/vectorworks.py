@@ -1,5 +1,6 @@
 from abc import ABCMeta
 import os
+
 from dlibrary.dialog_predefined import AlertType, Alert
 from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException
 import vs
@@ -92,6 +93,23 @@ class ActivePlugInInfo(object):
             ActivePlugIn().version = self.__version
             function(*args, **kwargs)
         return initialize_active_plugin_function
+
+
+class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
+    """
+    Vectorworks will always give you the initial values of parameters. So when changing them inside your script,
+    you'll still get the initial values. Therefore we'll create some sort of cache to remember the current values.
+    """
+
+    def __init__(self):
+        self.__parameters = dict()
+
+    def _get_parameter(self, name: str):
+        return self.__parameters.get(name, self.__get_parameter(name))
+
+    def __get_parameter(self, name: str):
+        self.__parameters[name] = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the vs module!
+        return self.__parameters[name]
 
 
 class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile, metaclass=ABCMeta):
