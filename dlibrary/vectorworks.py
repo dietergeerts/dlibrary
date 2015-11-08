@@ -59,17 +59,7 @@ class ActivePlugInType(object):
 class ActivePlugIn(object, metaclass=SingletonMeta):
 
     def __init__(self):
-        self.__name = None
         self.__version = ''
-
-    @property
-    def name(self) -> str:
-        # Singletons will keep it's data throughout the entire Vectorworks session!
-        # This result isn't the same during that session, it depends on the active plugin!
-        succeeded, self.__name, record_handle = vs.GetPluginInfo()
-        if not succeeded:
-            raise VSException('GetPluginInfo')
-        return self.__name
 
     @property
     def version(self) -> str:
@@ -78,6 +68,24 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
     @version.setter
     def version(self, value: str):
         self.__version = value
+
+    @property
+    def name(self) -> str:
+        # Singletons will keep it's data throughout the entire Vectorworks session!
+        # This result isn't the same during that session, it depends on the active plugin!
+        succeeded, name, record_handle = vs.GetPluginInfo()
+        if not succeeded:
+            raise VSException('GetPluginInfo')
+        return name
+
+    @property
+    def handle(self):
+        # Singletons will keep it's data throughout the entire Vectorworks session!
+        # This result isn't the same during that session, it depends on the active plugin!
+        succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
+        if not succeeded:
+            raise VSException('GetCustomObjectInfo')
+        return plugin_handle
 
 
 class ActivePlugInInfo(object):
@@ -125,11 +133,16 @@ class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
         self.__parameters = dict()
 
     def _get_parameter(self, name: str):
-        return self.__parameters.get(name, self.__get_parameter(name))
+        return self.__parameters[name] if name in self.__parameters else self.__store_and_get_parameter(name)
 
-    def __get_parameter(self, name: str):
+    def __store_and_get_parameter(self, name: str):
         self.__parameters[name] = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the vs module!
         return self.__parameters[name]
+
+    def _set_parameter(self, name: str, value):
+        self.__parameters[name] = value
+        vs.SetRField(ActivePlugIn().handle, ActivePlugIn().name, name,
+                     value if isinstance(value, str) else vs.Num2Str(-2, value))
 
 
 class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile, metaclass=ABCMeta):
