@@ -95,6 +95,26 @@ class ActivePlugInInfo(object):
         return initialize_active_plugin_function
 
 
+class ActivePlugInEvent(object):
+    VSO_ON_RESET = 3
+
+
+class ActivePlugInEvents(object):
+    """
+    Decorator to initialize eventing. Basically it's just telling which def has to be called for which event.
+    """
+
+    def __init__(self, events: dict):
+        self.__events = events
+
+    def __call__(self, function: callable) -> callable:
+        def delegate_event_function(*args, **kwargs):
+            function(*args, **kwargs)  # Function is executed first to enable extra initialization.
+            event, button = vs.vsoGetEventInfo()
+            self.__events.get(event, lambda : None)()
+        return delegate_event_function
+
+
 class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
     """
     Vectorworks will always give you the initial values of parameters. So when changing them inside your script,
