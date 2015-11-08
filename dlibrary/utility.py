@@ -575,7 +575,7 @@ class AbstractPropertyClassDecorator(object, metaclass=ABCMeta):
         self.__property_value = property_value
 
     def __call__(self, cls):
-        setattr(cls, getattr(self, self.__get_property_name_name)(), property(lambda _: self.__property_value))
+        setattr(cls, getattr(self, self.__get_property_name_name)(), property(lambda v: self.__property_value))
         return cls
 
     @classmethod

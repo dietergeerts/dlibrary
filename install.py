@@ -1,11 +1,11 @@
 import os
 import re
 import shutil
-from tkinter import filedialog, Tk
 import urllib.request
 from xml.etree import ElementTree
-import sys
+
 import vs
+
 
 # This installation file can be used for your own plugin. It contains several possible steps you can include. This will
 # make it easier for your users to install. To add certain steps/functionality, just (un)comment them at the end.
@@ -16,22 +16,7 @@ import vs
 # SOME COMMON METHODS, AS WE CAN'T RELY ON DLIBRARY YET ################################################################
 # ----------------------------------------------------------------------------------------------------------------------
 
-major, minor, maintenance, platform = vs.GetVersion()
-if platform == 1:
-    sys.argv = ['']  # This is needed to make Tkinter happy on mac!
-
-
-def ask_for_folder(initial_folder: str, message: str) -> str:
-
-    def correct_windows_path(path: str) -> str:
-        return path.replace('/', '\\') if os.name == 'nt' else path
-
-    Tk().withdraw()  # To hide the tkinter root window!
-    return correct_windows_path(
-        filedialog.askdirectory(**{'initialdir': initial_folder, 'mustexist': True, 'title': message}))
-
-
-def get_folder_path(folder_id: int) -> str:
+def get_os_independent_path(path: str) -> str:
     """
     Patrick Stanford <patstanford@coviana.com> on the VectorScript Discussion List:
     Since Mac OS 10, as they're rewritten it using UNIX kernel, the mac uses Posix natively.
@@ -39,41 +24,47 @@ def get_folder_path(folder_id: int) -> str:
     You can ask VW to do the conversion, as simply replacing the characters are not enough (Posix uses volume mounting
     instead of drive names). This can be done through vs.ConvertHSF2PosixPath().
     """
-
-    folder_path = vs.GetFolderPath(folder_id)
+    major, minor, maintenance, platform = vs.GetVersion()
     if platform == 1:
-        _, folder_path = vs.ConvertHSF2PosixPath(folder_path)
-    return folder_path
+        succeeded, path = vs.ConvertHSF2PosixPath(path)
+    return path
+
+
+def get_folder(initial_folder: str, message: str) -> str:
+    closed_with, chosen_folder = vs.GetFolder(message)
+    return get_os_independent_path(chosen_folder) if closed_with == 0 else initial_folder
+
+
+def get_folder_path(folder_id: int) -> str:
+    return get_os_independent_path(vs.GetFolderPath(folder_id))
 
 
 # SET DESTINATION FOLDER ###############################################################################################
-# By default, VW will copy all plugin files into the users' plugin folder. This is not always desired. For example when
-# more than one user will use your plugin, the office can place them on a network drive and point each VW installation
-# to that drive in order for VW to pick up the plugin and be able to use it. Including this step will enable the user to
-# select a custom folder so that the files will be copied there, or tell that he already did this, to delete the files
-# from the users' plugin folder.
+# VW initial installation step is to copy the plugin files to the users' plugin folder. This is not always desired.
+# For example when more than one user will use your plugin, the office can place them on a network drive and point each
+# VW installation to that drive in order for VW to pick up the plugin and be able to use it. Including this step will
+# enable the user to select a custom folder so that the files will be copied there, or tell that he already did this,
+# to delete the files from the users' plugin folder.
 # ----------------------------------------------------------------------------------------------------------------------
 
-def set_destination_folder_for(plugin_folder_name: str):
+def choose_custom_folder_for(plugin_folder_name: str):
 
     def ask_where_to_install() -> int:
         return vs.AlertQuestion(
-            'Do you want to install this plugin in your user folder?',
-            'If more than one user will use this plugin, you can install it on your network drive once for all.',
-            1, 'Yes', 'No, I already placed it on my network', 'No, let me choose a custom folder', '')
+            'Vectorworks installed the plugin in your user folder, is this ok?', '',
+            1, 'Yes', 'No, it\'s already installed elsewhere', 'No, I want to choose a folder', '')
 
     def install_in_user_folder():
-        pass
+        pass  # Standard VW behaviour.
 
     def install_in_custom_folder():
         user_plugin_folder = get_folder_path(-2)
-        directory_path = ask_for_folder(user_plugin_folder, 'Please select the install directory. '
-                                                            'Cancelling will install in your user folder.')
-        if directory_path != '':  # '' means cancel was chosen!
+        directory_path = get_folder(user_plugin_folder, 'Please select the installation folder.')
+        if directory_path != user_plugin_folder:  # Only if another folder was chosen, or not cancelled!
             if os.path.exists(os.path.join(directory_path, plugin_folder_name)):
                 shutil.rmtree(os.path.join(directory_path, plugin_folder_name))
             shutil.move(os.path.join(user_plugin_folder, plugin_folder_name), directory_path)
-            vs.AlrtDialog('Don\'t forget to Let Vectorworks know about your custom folder!')
+            vs.AlrtDialog('Don\'t forget to tell Vectorworks about your custom folder!')
 
     def already_installed_in_custom_folder():
         user_plugin_folder = get_folder_path(-2)
@@ -123,6 +114,7 @@ def update_to_or_install_dlibrary_version(required_version: str):
     def install_dlibrary(libraries_folder: str):
         dlibrary_url = 'https://bitbucket.org/dieterdworks/vw-dlibrary/get/v' + required_version + '.zip'
         dlibrary_zip = os.path.join(libraries_folder, 'dlibrary_repo.zip')
+        # noinspection PyBroadException
         try:
             # vs.ProgressDlgOpen('DLibrary installation', False)
             # vs.ProgressDlgSetMeter('Installing dlibrary v' + required_version + '...')
@@ -134,7 +126,6 @@ def update_to_or_install_dlibrary_version(required_version: str):
             shutil.move(os.path.join(libraries_folder, unzipped_dir, 'dlibrary'), libraries_folder)
         except:
             vs.AlrtDialog('The library \'dlibrary\' couldn\'t be downloaded. Please install it manually.')
-            raise
         finally:
             unzipped_dir = get_unzipped_dir(libraries_folder)
             if unzipped_dir != '':
@@ -153,14 +144,10 @@ def update_to_or_install_dlibrary_version(required_version: str):
         if library_path not in search_path.split(';'):
             vs.PythonSetSearchPath('%s%s' % (search_path, library_path))
 
-    vs.AlrtDialog('This plugin requires the \'dlibrary\' library, version ' + required_version + '. We would like to '
-                  'install or update it. Please select its parent directory or the one where we can install it in the '
-                  'next dialog. Cancel that dialog to manually install the library.')
+    directory_path = get_folder('', 'This plugin depends on the \'dlibrary\' library, version '
+                                    + required_version + '. Please select its parent directory.')
 
-    directory_path = ask_for_folder('', 'Please select the directory for dlibrary, make sure VW doesn\'t scan this '
-                                        'folder. We need write access to the folder for the installation to succeed!')
-
-    if directory_path != '':  # '' means cancel was chosen!
+    if directory_path != '':  # If a folder was chosen!
         if os.path.exists(os.path.join(directory_path, 'dlibrary')):
             if update_dlibrary_needed(directory_path):
                 update_dlibrary(directory_path)
@@ -168,7 +155,7 @@ def update_to_or_install_dlibrary_version(required_version: str):
             install_dlibrary(directory_path)
         update_python_search_path(directory_path)
     else:
-        vs.AlrtDialog('Don\'t forget to manually install `dlibrary`. It can be found at: '
+        vs.AlrtDialog('You\'ll have to manually install `dlibrary`. It can be found at: '
                       'https://bitbucket.org/dieterdworks/vw-dlibrary/get/v' + required_version + '.zip')
 
 
@@ -206,6 +193,7 @@ def add_plugins_to_workspaces(plugins_structure: dict):
 
 # INSTALLATION STEPS ###################################################################################################
 
-set_destination_folder_for('MyPluginName')
+# VW always copies the plugin folder, which is inside the zip file, to the users' plugin folder = initial install step!
+choose_custom_folder_for('MyPluginName')
 update_to_or_install_dlibrary_version('2015.0.1')
 add_plugins_to_workspaces({'Menus': {'MyMenu': ['MyPluginName']}})  # NOT WORKING YET!

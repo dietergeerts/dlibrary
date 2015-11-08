@@ -14,12 +14,12 @@ class Vectorworks(object, metaclass=SingletonMeta):
 
     @property
     def version(self) -> str:
-        major, _, _, _, _ = vs.GetVersionEx()
+        major, minor, maintenance, platform, build_number = vs.GetVersionEx()
         return str(major + 1995 if major > 12 else major)
 
     @property
     def platform(self) -> int:
-        _, _, _, platform, _ = vs.GetVersionEx()
+        major, minor, maintenance, platform, build_number = vs.GetVersionEx()
         return platform
 
     @property
@@ -27,7 +27,7 @@ class Vectorworks(object, metaclass=SingletonMeta):
         return vs.GetActiveSerialNumber()[-6:]
 
     def get_folder_path_of_plugin_file(self, filename: str) -> str:
-        _, file_path = vs.FindFileInPluginFolder(filename)
+        succeeded, file_path = vs.FindFileInPluginFolder(filename)
         return self.__get_os_independent_file_path(file_path)
 
     def get_folder_path_of_active_document(self) -> str:
@@ -45,7 +45,7 @@ class Vectorworks(object, metaclass=SingletonMeta):
         mounting instead of drive names). This can be done through vs.ConvertHSF2PosixPath().
         """
         if self.platform == Platform.MAC_OS:
-            _, file_path = vs.ConvertHSF2PosixPath(file_path)
+            succeeded, file_path = vs.ConvertHSF2PosixPath(file_path)
         return file_path
 
 
@@ -65,7 +65,7 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
     def name(self) -> str:
         # Singletons will keep it's data throughout the entire Vectorworks session!
         # This result isn't the same during that session, it depends on the active plugin!
-        succeeded, self.__name, _ = vs.GetPluginInfo()
+        succeeded, self.__name, record_handle = vs.GetPluginInfo()
         if not succeeded:
             raise VSException('GetPluginInfo')
         return self.__name
@@ -127,7 +127,7 @@ class Security(object):
                      'Your license is for Vectorworks %s' % version,
                      'Contact the plugin distributor to update your license.')
 
-    def __init__(self, version: str, dongles: set):
+    def __init__(self, version: str, dongles: set=None):
         self.__version = version
         self.__dongles = dongles
         self.__no_license_alert = self.__create_no_license_alert()
@@ -135,7 +135,7 @@ class Security(object):
 
     def __call__(self, function: callable) -> callable:
         def secured_function(*args, **kwargs):
-            if Vectorworks().dongle not in self.__dongles:
+            if (Vectorworks().dongle not in self.__dongles) if (self.__dongles is not None) else False:
                 self.__no_license_alert.show()
             elif Vectorworks().version != self.__version:
                 self.__other_license_alert.show()

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from dlibrary.vectorworks import Vectorworks, ActivePlugIn
+from dlibrary.vectorworks import Vectorworks, ActivePlugIn, Security
 from dlibrary_test.testing import VectorworksInstance
 
 
@@ -44,3 +44,18 @@ class ActivePlugInTest(TestCase):
         self.assertEqual(ActivePlugIn().version, '')
         ActivePlugIn().version = '2015.5.8'
         self.assertEqual(ActivePlugIn().version, '2015.5.8')
+
+
+class SecurityTest(TestCase):
+
+    def test_dongles_none(self):
+        """
+        When giving only the Vectorworks version to the security, dongles can't be checked!
+        """
+        @Security(version='2015')
+        def run_with_only_version_security():
+            pass
+
+        VectorworksInstance.version_major = 20  # Vectorworks 2015
+        run_with_only_version_security()
+        self.assertIsNone(VectorworksInstance().last_alert_inform)

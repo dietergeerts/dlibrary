@@ -38,3 +38,7 @@ after the initial release, we'll work with FEATURE branches, named like `feature
 
 You'll find a working example in the dlibrary_test folder. It's a VW menu command which will open up a dialog with all 
 possible controls as a reference. This is not complete, we'll add more examples and docs later...
+
+## CONTRIBUTION REMARKS ################################################################################################
+
+- Never use `_` for a throwaway variable, as VW seems to give special meaning to it!

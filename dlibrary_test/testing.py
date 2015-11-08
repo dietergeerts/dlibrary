@@ -17,6 +17,7 @@ class VectorworksInstance(object, metaclass=SingletonMeta):
         self.__serial_number = 'ADF154-1AD457-ADF472-15EA1E'
         self.__active_plugin_name = 'ActivePlugInName'
         self.__last_alert_critical = None
+        self.__last_alert_inform = None
 
     @property
     def platform(self) -> int:
@@ -82,6 +83,14 @@ class VectorworksInstance(object, metaclass=SingletonMeta):
     def last_alert_critical(self, value):
         self.__last_alert_critical = value
 
+    @property
+    def last_alert_inform(self):
+        return self.__last_alert_inform
+
+    @last_alert_inform.setter
+    def last_alert_inform(self, value):
+        self.__last_alert_inform = value
+
 
 # To be able to test against vs calls, we have to mock them. If they will be deleted, then we'll get errors running our
 # tests, so that's an extra benefit. Off course we have to keep obsolete functions in mind. That's why we need to test
@@ -99,6 +108,10 @@ class VectorScript(object):
         VectorworksInstance().last_alert_critical = {'text': text, 'advice': advice}
 
     @staticmethod
+    def alert_inform(text: str, advice: str, minor_alert: bool):
+        VectorworksInstance().last_alert_inform = {'text': text, 'advice': advice, 'minor_alert': minor_alert}
+
+    @staticmethod
     def get_active_serial_number() -> str:
         return VectorworksInstance().serial_number
 
@@ -112,11 +125,12 @@ class VectorScript(object):
 
     @staticmethod
     def get_plugin_info() -> tuple:
-        return (True, VectorworksInstance().active_plugin_name, 0)
+        return True, VectorworksInstance().active_plugin_name, 0
 
     @staticmethod
     def initialize():
         vs.AlertCritical = VectorScript.alert_critical
+        vs.AlertInform = VectorScript.alert_inform
         vs.GetActiveSerialNumber = VectorScript.get_active_serial_number
         vs.GetPluginInfo = VectorScript.get_plugin_info
         vs.GetVersionEx = VectorScript.get_version_ex
