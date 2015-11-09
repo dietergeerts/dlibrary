@@ -1,4 +1,4 @@
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 import os
 
 from dlibrary.dialog_predefined import AlertType, Alert
@@ -105,6 +105,7 @@ class ActivePlugInInfo(object):
 
 class ActivePlugInEvent(object):
     VSO_ON_RESET = 3
+    VSO_ON_INITIALIZATION = 5
 
 
 class ActivePlugInEvents(object):
@@ -121,6 +122,46 @@ class ActivePlugInEvents(object):
             event, button = vs.vsoGetEventInfo()
             self.__events.get(event, lambda : None)()
         return delegate_event_function
+
+
+class AbstractWidget(object, metaclass=ABCMeta):
+
+    @abstractmethod
+    def add(self, id: int):
+        pass
+
+
+class ParameterWidget(AbstractWidget):
+
+    def __init__(self, parameter: str):
+        self.__parameter = parameter
+
+    def add(self, id: int) -> bool:
+        if not vs.vsoAddParamWidget(id, self.__parameter, ''):  # '' for using alternate name in plugin parameters.
+            raise VSException('vsoAddParamWidget')
+
+
+class ActivePlugInSetup(object):
+    """
+    Decorator to setup the active plugin with event-enabled setup things like custom info pallet.
+    """
+
+    def __init__(self, info_pallet: list=None):
+        """
+        :type info_pallet: list[AbstractWidget]
+        """
+        self.__info_pallet = info_pallet
+
+    def __call__(self, function: callable) -> callable:
+        @ActivePlugInEvents(events={ActivePlugInEvent.VSO_ON_INITIALIZATION: self.__on_initialization})
+        def setup_active_plugin_function(*args, **kwargs):
+            function(*args, **kwargs)
+        return setup_active_plugin_function
+
+    def __on_initialization(self):
+        if self.__info_pallet is not None and vs.SetObjPropVS(8, True):  # 8 = Custom Info Palette property!
+            for index, widget in enumerate(self.__info_pallet, 1):
+                widget.add(index)
 
 
 class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
