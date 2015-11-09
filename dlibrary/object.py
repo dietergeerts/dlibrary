@@ -4,7 +4,7 @@ from dlibrary.document import Layer
 import vs
 
 
-class AbstractObject(object, metaclass=ABCMeta):
+class AbstractHandle(object, metaclass=ABCMeta):
 
     def __init__(self, handle):
         self.__handle = handle
@@ -12,6 +12,29 @@ class AbstractObject(object, metaclass=ABCMeta):
     @property
     def handle(self):
         return self.__handle
+
+
+class RecordField(AbstractHandle):
+    """
+    We will use the record handle to get the data out of the field.
+    """
+
+    def __init__(self, handle, index: int):
+        super().__init__(handle)
+        self.__index = index
+
+    @property
+    def name(self) -> str:
+        return vs.GetFldName(self.handle, self.__index)
+
+
+class Record(AbstractHandle):
+
+    def get_field(self, index: int) -> RecordField:
+        return RecordField(self.handle, index)
+
+
+class AbstractObject(AbstractHandle, metaclass=ABCMeta):
 
     @property
     def layer(self) -> Layer:
@@ -42,12 +65,3 @@ class Viewport(AbstractObject):
     @property
     def scale(self) -> float:
         return vs.GetObjectVariableReal(self.handle, 1003)
-
-
-class Record(object):
-    def __init__(self, object_handle, name: str):
-        self.__object_handle = object_handle
-        self.__name = name
-
-    def set_field(self, field: str, value: str):
-        vs.SetRField(self.__object_handle, self.__name, field, value)

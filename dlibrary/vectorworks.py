@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 import os
 
 from dlibrary.dialog_predefined import AlertType, Alert
+from dlibrary.object import Record
 from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException
 import vs
 
@@ -87,6 +88,16 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
             raise VSException('GetCustomObjectInfo')
         return plugin_handle
 
+    @property
+    def parameters(self) -> Record:
+        # Singletons will keep it's data throughout the entire Vectorworks session!
+        # This result isn't the same during that session, it depends on the active plugin!
+        succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
+        # TODO: What if we want this record for a menu or tool plugin?
+        if not succeeded:
+            raise VSException('GetCustomObjectInfo')
+        return Record(record_handle)
+
 
 class ActivePlugInInfo(object):
     """
@@ -103,9 +114,28 @@ class ActivePlugInInfo(object):
         return initialize_active_plugin_function
 
 
+class AbstractResetArgs(object, metaclass=ABCMeta):
+    pass
+
+
+class EmptyResetArgs(AbstractResetArgs):
+    pass
+
+
+class ParameterChangedResetArgs(AbstractResetArgs):
+
+    def __init__(self, index: int):
+        self.__name = ActivePlugIn().parameters.get_field(index).name
+
+    @property
+    def name(self) -> str:
+        return self.__name
+
+
 class ActivePlugInEvent(object):
-    VSO_ON_RESET = 3
-    VSO_ON_INITIALIZATION = 5
+    VSO_ON_RESET = 3           # Args: ResetArgs, if functionality is turned on!
+    VSO_ON_INITIALIZATION = 5  # Args: -
+    VSO_ON_ADD_STATE = 44      # Args: widget_id
 
 
 class ActivePlugInEvents(object):
@@ -113,21 +143,62 @@ class ActivePlugInEvents(object):
     Decorator to initialize eventing. Basically it's just telling which def has to be called for which event.
     """
 
-    def __init__(self, events: dict):
+    def __init__(self, events: dict, with_reset_args: bool=False):
         self.__events = events
+        self.__with_reset_args = with_reset_args
 
     def __call__(self, function: callable) -> callable:
         def delegate_event_function(*args, **kwargs):
             function(*args, **kwargs)  # Function is executed first to enable extra initialization.
-            event, button = vs.vsoGetEventInfo()
-            self.__events.get(event, lambda : None)()
+            event, widget_id = vs.vsoGetEventInfo()
+            event_args = None  # We only fill this when this feature is enabled!
+
+            if self.__with_reset_args:
+                if event == ActivePlugInEvent.VSO_ON_INITIALIZATION:
+                    self.__with_reset_args_on_initialization()
+                if event == ActivePlugInEvent.VSO_ON_ADD_STATE:
+                    self.__with_reset_args_on_add_state(widget_id)
+                if event == ActivePlugInEvent.VSO_ON_RESET:
+                    event_args = self.__with_reset_args_on_reset()
+
+            event_handler = self.__events.get(event, None)
+            if event_handler is not None:
+                self.__execute_event_handler(event_handler, event, widget_id, event_args)
         return delegate_event_function
+
+    @staticmethod
+    def __with_reset_args_on_initialization():
+        vs.SetPrefInt(590, 1)  # 590 = enable state eventing, 1 = reset state events.
+        if not vs.SetObjPropVS(18, True):  # 18 = accept states.
+            raise VSException('SetObjPropVS')
+
+    @staticmethod
+    def __with_reset_args_on_add_state(widget_id: int):
+        vs.vsoStateAddCurrent(ActivePlugIn().handle, widget_id)  # Only this MUST be called, nothing else!
+
+    def __with_reset_args_on_reset(self) -> AbstractResetArgs:
+        event_args = self.__try_get_parameter_change_reset_args()
+        vs.vsoStateClear(ActivePlugIn().handle)  # EXTREMELY IMPORTANT to have this!
+        return event_args if event_args is not None else EmptyResetArgs()
+
+    @staticmethod
+    def __try_get_parameter_change_reset_args() -> ParameterChangedResetArgs:
+        trigger, widget_id, parameter_index, old_value = vs.vsoStateGetParamChng(ActivePlugIn().handle)
+        return ParameterChangedResetArgs(parameter_index) if trigger else None
+
+    def __execute_event_handler(self, event_handler: callable, event: int, widget_id: int, args: AbstractResetArgs):
+        if self.__with_reset_args and event == ActivePlugInEvent.VSO_ON_RESET:
+            event_handler(args)
+        elif event == ActivePlugInEvent.VSO_ON_ADD_STATE:
+            event_handler(widget_id)
+        else:
+            event_handler()
 
 
 class AbstractWidget(object, metaclass=ABCMeta):
 
     @abstractmethod
-    def add(self, id: int):
+    def add(self, widget_id: int):
         pass
 
 
@@ -136,8 +207,8 @@ class ParameterWidget(AbstractWidget):
     def __init__(self, parameter: str):
         self.__parameter = parameter
 
-    def add(self, id: int) -> bool:
-        if not vs.vsoAddParamWidget(id, self.__parameter, ''):  # '' for using alternate name in plugin parameters.
+    def add(self, widget_id: int) -> bool:
+        if not vs.vsoAddParamWidget(widget_id, self.__parameter, ''):  # '' for using parameter alternate name.
             raise VSException('vsoAddParamWidget')
 
 
