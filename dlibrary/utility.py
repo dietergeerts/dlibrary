@@ -592,3 +592,14 @@ class Convert(object, metaclass=SingletonMeta):
     @staticmethod
     def str2bool(value: str) -> bool:
         return value.lower() in ('true', 'yes', 'y', '1')
+
+
+class Math(object):
+
+    @staticmethod
+    def float_equal(float_a: float, float_b: float) -> bool:
+        return abs(float_a - float_b) < 0.00000001
+
+    @staticmethod
+    def point_equal(point_a: tuple, point_b: tuple) -> bool:
+        return Math.float_equal(point_a[0], point_b[0]) and Math.float_equal(point_a[1], point_b[1])

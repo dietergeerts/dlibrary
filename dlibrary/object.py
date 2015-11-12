@@ -40,17 +40,32 @@ class AbstractObject(AbstractHandle, metaclass=ABCMeta):
     def layer(self) -> Layer:
         return Layer.get(vs.GetLayer(self.handle))
 
+    def move(self, delta_x: float, delta_y: float):
+        vs.HMove(self.handle, delta_x, delta_y)
+
 
 class Line(AbstractObject):
 
     @staticmethod
-    def create(point1: tuple, point2: tuple) -> AbstractObject:
+    def get(line_handle):
+        return Line(line_handle)
+
+    @staticmethod
+    def create(point1: tuple, point2: tuple):
         vs.MoveTo(point1)
         vs.LineTo(point2)
         return Line(vs.LNewObj())
 
     def __init__(self, handle):
         super().__init__(handle)
+
+    @property
+    def begin(self) -> tuple:
+        return vs.GetSegPt1(self.handle)
+
+    @property
+    def end(self) -> tuple:
+        return vs.GetSegPt2(self.handle)
 
 
 class Viewport(AbstractObject):

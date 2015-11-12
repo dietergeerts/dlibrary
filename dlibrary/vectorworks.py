@@ -122,6 +122,10 @@ class EmptyResetArgs(AbstractResetArgs):
     pass
 
 
+class CreationResetArgs(AbstractResetArgs):
+    pass
+
+
 class ParameterChangedResetArgs(AbstractResetArgs):
 
     def __init__(self, index: int):
@@ -177,9 +181,15 @@ class ActivePlugInEvents(object):
         vs.vsoStateAddCurrent(ActivePlugIn().handle, widget_id)  # Only this MUST be called, nothing else!
 
     def __with_reset_args_on_reset(self) -> AbstractResetArgs:
-        event_args = self.__try_get_parameter_change_reset_args()
+        event_args = self.__try_get_creation_reset_args()
+        event_args = self.__try_get_parameter_change_reset_args() if event_args is None else event_args
         vs.vsoStateClear(ActivePlugIn().handle)  # EXTREMELY IMPORTANT to have this!
         return event_args if event_args is not None else EmptyResetArgs()
+
+    @staticmethod
+    def __try_get_creation_reset_args() -> CreationResetArgs:
+        trigger = vs.vsoStateGet(ActivePlugIn().handle, 0)  # 0 = creation. (13 and 16 on 2nd round also happens!)
+        return CreationResetArgs() if trigger else None
 
     @staticmethod
     def __try_get_parameter_change_reset_args() -> ParameterChangedResetArgs:
