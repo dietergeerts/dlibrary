@@ -598,7 +598,7 @@ class Math(object):
 
     @staticmethod
     def float_equal(float_a: float, float_b: float) -> bool:
-        return abs(float_a - float_b) < 0.00000001
+        return abs(float_a - float_b) < 0.000001  # VW stores up to 6 digits in some situations!
 
     @staticmethod
     def point_equal(point_a: tuple, point_b: tuple) -> bool:
