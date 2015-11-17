@@ -1,3 +1,6 @@
+"""Used for all document related stuff, like units, layers, ....
+"""
+
 from abc import ABCMeta
 from dlibrary.utility import SingletonMeta, ObservableList
 import vs

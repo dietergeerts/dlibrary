@@ -1,3 +1,6 @@
+"""Used for all other, utility, stuff that can't be placed in one of the other modules.
+"""
+
 from abc import ABCMeta, abstractmethod
 from collections import UserList
 from dlibrary.libs import xmltodict as xmltodict

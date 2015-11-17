@@ -1,3 +1,6 @@
+"""Used for all object related stuff, except for plug-in objects.
+"""
+
 from abc import ABCMeta
 
 from dlibrary.document import Layer

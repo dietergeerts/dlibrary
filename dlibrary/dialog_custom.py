@@ -1,3 +1,6 @@
+"""Used for all custom dialog stuff. Most of it is internal business.
+"""
+
 from abc import ABCMeta, abstractmethod
 import os
 

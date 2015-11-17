@@ -5,7 +5,6 @@ import urllib.request
 
 import vs
 
-
 # DLIBRARY INSTALL FILE ################################################################################################
 # You can use this installation file for your own plugins, just fill in the variables in the SETUP part. ###############
 # An install script must go at the top level of your .zip file in order for Vectorworks to pick it up. For more ########
