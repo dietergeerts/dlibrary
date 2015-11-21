@@ -3,7 +3,7 @@
 
 from abc import ABCMeta
 
-from dlibrary.document import Layer, Units
+from dlibrary.document import Layer, Units, Clazz
 import vs
 
 
@@ -42,6 +42,14 @@ class AbstractObject(AbstractHandle, metaclass=ABCMeta):
     @property
     def layer(self) -> Layer:
         return Layer.get(vs.GetLayer(self.handle))
+
+    @property
+    def clazz(self) -> Clazz:
+        return Clazz(vs.GetClass(self.handle))
+
+    @clazz.setter
+    def clazz(self, clazz: Clazz):
+        vs.SetClass(self.handle, clazz.name)
 
     def move(self, delta_x: float, delta_y: float):
         vs.HMove(self.handle, delta_x, delta_y)

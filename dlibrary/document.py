@@ -167,6 +167,16 @@ class SheetLayer(Layer):
         return vs.GetObjectVariableString(self._handle, 159)
 
 
+class Clazz(object):
+
+    def __init__(self, name: str):
+        self.__name = name
+
+    @property
+    def name(self):
+        return self.__name
+
+
 class AbstractResource(object, metaclass=ABCMeta):
     def __init__(self, handle, name: str):
         self.__handle = handle
