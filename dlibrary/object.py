@@ -18,8 +18,7 @@ class AbstractHandle(object, metaclass=ABCMeta):
 
 
 class RecordField(AbstractHandle):
-    """
-    We will use the record handle to get the data out of the field.
+    """We will use the record handle to get the data out of the field.
     """
 
     def __init__(self, handle, index: int):
@@ -37,6 +36,52 @@ class Record(AbstractHandle):
         return RecordField(self.handle, index)
 
 
+class Attributes(AbstractHandle):
+    """We will use the object handle to get/set the attributes for it.
+    """
+
+    def __init__(self, handle):
+        super().__init__(handle)
+
+    @property
+    def by_clazz(self):
+        return vs.IsLSByClass(self.handle) and \
+               vs.IsLWByClass(self.handle) and \
+               vs.IsPenColorByClass(self.handle) and \
+               vs.IsFillColorByClass(self.handle) and \
+               vs.IsFPatByClass(self.handle) and \
+               vs.GetOpacityByClass(self.handle) and \
+               vs.IsMarkerByClass(self.handle)
+
+    @by_clazz.setter
+    def by_clazz(self, value):
+        self.__set_by_clazz() if value else (self.__set_not_by_clazz() if self.by_clazz else None)
+
+    def __set_by_clazz(self):
+        vs.SetLSByClass(self.handle)
+        vs.SetLWByClass(self.handle)
+        vs.SetPenColorByClass(self.handle)
+        vs.SetFillColorByClass(self.handle)
+        vs.SetFPatByClass(self.handle)
+        vs.SetOpacityByClass(self.handle)
+        vs.SetMarkerByClass(self.handle)
+
+    def __set_not_by_clazz(self):
+        """We'll just 'undo' by class by setting the attributes it had from the class."""
+        vs.SetLSN(self.handle, vs.GetLSN(self.handle))
+        vs.SetLW(self.handle, vs.GetLW(self.handle))
+        vs.SetPenFore(self.handle, vs.GetPenFore(self.handle))
+        vs.SetPenBack(self.handle, vs.GetPenBack(self.handle))
+        vs.SetFillFore(self.handle, vs.GetFillFore(self.handle))
+        vs.SetFillBack(self.handle, vs.GetFillBack(self.handle))
+        vs.SetFPat(self.handle, vs.GetFPat(self.handle))
+        vs.SetOpacity(self.handle, vs.GetOpacity(self.handle))
+        ok, style, angle, size, width, thickness_basis, thickness, visibility = vs.GetObjBeginningMarker(self.handle)
+        vs.SetObjBeginningMarker(self.handle, style, angle, size, width, thickness_basis, thickness, visibility)
+        ok, style, angle, size, width, thickness_basis, thickness, visibility = vs.GetObjEndMarker(self.handle)
+        vs.SetObjEndMarker(self.handle, style, angle, size, width, thickness_basis, thickness, visibility)
+
+
 class AbstractObject(AbstractHandle, metaclass=ABCMeta):
 
     @property
@@ -50,6 +95,10 @@ class AbstractObject(AbstractHandle, metaclass=ABCMeta):
     @clazz.setter
     def clazz(self, clazz: Clazz):
         vs.SetClass(self.handle, clazz.name)
+
+    @property
+    def attributes(self):
+        return Attributes(self.handle)
 
     def move(self, delta_x: float, delta_y: float):
         vs.HMove(self.handle, delta_x, delta_y)
