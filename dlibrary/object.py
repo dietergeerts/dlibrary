@@ -3,7 +3,7 @@
 
 from abc import ABCMeta
 
-from dlibrary.document import Layer
+from dlibrary.document import Layer, Units
 import vs
 
 
@@ -50,10 +50,6 @@ class AbstractObject(AbstractHandle, metaclass=ABCMeta):
 class Line(AbstractObject):
 
     @staticmethod
-    def get(line_handle):
-        return Line(line_handle)
-
-    @staticmethod
     def create(point1: tuple, point2: tuple):
         vs.MoveTo(point1)
         vs.LineTo(point2)
@@ -69,6 +65,21 @@ class Line(AbstractObject):
     @property
     def end(self) -> tuple:
         return vs.GetSegPt2(self.handle)
+
+
+class Polygon(AbstractObject):
+
+    @staticmethod
+    def create(vertices: tuple, closed: bool=True):
+        """
+        :type vertices: tuple[tuple[x: float|str, y: float|str]]
+        """
+        vs.ClosePoly() if closed else vs.OpenPoly()
+        vs.Poly(*[Units.to_length_units(c) if isinstance(c, str) else c for vertex in vertices for c in vertex])
+        return Polygon(vs.LNewObj())
+
+    def __init__(self, handle):
+        super().__init__(handle)
 
 
 class Viewport(AbstractObject):
