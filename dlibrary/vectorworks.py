@@ -290,6 +290,12 @@ class Security(object):
     """
     Decorator to secure a function based on the dongle and VW version running.
     Make sure you use this as the topmost decorator in order for the check to be the first thing that will happen!
+    If your plugin is event enabled, then make sure that you have the following order:
+        @ActivePlugInInfo
+        @ActivePlugInSetup > before security, as we'll setup the info pallet here!
+        @Security
+        @ActivePlugInEvents
+    This is because everything under @Security will not run if the user has no permission!
     """
 
     @staticmethod
