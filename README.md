@@ -47,4 +47,4 @@ after the initial release, we'll work with FEATURE branches, named like `feature
 
 ### CONTRIBUTION REMARKS ###############################################################################################
 
-- Never use `_` for a throwaway variable, as VW seems to give special meaning to it!
+- Never use `_` for a throwaway variable, as VW seems to give special meaning to it, or so we think!

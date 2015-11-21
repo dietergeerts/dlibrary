@@ -16,7 +16,7 @@
 
 
 def Abs(
-		v  # POINT - Real number.
+		v  # REAL - Real number.
 		):
 	'''
 		Python: REAL = vs.Abs(v)
@@ -291,7 +291,7 @@ def AddListBrowserImage(
 		Python: INTEGER = vs.AddListBrowserImage(dialogID, controlID, imageSpecifier)
 		VectorScript: FUNCTION AddListBrowserImage(dialogID:LONGINT; controlID:LONGINT; imageSpecifier:DYNARRAY of CHAR) : INTEGER;
 		
-		Category: Dialogs - Modern
+		Category: Dialogs - Modern - Browser
 		Adds an image to a list browser. Replaces AddLBImage.
 	'''
 	pass
@@ -365,7 +365,7 @@ def AddSolid(
 def AddStoryLevel(
 		storyHandle, # HANDLE - The handle of the story that the new level should be added to.                 
 		levelType  , # STRING - The level type of the new Story Level.  This cannot be blank.                  
-		elevation  , # POINT  - The elevation of the new Story Level in the story.                             
+		elevation  , # REAL   - The elevation of the new Story Level in the story.                             
 		layerName    # STRING - The name of the layer to associate with the new Story Level.  This is optional.
 		):
 	'''
@@ -447,13 +447,13 @@ def AddTileGeometryObject(
 
 
 def AddVectorFillLayer(
-		xStart    , # POINT   - X coordinate of fill origin.                                
-		yStart    , # POINT   - Y coordinate of fill origin.                                
-		xRepeat   , # POINT   - X coordinate of fill repeat origin.                         
-		yRepeat   , # POINT   - Y coordinate of fill repeat origin.                         
-		xOffset   , # POINT   - X coordinate of fill offset origin.                         
-		yOffset   , # POINT   - Y coordinate of fill offset origin.                         
-		dashFactor, # POINT   - Dash factor of layer(percentage of fill line that is solid).
+		xStart    , # REAL    - X coordinate of fill origin.                                
+		yStart    , # REAL    - Y coordinate of fill origin.                                
+		xRepeat   , # REAL    - X coordinate of fill repeat origin.                         
+		yRepeat   , # REAL    - Y coordinate of fill repeat origin.                         
+		xOffset   , # REAL    - X coordinate of fill offset origin.                         
+		yOffset   , # REAL    - Y coordinate of fill offset origin.                         
+		dashFactor, # REAL    - Dash factor of layer(percentage of fill line that is solid).
 		lineWeight, # INTEGER - Line weight of layer, in mils.                              
 		colorIndex  # INTEGER - Pen color of layer.                                         
 		):
@@ -590,10 +590,10 @@ def AlertInform(
 
 
 def AlertInformDontShowAgain(
-		text      , # STRING  - The information to be displayed.                                          
-		advice    , # STRING  - The text to be added in a smaller font under the main information message.
-		minorAlert, # BOOLEAN - The severity of the alert: minor(true) or major(false).                   
-		arrOptions  # ARRAY   - ARRAY [1..3] OF STRING;                                                   
+		text      , # STRING  - The information to be displayed.                                                                                                                                                                                                                    
+		advice    , # STRING  - The text to be added in a smaller font under the main information message.                                                                                                                                                                          
+		minorAlert, # BOOLEAN - The severity of the alert: minor(true) or major(false).                                                                                                                                                                                             
+		arrOptions  # ARRAY   - ARRAY [1..3] OF STRING; arrOpt[1] - Saved setting category to save checkbox value arrOpt[2] - Saved setting item to save checkbox value  arrOpt[3] - Specify a string to use in overriding the default 'Dont show this dialog again' checkbox string
 		):
 	'''
 		Python: vs.AlertInformDontShowAgain(text, advice, minorAlert, arrOptions)
@@ -729,8 +729,8 @@ def AlrtDialog(
 
 
 def Ang2Vec(
-		angleR, # POINT - The angle of the vector (in degrees).
-		Length  # POINT - The length of the vector.            
+		angleR, # REAL - The angle of the vector (in degrees).
+		Length  # REAL - The length of the vector.            
 		):
 	'''
 		Python: VECTOR = vs.Ang2Vec(angleR, Length)
@@ -902,11 +902,11 @@ def Arc(
 
 
 def ArcByCenter(
-		x         , # POINT - X-coordinate of the center point
-		y         , # POINT - Y-coordinate of the center point
-		radius    , # POINT - Radius of the arc               
-		startAngl , # REAL  - Starting angle of the arc       
-		sweepAngle  # REAL  - Sweep angle of the arc          
+		x         , # REAL - X-coordinate of the center point
+		y         , # REAL - Y-coordinate of the center point
+		radius    , # REAL - Radius of the arc               
+		startAngl , # REAL - Starting angle of the arc       
+		sweepAngle  # REAL - Sweep angle of the arc          
 		):
 	'''
 		Python: vs.ArcByCenter(x, y, radius, startAngl, sweepAngle)
@@ -919,7 +919,7 @@ def ArcByCenter(
 
 
 def ArcCos(
-		v  # POINT - Numeric value for which to find the cosine.
+		v  # REAL - Numeric value for which to find the cosine.
 		):
 	'''
 		Python: REAL = vs.ArcCos(v)
@@ -933,7 +933,7 @@ def ArcCos(
 
 
 def ArcSin(
-		v  # POINT - Numeric value for which to find the sine.
+		v  # REAL - Numeric value for which to find the sine.
 		):
 	'''
 		Python: REAL = vs.ArcSin(v)
@@ -947,7 +947,7 @@ def ArcSin(
 
 
 def ArcTan(
-		v  # POINT - Numeric value for which to find the tangent.
+		v  # REAL - Numeric value for which to find the tangent.
 		):
 	'''
 		Python: REAL = vs.ArcTan(v)
@@ -990,7 +990,7 @@ def Area(
 
 
 def Area2Str(
-		value  # POINT - The area value.
+		value  # REAL - The area value.
 		):
 	'''
 		Python: STRING = vs.Area2Str(value)
@@ -1302,7 +1302,7 @@ def BeginRoof(
 		riseDistance, # REAL (Coordinate) - Rise distance.                                     
 		runDistance , # REAL (Coordinate) - Run distance.                                      
 		miter       , # INTEGER           - Edge miter style of roof.                          
-		vertPart      # POINT             - Dimension of vertical miter for double miter style.
+		vertPart      # REAL              - Dimension of vertical miter for double miter style.
 		):
 	'''
 		Python: vs.BeginRoof(p1, p2, upslope, riseDistance, runDistance, miter, vertPart)
@@ -1594,6 +1594,21 @@ def CallToolByName(
 	return 'BOOLEAN' # 
 
 
+def CallToolWithMode(
+		toolIndex , # INTEGER - Vectorworks tool constant.       
+		modeGroup , # LONGINT - Index of the mode group          
+		modeButton  # LONGINT - Index of the button in the group.
+		):
+	'''
+		Python: vs.CallToolWithMode(toolIndex, modeGroup, modeButton)
+		VectorScript: PROCEDURE CallToolWithMode(toolIndex:INTEGER; modeGroup:LONGINT; modeButton:LONGINT);
+		
+		Category: Utility
+		Activates the specified Vectorworks tool for a single use with the specified tool mode. After the tool has been used Vectorworks will revert back to the previously active tool.
+	'''
+	pass
+
+
 def CapsLock():
 	'''
 		Python: BOOLEAN = vs.CapsLock()
@@ -1718,8 +1733,8 @@ def Chr(
 def CircleCircleInters(
 		cenPt1 , # VECTOR -  
 		cenPt2 , # VECTOR -  
-		radius1, # POINT  -  
-		radius2  # POINT  -  
+		radius1, # REAL   -  
+		radius2  # REAL   -  
 		):
 	'''
 		Python: (BOOLEAN, pt1, pt2) = vs.CircleCircleInters(cenPt1, cenPt2, radius1, radius2)
@@ -1743,7 +1758,7 @@ def CircularDim(
 		dimType           , # INTEGER           - Dimension type flag.                                               
 		arrow             , # INTEGER           - Arrow style flag.                                                  
 		textFlag          , # INTEGER           - Text style flag.                                                   
-		shoulder            # POINT             - Shoulder extension line length.                                    
+		shoulder            # REAL              - Shoulder extension line length.                                    
 		):
 	'''
 		Python: vs.CircularDim(startPt, endPt, box1, box2, textOffsetDistance, dimType, arrow, textFlag, shoulder)
@@ -1842,7 +1857,7 @@ def ClearWSCell(
 def ClipPolygon(
 		hPolygon, # HANDLE -  
 		hClipper, # HANDLE -  
-		dFuzz     # POINT  -  
+		dFuzz     # REAL   -  
 		):
 	'''
 		Python: HANDLE = vs.ClipPolygon(hPolygon, hClipper, dFuzz)
@@ -1867,6 +1882,21 @@ def ClipSurface(
 		Creates a new surface object by subtracting the intersection of surfaces s1 and s2 from s1.
 	'''
 	pass
+
+
+def ClipSurfaceN(
+		s1, # HANDLE - Surface to be subtracted from
+		s2  # HANDLE - Surface to subtract from s1  
+		):
+	'''
+		Python: HANDLE = vs.ClipSurfaceN(s1, s2)
+		VectorScript: FUNCTION ClipSurfaceN(s1:HANDLE; s2:HANDLE) : HANDLE;
+		
+		Category: Objects - 2D
+		Creates a new surface object by subtracting the intersection of surfaces s1 and s2 from s1.
+	'''
+	pass
+	return 'HANDLE' # 
 
 
 def Close(
@@ -1936,9 +1966,9 @@ def ClosestPoints(
 
 def Cloud(
 		h                  , # HANDLE  -  
-		rMin               , # POINT   -  
-		rMax               , # POINT   -  
-		hFactor            , # POINT   -  
+		rMin               , # REAL    -  
+		rMax               , # REAL    -  
+		hFactor            , # REAL    -  
 		convex             , # BOOLEAN -  
 		removeIntersections  # BOOLEAN -  
 		):
@@ -1962,6 +1992,20 @@ def ClrMessage():
 		Procedure ClrMessage closes the message palette.
 	'''
 	pass
+
+
+def CnvrtToGenericSolid(
+		solid  # HANDLE - object to convert
+		):
+	'''
+		Python: HANDLE = vs.CnvrtToGenericSolid(solid)
+		VectorScript: FUNCTION CnvrtToGenericSolid(solid:HANDLE) : HANDLE;
+		
+		Category: Objects - Solids
+		Converts Solid objects to generic solids. Removes solid history saving memory.
+	'''
+	pass
+	return 'HANDLE' # 
 
 
 def CollapseAllLBItems(
@@ -2028,7 +2072,7 @@ def CombineIntoSurface(
 def CombinePolygons(
 		hPolygonA, # HANDLE -  
 		hPolygonB, # HANDLE -  
-		dFuzz      # POINT  -  
+		dFuzz      # REAL   -  
 		):
 	'''
 		Python: HANDLE = vs.CombinePolygons(hPolygonA, hPolygonB, dFuzz)
@@ -2179,14 +2223,14 @@ def ConvertTo3DPolys(
 
 def ConvertToArcPolyline(
 		hPolygon, # HANDLE -  
-		dFuzz     # POINT  -  
+		dFuzz     # REAL   -  
 		):
 	'''
 		Python: HANDLE = vs.ConvertToArcPolyline(hPolygon, dFuzz)
 		VectorScript: FUNCTION ConvertToArcPolyline(hPolygon:HANDLE; dFuzz:REAL) : HANDLE;
 		
 		Category: Graphic Calculation
-		Returns TRUE if the 3D points are equal within the tolerance.
+		Convert, within a tolerance, the input polyline into an polyline that uses arcs for the curves
 	'''
 	pass
 	return 'HANDLE' # 
@@ -2263,6 +2307,19 @@ def ConvertToUnstyledWall(
 	return 'BOOLEAN' # 
 
 
+def ConvToUnstyledRoof(
+		roof  # HANDLE - The roof.
+		):
+	'''
+		Python: vs.ConvToUnstyledRoof(roof)
+		VectorScript: PROCEDURE ConvToUnstyledRoof(roof:HANDLE);
+		
+		Category: Objects - Roofs
+		Sets a roof to be unstyled.
+	'''
+	pass
+
+
 def Copy(
 		source, # DYNARRAY[] of CHAR - Source string.                
 		index , # INTEGER            - Start position in text string.
@@ -2309,7 +2366,7 @@ def CopySymbol(
 
 
 def Cos(
-		v  # POINT - The angle for which to find the cosine.
+		v  # REAL - The angle for which to find the cosine.
 		):
 	'''
 		Python: REAL = vs.Cos(v)
@@ -2476,7 +2533,7 @@ def CreateCone(
 
 def CreateContourCurves(
 		inSourceObject, # HANDLE  - Handle to a solid object              
-		delta         , # POINT   - Distance between contours             
+		delta         , # REAL    - Distance between contours             
 		ptOnPlane     , # POINT3D - Point on plane used to define contours
 		normal          # POINT3D - Plane's normal vector                 
 		):
@@ -2639,7 +2696,7 @@ def CreateEditReal(
 		dialogID         , # LONGINT - The index of the dialog layout containing the control.
 		itemID           , # LONGINT - The index that will identify the control item.        
 		editRealType     , # LONGINT - The type of REAL value being accepted.                
-		defaultValue     , # POINT   - Default value for the field.                          
+		defaultValue     , # REAL    - Default value for the field.                          
 		widthInCharacters  # LONGINT - Width of the field in characters.                     
 		):
 	'''
@@ -2901,8 +2958,8 @@ def CreateImageFromPaint(
 def CreateImageProp(
 		propName               , # STRING  -  
 		textureRef             , # LONGINT -  
-		height                 , # POINT   -  
-		width                  , # POINT   -  
+		height                 , # REAL    -  
+		width                  , # REAL    -  
 		enforceImageAspectRatio, # BOOLEAN -  
 		crossedPlanes          , # BOOLEAN -  
 		createPlugin           , # BOOLEAN -  
@@ -3022,10 +3079,10 @@ def CreateLB(
 
 def CreateLevelTemplate(
 		layerName  , # STRING - The layer name for the new Story Level Template.  This can be blank, meaning that layers will not be created for instances of the new Story Level Template.       
-		scaleFactor, # POINT  - The scale factor for the (optional) layer associated with this Story Level Template.                                                                              
+		scaleFactor, # REAL   - The scale factor for the (optional) layer associated with this Story Level Template.                                                                              
 		levelType  , # STRING - The level type for the new Story Level Template.  There may be multiple Story Level Templates with the same level type, as long as they have different elevations.
-		elevation  , # POINT  - The elevation of the Story Level Template, relative to the height of the story in which the level is used.                                                        
-		wallHeight   # POINT  - The wall height for (optional) layers created when using this Story Level Template in a Story.  If the layer name is empty, this parameter is unused.             
+		elevation  , # REAL   - The elevation of the Story Level Template, relative to the height of the story in which the level is used.                                                        
+		wallHeight   # REAL   - The wall height for (optional) layers created when using this Story Level Template in a Story.  If the layer name is empty, this parameter is unused.             
 		):
 	'''
 		Python: (BOOLEAN, index) = vs.CreateLevelTemplate(layerName, scaleFactor, levelType, elevation, wallHeight)
@@ -3040,9 +3097,9 @@ def CreateLevelTemplate(
 
 
 def CreateLight(
-		pXR       , # POINT   - X coordinate of new light.               
-		pYR       , # POINT   - Y coordinate of new light.               
-		pZR       , # POINT   - Z coordinate of new light.               
+		pXR       , # REAL    - X coordinate of new light.               
+		pYR       , # REAL    - Y coordinate of new light.               
+		pZR       , # REAL    - Z coordinate of new light.               
 		lightType , # INTEGER - Light type.                              
 		isOn      , # BOOLEAN - On-off status of light.                  
 		castShadow  # BOOLEAN - Specifies whether light will cast shadow.
@@ -3259,7 +3316,7 @@ def CreatePaintFromImage(
 def CreatePaintFromImgN(
 		image , # HANDLE - Handle to the image resource from which a paint node is to be created.
 		locPt , # POINT  - Location of the new paint nodet.                                      
-		rotDeg  # POINT  - Rotation of the paint node in degrees.                                
+		rotDeg  # REAL   - Rotation of the paint node in degrees.                                
 		):
 	'''
 		Python: HANDLE = vs.CreatePaintFromImgN(image, locPt, rotDeg)
@@ -3443,6 +3500,20 @@ def CreateRoof(
 	return 'HANDLE' # 
 
 
+def CreateRoofStyle(
+		roofStyleName  # STRING - The name of the new Roof Style.  If the name is already in use, the next available name will be used.
+		):
+	'''
+		Python: HANDLE = vs.CreateRoofStyle(roofStyleName)
+		VectorScript: FUNCTION CreateRoofStyle(roofStyleName:STRING) : HANDLE;
+		
+		Category: Objects - Architectural
+		Creates a new Roof Style of the given name. If the name is already in use, the next available name will be used.
+	'''
+	pass
+	return 'HANDLE' # The new Roof Style.
+
+
 def CreateRWBackground(
 		imageResource  # HANDLE -  
 		):
@@ -3546,6 +3617,21 @@ def CreateSheetLayerPullDownMenu(
 		Creates a Layout Manager sheet layer pull down menu control.
 	'''
 	pass
+
+
+def CreateShell(
+		surface  , # HANDLE -  
+		thickness  # REAL   -  
+		):
+	'''
+		Python: Handle = vs.CreateShell(surface, thickness)
+		VectorScript: FUNCTION CreateShell(surface:HANDLE; thickness:REAL) : Handle;
+		
+		Category: Objects - Solids
+		Creates a shelled solid from a NURBS surface.
+	'''
+	pass
+	return 'Handle' # 
 
 
 def CreateSkylight(
@@ -3692,10 +3778,10 @@ def CreateStory(
 
 def CreateStoryLayerTemplate(
 		name             , # STRING - The name of the Story Layer Template.                                                               
-		scaleFactor      , # POINT  - The scale to be assinged to any Layers created from this template.                                  
+		scaleFactor      , # REAL   - The scale to be assinged to any Layers created from this template.                                  
 		layerLevelType   , # STRING - The Layer Level Type to be assigned to any Layers created from this template.                       
-		elevationOffset  , # POINT  - The offset of the elevation of any Layer created from this template from the elevation of its Story.
-		defaultWallHeight  # POINT  - The wall height to be assigned to any Layer created from this template.                             
+		elevationOffset  , # REAL   - The offset of the elevation of any Layer created from this template from the elevation of its Story.
+		defaultWallHeight  # REAL   - The wall height to be assigned to any Layer created from this template.                             
 		):
 	'''
 		Python: (BOOLEAN, index) = vs.CreateStoryLayerTemplate(name, scaleFactor, layerLevelType, elevationOffset, defaultWallHeight)
@@ -3824,10 +3910,26 @@ def CreateTabPane(
 	pass
 
 
+def CreateTaperedExtrd2(
+		profileH, # HANDLE - Handle to object defining profile geometry.
+		angle   , # REAL   - Taper angle of extrude (in degrees).       
+		height    # REAL   - Height of extrude.                         
+		):
+	'''
+		Python: HANDLE = vs.CreateTaperedExtrd2(profileH, angle, height)
+		VectorScript: FUNCTION CreateTaperedExtrd2(profileH:HANDLE; angle:REAL; height:REAL) : HANDLE;
+		
+		Category: Objects - 3D
+		Creates a new tapered extrude object in the document. This function returns a "general solid" object while the other function, CreateTaperedExtrude, produces a bunch of NURBS surfaces.
+	'''
+	pass
+	return 'HANDLE' # Returns a HANDLE to the new tapered extrude if successful, otherwise returns NIL.
+
+
 def CreateTaperedExtrude(
 		profileH, # HANDLE - Handle to object defining profile geometry.
-		angle   , # POINT  - Taper angle of extrude (in degrees).       
-		height    # POINT  - Height of extrude.                         
+		angle   , # REAL   - Taper angle of extrude (in degrees).       
+		height    # REAL   - Height of extrude.                         
 		):
 	'''
 		Python: HANDLE = vs.CreateTaperedExtrude(profileH, angle, height)
@@ -3860,7 +3962,7 @@ def CreateTextStyleRes(
 		Python: HANDLE = vs.CreateTextStyleRes(name)
 		VectorScript: FUNCTION CreateTextStyleRes(name:STRING) : HANDLE;
 		
-		Category: Text Style Constant
+		Category: Objects - Text
 		Creates a new text style resource with the specified name.  A handle to the new resource is returned.  Once the resource is created the attributes of the text style resource should be set appropriately.
 	'''
 	pass
@@ -4521,7 +4623,7 @@ def DBeam_GetObjFallOff():
 
 
 def DBeam_SetBeamAngle(
-		angle  # POINT -  
+		angle  # REAL -  
 		):
 	'''
 		Python: vs.DBeam_SetBeamAngle(angle)
@@ -4533,7 +4635,7 @@ def DBeam_SetBeamAngle(
 
 
 def DBeam_SetBeamAngle2(
-		angle  # POINT -  
+		angle  # REAL -  
 		):
 	'''
 		Python: vs.DBeam_SetBeamAngle2(angle)
@@ -4545,7 +4647,7 @@ def DBeam_SetBeamAngle2(
 
 
 def DBeam_SetBShutAngle(
-		angle  # POINT -  
+		angle  # REAL -  
 		):
 	'''
 		Python: vs.DBeam_SetBShutAngle(angle)
@@ -4569,7 +4671,7 @@ def DBeam_SetBShutDepth(
 
 
 def DBeam_SetFallOffDist(
-		dist  # POINT -  
+		dist  # REAL -  
 		):
 	'''
 		Python: vs.DBeam_SetFallOffDist(dist)
@@ -4594,7 +4696,7 @@ def DBeam_SetFocusPoint(
 
 
 def DBeam_SetLampRot(
-		rot  # POINT -  
+		rot  # REAL -  
 		):
 	'''
 		Python: vs.DBeam_SetLampRot(rot)
@@ -4619,7 +4721,7 @@ def DBeam_SetLightOrigin(
 
 
 def DBeam_SetLShutAngle(
-		angle  # POINT -  
+		angle  # REAL -  
 		):
 	'''
 		Python: vs.DBeam_SetLShutAngle(angle)
@@ -4643,7 +4745,7 @@ def DBeam_SetLShutDepth(
 
 
 def DBeam_SetRShutAngle(
-		angle  # POINT -  
+		angle  # REAL -  
 		):
 	'''
 		Python: vs.DBeam_SetRShutAngle(angle)
@@ -4691,7 +4793,7 @@ def DBeam_SetShowAtPoint(
 
 
 def DBeam_SetTShutAngle(
-		angle  # POINT -  
+		angle  # REAL -  
 		):
 	'''
 		Python: vs.DBeam_SetTShutAngle(angle)
@@ -5003,7 +5105,7 @@ def DefineCustomObj(
 
 
 def Deg2Rad(
-		degreeValue  # POINT - Value in degrees.
+		degreeValue  # REAL - Value in degrees.
 		):
 	'''
 		Python: REAL = vs.Deg2Rad(degreeValue)
@@ -5014,6 +5116,22 @@ def Deg2Rad(
 	'''
 	pass
 	return 'REAL' # 
+
+
+def DegFromStr(
+		fSlopeDef  , # STRING -  
+		fSlopeValue  # STRING -  
+		):
+	'''
+		Python: (BOOLEAN, fAngle) = vs.DegFromStr(fSlopeDef, fSlopeValue)
+		VectorScript: FUNCTION DegFromStr(fSlopeDef:STRING; fSlopeValue:STRING; VAR fAngle:REAL) : BOOLEAN;
+		
+		Category: SiteModel Interface Library
+		Converts slope from string format to degrees.
+	'''
+	pass
+	return ( False  , # 
+	         0.0     )
 
 
 def DelClass(
@@ -5132,8 +5250,8 @@ def DeleteCDATA(
 
 
 def DeleteComponent(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component to delete.                                                                              
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component to delete.                                                                                                                                 
 		):
 	'''
 		Python: BOOLEAN = vs.DeleteComponent(object, componentIndex)
@@ -5512,7 +5630,7 @@ def DeselectEditText(
 
 def DetailGraphicOptDlg(
 		Marker        , # in/out STRING  - The name of the selected Marker symbol.           
-		ShoulderLength, # in/out POINT   - The shoulder length for the detail callout object.
+		ShoulderLength, # in/out REAL    - The shoulder length for the detail callout object.
 		TagPosIndex   , # in/out INTEGER - The index of the selected Tag Position.           
 		LeaderType    , # in/out LONGINT - The linetype for the leader lines.                
 		LeaderThick     # in/out INTEGER - The line thickness for the leader line.           
@@ -5668,10 +5786,10 @@ def DisplayTabPane(
 
 
 def Distance(
-		x1, # POINT - X coordinate of first point. 
-		y1, # POINT - Y coordinate of first point. 
-		x2, # POINT - X coordinate of second point.
-		y2  # POINT - Y coordinate of second point.
+		x1, # REAL - X coordinate of first point. 
+		y1, # REAL - Y coordinate of first point. 
+		x2, # REAL - X coordinate of second point.
+		y2  # REAL - Y coordinate of second point.
 		):
 	'''
 		Python: REAL = vs.Distance(x1, y1, x2, y2)
@@ -5685,12 +5803,12 @@ def Distance(
 
 
 def Distance3D(
-		x1, # POINT -  
-		y1, # POINT -  
-		z1, # POINT -  
-		x2, # POINT -  
-		y2, # POINT -  
-		z2  # POINT -  
+		x1, # REAL -  
+		y1, # REAL -  
+		z1, # REAL -  
+		x2, # REAL -  
+		y2, # REAL -  
+		z2  # REAL -  
 		):
 	'''
 		Python: REAL = vs.Distance3D(x1, y1, z1, x2, y2, z2)
@@ -5984,8 +6102,8 @@ def DTM6_GetDTMOver(
 def DTM6_GetZatXY(
 		hDTMObject, # HANDLE  -  
 		TINType   , # INTEGER -  
-		x         , # POINT   -  
-		y           # POINT   -  
+		x         , # REAL    -  
+		y           # REAL    -  
 		):
 	'''
 		Python: (BOOLEAN, outZ) = vs.DTM6_GetZatXY(hDTMObject, TINType, x, y)
@@ -6116,7 +6234,7 @@ def Duplicate(
 
 
 def DXFScaleString(
-		scale  # POINT -  
+		scale  # REAL -  
 		):
 	'''
 		Python: STRING = vs.DXFScaleString(scale)
@@ -6124,6 +6242,389 @@ def DXFScaleString(
 		
 		Category: ImportExport
 		Get DXF scale string
+	'''
+	pass
+	return 'STRING' # 
+
+
+def EA_ConvDoc2X(
+		unitType, # INTEGER -  
+		value     # REAL    -  
+		):
+	'''
+		Python: REAL = vs.EA_ConvDoc2X(unitType, value)
+		VectorScript: FUNCTION EA_ConvDoc2X(unitType:INTEGER; value:REAL) : REAL;
+		
+		Category: EnergyAnalysis Interface Library
+		Converts value from document unit to X unit and returns the result as real number.
+	'''
+	pass
+	return 'REAL' # 
+
+
+def EA_ConvStr2X(
+		unitType, # INTEGER -  
+		value     # STRING  -  
+		):
+	'''
+		Python: REAL = vs.EA_ConvStr2X(unitType, value)
+		VectorScript: FUNCTION EA_ConvStr2X(unitType:INTEGER; value:STRING) : REAL;
+		
+		Category: EnergyAnalysis Interface Library
+		Converts string to X unit and returns the result as real number.
+	'''
+	pass
+	return 'REAL' # 
+
+
+def EA_ConvX2Doc(
+		unitType, # INTEGER -  
+		value     # REAL    -  
+		):
+	'''
+		Python: REAL = vs.EA_ConvX2Doc(unitType, value)
+		VectorScript: FUNCTION EA_ConvX2Doc(unitType:INTEGER; value:REAL) : REAL;
+		
+		Category: EnergyAnalysis Interface Library
+		Converts value from X unit to document unit and returns the result as a real number.
+	'''
+	pass
+	return 'REAL' # 
+
+
+def EA_ConvX2DocStr(
+		unitType   , # INTEGER -  
+		value      , # REAL    -  
+		incUnitMark  # BOOLEAN -  
+		):
+	'''
+		Python: STRING = vs.EA_ConvX2DocStr(unitType, value, incUnitMark)
+		VectorScript: FUNCTION EA_ConvX2DocStr(unitType:INTEGER; value:REAL; incUnitMark:BOOLEAN) : STRING;
+		
+		Category: EnergyAnalysis Interface Library
+		Converts value from X unit to document unit and returns the result as real number.
+	'''
+	pass
+	return 'STRING' # 
+
+
+def EA_DataAccAdvDlg(
+		acc  # INTEGER -  
+		):
+	'''
+		Python: BOOLEAN = vs.EA_DataAccAdvDlg(acc)
+		VectorScript: FUNCTION EA_DataAccAdvDlg(acc:INTEGER) : BOOLEAN;
+		
+		Category: EnergyAnalysis Interface Library
+		Shows an advanced settings dialog.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def EA_DataAccCompAdd(
+		acc        , # INTEGER -
+		include    , # BOOLEAN -
+		lambda_func, # REAL    -
+		thickness    # REAL    -
+		):
+	'''
+		Python: vs.EA_DataAccCompAdd(acc, include, lambda_func, thickness)
+		VectorScript: PROCEDURE EA_DataAccCompAdd(acc:INTEGER; include:BOOLEAN; lambda_func:REAL; thickness:REAL);
+		
+		Category: EnergyAnalysis Interface Library
+		Adds object component.
+	'''
+	pass
+
+
+def EA_DataAccCompDel(
+		acc  # INTEGER -  
+		):
+	'''
+		Python: vs.EA_DataAccCompDel(acc)
+		VectorScript: PROCEDURE EA_DataAccCompDel(acc:INTEGER);
+		
+		Category: EnergyAnalysis Interface Library
+		Deletes all object components.
+	'''
+	pass
+
+
+def EA_DataAccCompGet(
+		acc  # INTEGER -  
+		):
+	'''
+		Python: (componentIndex, outInclude, outLambda, outThickness) = vs.EA_DataAccCompGet(acc)
+		VectorScript: PROCEDURE EA_DataAccCompGet(acc:INTEGER; VAR componentIndex:INTEGER; VAR outInclude:BOOLEAN; VAR outLambda:REAL; VAR outThickness:REAL);
+		
+		Category: EnergyAnalysis Interface Library
+		Gets object component data.
+	'''
+	pass
+	return ( 0    , 
+	         False, 
+	         0.0  , 
+	         0.0   )
+
+
+def EA_DataAccCpyInto(
+		acc, # INTEGER -  
+		h    # HANDLE  -  
+		):
+	'''
+		Python: vs.EA_DataAccCpyInto(acc, h)
+		VectorScript: PROCEDURE EA_DataAccCpyInto(acc:INTEGER; h:HANDLE);
+		
+		Category: EnergyAnalysis Interface Library
+		Copies data from accessory to object.
+	'''
+	pass
+
+
+def EA_DataAccCreate(
+		type, # INTEGER -  
+		h     # HANDLE  -  
+		):
+	'''
+		Python: INTEGER = vs.EA_DataAccCreate(type, h)
+		VectorScript: FUNCTION EA_DataAccCreate(type:INTEGER; h:HANDLE) : INTEGER;
+		
+		Category: EnergyAnalysis Interface Library
+		Returns accessory index. The function opens a  session  to energy analysis plugin for particular handle. The handle is a handle to record format or to object.
+	'''
+	pass
+	return 'INTEGER' # 
+
+
+def EA_DataAccDelete(
+		acc  # INTEGER -  
+		):
+	'''
+		Python: vs.EA_DataAccDelete(acc)
+		VectorScript: PROCEDURE EA_DataAccDelete(acc:INTEGER);
+		
+		Category: EnergyAnalysis Interface Library
+		Destroys accessory by index. The function closes the  session  to energy analysis plugin for particular handle. The handle is a handle to record format or to object.
+	'''
+	pass
+
+
+def EA_DataAccFillUI(
+		acc     , # INTEGER -  
+		dialogID, # INTEGER -  
+		ctrlID  , # INTEGER -  
+		uiIndex   # INTEGER -  
+		):
+	'''
+		Python: vs.EA_DataAccFillUI(acc, dialogID, ctrlID, uiIndex)
+		VectorScript: PROCEDURE EA_DataAccFillUI(acc:INTEGER; dialogID:INTEGER; ctrlID:INTEGER; uiIndex:INTEGER);
+		
+		Category: EnergyAnalysis Interface Library
+		Fills popup with system data.
+	'''
+	pass
+
+
+def EA_DataAccGetBool(
+		acc       , # INTEGER -  
+		valueIndex  # INTEGER -  
+		):
+	'''
+		Python: BOOLEAN = vs.EA_DataAccGetBool(acc, valueIndex)
+		VectorScript: FUNCTION EA_DataAccGetBool(acc:INTEGER; valueIndex:INTEGER) : BOOLEAN;
+		
+		Category: EnergyAnalysis Interface Library
+		Returns boolean value from the object, associated to the accessory index.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def EA_DataAccGetInt(
+		acc       , # INTEGER -  
+		valueIndex  # INTEGER -  
+		):
+	'''
+		Python: INTEGER = vs.EA_DataAccGetInt(acc, valueIndex)
+		VectorScript: FUNCTION EA_DataAccGetInt(acc:INTEGER; valueIndex:INTEGER) : INTEGER;
+		
+		Category: EnergyAnalysis Interface Library
+		Returns integer value from the object, associated to the accessory index.
+	'''
+	pass
+	return 'INTEGER' # 
+
+
+def EA_DataAccGetReal(
+		acc       , # INTEGER -  
+		valueIndex  # INTEGER -  
+		):
+	'''
+		Python: REAL = vs.EA_DataAccGetReal(acc, valueIndex)
+		VectorScript: FUNCTION EA_DataAccGetReal(acc:INTEGER; valueIndex:INTEGER) : REAL;
+		
+		Category: EnergyAnalysis Interface Library
+		Returns real value from the object, associated to the accessory index.
+	'''
+	pass
+	return 'REAL' # 
+
+
+def EA_DataAccGetStr(
+		acc       , # INTEGER -  
+		valueIndex  # INTEGER -  
+		):
+	'''
+		Python: STRING = vs.EA_DataAccGetStr(acc, valueIndex)
+		VectorScript: FUNCTION EA_DataAccGetStr(acc:INTEGER; valueIndex:INTEGER) : STRING;
+		
+		Category: EnergyAnalysis Interface Library
+		Returns string value from the object, associated to the accessory index.
+	'''
+	pass
+	return 'STRING' # 
+
+
+def EA_DataAccMtrlDlg(
+		acc  # INTEGER -  
+		):
+	'''
+		Python: (BOOLEAN, outLambda) = vs.EA_DataAccMtrlDlg(acc)
+		VectorScript: FUNCTION EA_DataAccMtrlDlg(acc:INTEGER; VAR outLambda:REAL) : BOOLEAN;
+		
+		Category: EnergyAnalysis Interface Library
+		Shows the lambda material dialog and set the selected lambda value to outLambda.
+	'''
+	pass
+	return ( False  , # 
+	         0.0     )
+
+
+def EA_DataAccSave(
+		acc  # INTEGER -  
+		):
+	'''
+		Python: vs.EA_DataAccSave(acc)
+		VectorScript: PROCEDURE EA_DataAccSave(acc:INTEGER);
+		
+		Category: EnergyAnalysis Interface Library
+		Saves data to accessory. The function saves the energy data for the handle who is corresponding to the accessory index.
+	'''
+	pass
+
+
+def EA_DataAccSelUI(
+		acc     , # INTEGER -  
+		dialogID, # INTEGER -  
+		ctrlID  , # INTEGER -  
+		uiIndex   # INTEGER -  
+		):
+	'''
+		Python: vs.EA_DataAccSelUI(acc, dialogID, ctrlID, uiIndex)
+		VectorScript: PROCEDURE EA_DataAccSelUI(acc:INTEGER; dialogID:INTEGER; ctrlID:INTEGER; uiIndex:INTEGER);
+		
+		Category: EnergyAnalysis Interface Library
+		Selects item in popup and update system data.
+	'''
+	pass
+
+
+def EA_DataAccSetBool(
+		acc       , # INTEGER -  
+		valueIndex, # INTEGER -  
+		value       # BOOLEAN -  
+		):
+	'''
+		Python: vs.EA_DataAccSetBool(acc, valueIndex, value)
+		VectorScript: PROCEDURE EA_DataAccSetBool(acc:INTEGER; valueIndex:INTEGER; value:BOOLEAN);
+		
+		Category: EnergyAnalysis Interface Library
+		Set boolean value to the object, associated to the accessory index.
+	'''
+	pass
+
+
+def EA_DataAccSetInt(
+		acc       , # INTEGER -  
+		valueIndex, # INTEGER -  
+		value       # INTEGER -  
+		):
+	'''
+		Python: vs.EA_DataAccSetInt(acc, valueIndex, value)
+		VectorScript: PROCEDURE EA_DataAccSetInt(acc:INTEGER; valueIndex:INTEGER; value:INTEGER);
+		
+		Category: EnergyAnalysis Interface Library
+		Set integer value to the object, associated to the accessory index.
+	'''
+	pass
+
+
+def EA_DataAccSetReal(
+		acc       , # INTEGER -  
+		valueIndex, # INTEGER -  
+		value       # REAL    -  
+		):
+	'''
+		Python: vs.EA_DataAccSetReal(acc, valueIndex, value)
+		VectorScript: PROCEDURE EA_DataAccSetReal(acc:INTEGER; valueIndex:INTEGER; value:REAL);
+		
+		Category: EnergyAnalysis Interface Library
+		Set real value to the object, associated to the accessory index.
+	'''
+	pass
+
+
+def EA_DataAccSetStr(
+		acc       , # INTEGER -  
+		valueIndex, # INTEGER -  
+		value       # STRING  -  
+		):
+	'''
+		Python: vs.EA_DataAccSetStr(acc, valueIndex, value)
+		VectorScript: PROCEDURE EA_DataAccSetStr(acc:INTEGER; valueIndex:INTEGER; value:STRING);
+		
+		Category: EnergyAnalysis Interface Library
+		Set string value to the object, associated to the accessory index.
+	'''
+	pass
+
+
+def EA_GetUnitStr(
+		unitType  # INTEGER -  
+		):
+	'''
+		Python: STRING = vs.EA_GetUnitStr(unitType)
+		VectorScript: FUNCTION EA_GetUnitStr(unitType:INTEGER) : STRING;
+		
+		Category: EnergyAnalysis Interface Library
+		Returns document unit string.
+	'''
+	pass
+	return 'STRING' # 
+
+
+def EA_IsUsedUValue():
+	'''
+		Python: BOOLEAN = vs.EA_IsUsedUValue()
+		VectorScript: FUNCTION EA_IsUsedUValue : BOOLEAN;
+		
+		Category: EnergyAnalysis Interface Library
+		Returns TRUE if U-Value is used. If R-value is used returns FALSE.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def EA_UValueText(
+		UValue  # BOOLEAN -  
+		):
+	'''
+		Python: STRING = vs.EA_UValueText(UValue)
+		VectorScript: FUNCTION EA_UValueText(UValue:BOOLEAN) : STRING;
+		
+		Category: EnergyAnalysis Interface Library
+		Returns U-Value or R-Value text depending on document settings.
 	'''
 	pass
 	return 'STRING' # 
@@ -6744,9 +7245,9 @@ def EOLN(
 
 
 def Eq(
-		value1   , # POINT -  
-		value2   , # POINT -  
-		tolerance  # POINT -  
+		value1   , # REAL -  
+		value2   , # REAL -  
+		tolerance  # REAL -  
 		):
 	'''
 		Python: BOOLEAN = vs.Eq(value1, value2, tolerance)
@@ -6760,9 +7261,9 @@ def Eq(
 
 
 def EqPercent(
-		value1 , # POINT -  
-		value2 , # POINT -  
-		percent  # POINT -  
+		value1 , # REAL -  
+		value2 , # REAL -  
+		percent  # REAL -  
 		):
 	'''
 		Python: BOOLEAN = vs.EqPercent(value1, value2, percent)
@@ -6778,7 +7279,7 @@ def EqPercent(
 def EqPt(
 		pt1      , # VECTOR -  
 		pt2      , # VECTOR -  
-		tolerance  # POINT  -  
+		tolerance  # REAL   -  
 		):
 	'''
 		Python: BOOLEAN = vs.EqPt(pt1, pt2, tolerance)
@@ -6794,7 +7295,7 @@ def EqPt(
 def EqPt2D(
 		pt1      , # VECTOR -  
 		pt2      , # VECTOR -  
-		tolerance  # POINT  -  
+		tolerance  # REAL   -  
 		):
 	'''
 		Python: BOOLEAN = vs.EqPt2D(pt1, pt2, tolerance)
@@ -6810,7 +7311,7 @@ def EqPt2D(
 def EqPt3D(
 		pt1      , # VECTOR -  
 		pt2      , # VECTOR -  
-		tolerance  # POINT  -  
+		tolerance  # REAL   -  
 		):
 	'''
 		Python: BOOLEAN = vs.EqPt3D(pt1, pt2, tolerance)
@@ -6889,8 +7390,8 @@ def EvalStr(
 
 def EvaluateNurbsSurfacePointAndNormal(
 		surfaceHandle, # HANDLE - Handle to NURBS surface being evaluated                    
-		u            , # POINT  - parameter value of the point on the surface being evaluated
-		v              # POINT  - parameter value of the point on the surface being evaluated
+		u            , # REAL   - parameter value of the point on the surface being evaluated
+		v              # REAL   - parameter value of the point on the surface being evaluated
 		):
 	'''
 		Python: (BOOLEAN, point, normal) = vs.EvaluateNurbsSurfacePointAndNormal(surfaceHandle, u, v)
@@ -6906,7 +7407,7 @@ def EvaluateNurbsSurfacePointAndNormal(
 
 
 def Exp(
-		v  # POINT -  
+		v  # REAL -  
 		):
 	'''
 		Python: REAL = vs.Exp(v)
@@ -7019,9 +7520,26 @@ def ExportSAT(
 	return 'BOOLEAN' # Return TRUE if successful.
 
 
+def ExportSTL(
+		filePath            , # STRING  - Output file path.                                                                                                        
+		exportBinary        , # BOOLEAN - binary or ASCII output                                                                                                   
+		percentTess         , # REAL    - tessellation resolution -- from 0 to 100  0 -- low, 100 --high                                                           
+		exportObjectsOptions  # INTEGER - 0 -- export visilble objects selected 1 -- export visible objects in activeLayer 2 -- export visible objects in all Layer
+		):
+	'''
+		Python: BOOLEAN = vs.ExportSTL(filePath, exportBinary, percentTess, exportObjectsOptions)
+		VectorScript: FUNCTION ExportSTL(filePath:STRING; exportBinary:BOOLEAN; percentTess:REAL; exportObjectsOptions:INTEGER) : BOOLEAN;
+		
+		Category: File I/O
+		Export the objects into a STL file.
+	'''
+	pass
+	return 'BOOLEAN' # Return TRUE if successful.
+
+
 def ExtendNurbsCurve(
 		curveHandle, # HANDLE  - Handle to a NURBS curve                                                    
-		distance   , # POINT   - Distance to extend the curve                                               
+		distance   , # REAL    - Distance to extend the curve                                               
 		bStart     , # BOOLEAN - True to extend the curve at the beginning, false to extend it at the end.  
 		bLinear      # BOOLEAN - True for linear, false to match curvature of existing end.                 
 		):
@@ -7038,7 +7556,7 @@ def ExtendNurbsCurve(
 
 def ExtendNurbsSurface(
 		surfaceHandle, # HANDLE  - Handle to a NURBS surface.                                                                                      
-		distance     , # POINT   - Distance to extend the surface.                                                                                 
+		distance     , # REAL    - Distance to extend the surface.                                                                                 
 		bStart       , # BOOLEAN - True to extend from the beginning, false to extend from the end.                                                
 		bLinear      , # BOOLEAN - True for linear, false to match curvature of existing surface.                                                  
 		bUDir          # BOOLEAN - True extends the surface in the u parametric[[BR]]direction, otherwise extends it in the v parametric direction.
@@ -7263,6 +7781,22 @@ def FindElement(
 	         'string' )
 
 
+def FindFile(
+		whichPath  , # INTEGER            -  
+		relFilePath  # DYNARRAY[] of CHAR -  
+		):
+	'''
+		Python: (BOOLEAN, outPath) = vs.FindFile(whichPath, relFilePath)
+		VectorScript: FUNCTION FindFile(whichPath:INTEGER; relFilePath:DYNARRAY of CHAR; VAR outPath:DYNARRAY of CHAR) : BOOLEAN;
+		
+		Category: File I/O
+		Find a file by searching the folder selector (whichPath) plus the relative file path. Searches the user folder, workgroup folders, and the app folder.
+	'''
+	pass
+	return ( False   , # 
+	         'string' )
+
+
 def FindFileInPluginFolder(
 		filename  # STRING -  
 		):
@@ -7318,9 +7852,9 @@ def FindObjAtPt_Create(
 		hContainer , # HANDLE  -  
 		objOptions , # INTEGER -  
 		travOptions, # INTEGER -  
-		locX       , # POINT   -  
-		locY       , # POINT   -  
-		pickRadius   # POINT   -  
+		locX       , # REAL    -  
+		locY       , # REAL    -  
+		pickRadius   # REAL    -  
 		):
 	'''
 		Python: LONGINT = vs.FindObjAtPt_Create(hContainer, objOptions, travOptions, locX, locY, pickRadius)
@@ -7591,7 +8125,7 @@ def ForEachObjectAtPoint(
 		objOptions , # INTEGER   -  
 		travOptions, # INTEGER   -  
 		loc        , # POINT     -  
-		pickRadius   # POINT     -  
+		pickRadius   # REAL      -  
 		):
 	'''
 		Python: vs.ForEachObjectAtPoint(actionFunc, objOptions, travOptions, loc, pickRadius)
@@ -7640,9 +8174,9 @@ def ForEachObjectInList(
 def FormatTextDialog(
 		fontName   , # in/out STRING  - The name of the selected font.                                                                                                                                     
 		style      , # in/out INTEGER - The selected style options.  0 for plain text.  Bit 1 is on for bold, bit 2 for italic, bit 3 for underline, bit 4 for outline and bit 5 for shadow.               
-		size       , # in/out POINT   - The selected size (in points).                                                                                                                                     
+		size       , # in/out REAL    - The selected size (in points).                                                                                                                                     
 		spacing    , # in/out INTEGER - The selected spacing option.  0 for custom leading, 2 for single spacing, 3 for 1 1/2 spacing and 4 for double spacing.                                            
-		leading    , # in/out POINT   - The selected leading value (in points) for custom spacing or -1 for a standard spacing.                                                                            
+		leading    , # in/out REAL    - The selected leading value (in points) for custom spacing or -1 for a standard spacing.                                                                            
 		hAlignment , # in/out INTEGER - The selected horizontal alignment options.  0 for general justify (used only on worksheets), 1 for left, 2 for center and 3 for right.                             
 		vAlignment , # in/out INTEGER - The selected vertical alignment options.  1 for top, 2 for top baseline, 3 for center, 4 for bottom baseline and 5 for bottom.                                     
 		disableMask  # INTEGER        - Disables controls and indicates for worksheet.  Bit 1 disables font name, bit 2 size, bit 3 spacing, bit 4 style, bit 5 h align, bit 6 v align and bit 7 worksheet.
@@ -7804,8 +8338,8 @@ def FSymDef():
 
 
 def GeogCoordToVW(
-		inLat, # POINT -  
-		inLon  # POINT -  
+		inLat, # REAL -  
+		inLon  # REAL -  
 		):
 	'''
 		Python: (BOOLEAN, outCoord) = vs.GeogCoordToVW(inLat, inLon)
@@ -8163,6 +8697,38 @@ def GetCellStr(
 	'''
 	pass
 	return 'STRING' # 
+
+
+def GetCharColor(
+		theText , # HANDLE  - Handle of the text object                             
+		position  # INTEGER - Position of the character in the text string (0-based)
+		):
+	'''
+		Python: (red, green, blue) = vs.GetCharColor(theText, position)
+		VectorScript: PROCEDURE GetCharColor(theText:HANDLE; position:INTEGER; VAR red:LONGINT; VAR green:LONGINT; VAR blue:LONGINT);
+		
+		Category: Objects - Text
+		Function GetCharColor returns the color of a character at a specified position in the given text object.
+		The position is in a range between 0 and 32767, representing a character position in the text string. An index of 0 refers to the first character in the string.
+	'''
+	pass
+	return ( 0, 
+	         0, 
+	         0 )
+
+
+def GetCheckoutsComment(
+		):
+	'''
+		Python: (BOOLEAN, comment) = vs.GetCheckoutsComment()
+		VectorScript: FUNCTION GetCheckoutsComment(VAR comment:STRING) : BOOLEAN;
+		
+		Category: Project Sharing
+		Get the comment that will be used for checkouts and commits.
+	'''
+	pass
+	return ( False   , # True on success, false on failure or not Project Sharing file.
+	         'string' )
 
 
 def GetChoiceCount(
@@ -8684,6 +9250,55 @@ def GetColorName(
 	return 'STRING' # The name of the color specified by the index.
 
 
+def GetCompAltSecFill(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                               
+		):
+	'''
+		Python: (BOOLEAN, alternateSectionFill) = vs.GetCompAltSecFill(object, componentIndex)
+		VectorScript: FUNCTION GetCompAltSecFill(object:HANDLE; componentIndex:INTEGER; VAR alternateSectionFill:LONGINT) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the alternate section fill of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         0       )
+
+
+def GetCompAltSecFillCl(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                               
+		):
+	'''
+		Python: (BOOLEAN, alternateSectionFillForeColor, alternateSectionFillBackColor) = vs.GetCompAltSecFillCl(object, componentIndex)
+		VectorScript: FUNCTION GetCompAltSecFillCl(object:HANDLE; componentIndex:INTEGER; VAR alternateSectionFillForeColor:INTEGER; VAR alternateSectionFillBackColor:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the alternate section fill colors of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         0      , 
+	         0       )
+
+
+def GetCompAutoJoinCap(
+		object        , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                
+		):
+	'''
+		Python: (BOOLEAN, alwaysAutoJoinInCappedJoinMode) = vs.GetCompAutoJoinCap(object, componentIndex)
+		VectorScript: FUNCTION GetCompAutoJoinCap(object:HANDLE; componentIndex:INTEGER; VAR alwaysAutoJoinInCappedJoinMode:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the always auto join in Capped Join mode flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
 def GetCompBotIsRelStory(
 		object        , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
 		componentIndex  # INTEGER - The index of the component.                                                
@@ -8698,6 +9313,54 @@ def GetCompBotIsRelStory(
 	pass
 	return ( False  , # 
 	         False   )
+
+
+def GetCompBoundOffset(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                               
+		):
+	'''
+		Python: (BOOLEAN, boundOffset) = vs.GetCompBoundOffset(object, componentIndex)
+		VectorScript: FUNCTION GetCompBoundOffset(object:HANDLE; componentIndex:INTEGER; VAR boundOffset:REAL) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the bound offset of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         0.0     )
+
+
+def GetCompDatTopOfComp(
+		object        , # HANDLE  - The object. Can be a slab, roof face, roof, Slab Style, Roof Style, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                       
+		):
+	'''
+		Python: (BOOLEAN, datumIsTopOfComponent) = vs.GetCompDatTopOfComp(object, componentIndex)
+		VectorScript: FUNCTION GetCompDatTopOfComp(object:HANDLE; componentIndex:INTEGER; VAR datumIsTopOfComponent:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the datum is top of component flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompManualBound(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                               
+		):
+	'''
+		Python: (BOOLEAN, manualBound) = vs.GetCompManualBound(object, componentIndex)
+		VectorScript: FUNCTION GetCompManualBound(object:HANDLE; componentIndex:INTEGER; VAR manualBound:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the manual bound of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         0       )
 
 
 def GetComponentAutoBoundEdgeOffset(
@@ -8717,8 +9380,8 @@ def GetComponentAutoBoundEdgeOffset(
 
 
 def GetComponentClass(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, componentClass) = vs.GetComponentClass(object, componentIndex)
@@ -8733,8 +9396,8 @@ def GetComponentClass(
 
 
 def GetComponentFill(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, fill) = vs.GetComponentFill(object, componentIndex)
@@ -8749,8 +9412,8 @@ def GetComponentFill(
 
 
 def GetComponentFillColors(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, fillForeColor, fillBackColor) = vs.GetComponentFillColors(object, componentIndex)
@@ -8814,8 +9477,8 @@ def GetComponentManualEdgeOffset(
 
 
 def GetComponentName(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: STRING = vs.GetComponentName(object, componentIndex)
@@ -8829,8 +9492,8 @@ def GetComponentName(
 
 
 def GetComponentNetArea(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: REAL = vs.GetComponentNetArea(object, componentIndex)
@@ -8844,8 +9507,8 @@ def GetComponentNetArea(
 
 
 def GetComponentNetVolume(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: REAL = vs.GetComponentNetVolume(object, componentIndex)
@@ -8859,8 +9522,8 @@ def GetComponentNetVolume(
 
 
 def GetComponentPenColors(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, leftPenForeColor, leftPenBackColor, rightPenForeColor, rightPenBackColor) = vs.GetComponentPenColors(object, componentIndex)
@@ -8878,8 +9541,8 @@ def GetComponentPenColors(
 
 
 def GetComponentPenStyles(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, leftPenStyle, rightPenStyle) = vs.GetComponentPenStyles(object, componentIndex)
@@ -8895,8 +9558,8 @@ def GetComponentPenStyles(
 
 
 def GetComponentPenWeights(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, leftPenWeight, rightPenWeight) = vs.GetComponentPenWeights(object, componentIndex)
@@ -8945,8 +9608,8 @@ def GetComponents(
 
 
 def GetComponentTexture(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, texture) = vs.GetComponentTexture(object, componentIndex)
@@ -8977,8 +9640,8 @@ def GetComponentTextWidth(
 
 
 def GetComponentUseFillClassAttr(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, useFillClassAttributes) = vs.GetComponentUseFillClassAttr(object, componentIndex)
@@ -8993,8 +9656,8 @@ def GetComponentUseFillClassAttr(
 
 
 def GetComponentUsePenClassAttr(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, useLeftPenClassAttributes, useRightPenClassAttributes) = vs.GetComponentUsePenClassAttr(object, componentIndex)
@@ -9042,8 +9705,8 @@ def GetComponentWallTopOffset(
 
 
 def GetComponentWidth(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex  # INTEGER - The index of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
 		):
 	'''
 		Python: (BOOLEAN, width) = vs.GetComponentWidth(object, componentIndex)
@@ -9055,6 +9718,39 @@ def GetComponentWidth(
 	pass
 	return ( False  , # 
 	         0.0     )
+
+
+def GetCompPenStylesN(
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
+		):
+	'''
+		Python: (BOOLEAN, leftPenStyle, rightPenStyle) = vs.GetCompPenStylesN(object, componentIndex)
+		VectorScript: FUNCTION GetCompPenStylesN(object:HANDLE; componentIndex:INTEGER; VAR leftPenStyle:LONGINT; VAR rightPenStyle:LONGINT) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the pen styles of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         0      , 
+	         0       )
+
+
+def GetCompSecFillChgPt(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                               
+		):
+	'''
+		Python: (BOOLEAN, wallAssociatedSectionFillChangePoint) = vs.GetCompSecFillChgPt(object, componentIndex)
+		VectorScript: FUNCTION GetCompSecFillChgPt(object:HANDLE; componentIndex:INTEGER; VAR wallAssociatedSectionFillChangePoint:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the wall associated section fill change point of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         0       )
 
 
 def GetCompTopIsRelStory(
@@ -9071,6 +9767,198 @@ def GetCompTopIsRelStory(
 	pass
 	return ( False  , # 
 	         False   )
+
+
+def GetCompUseClassASF(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                               
+		):
+	'''
+		Python: (BOOLEAN, useClassFillStyleForAlternateSectionFill) = vs.GetCompUseClassASF(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassASF(object:HANDLE; componentIndex:INTEGER; VAR useClassFillStyleForAlternateSectionFill:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class fill style for alternate section fill flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompUseClassASFCl(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                               
+		):
+	'''
+		Python: (BOOLEAN, useClassFillColorsForAlternateSectionFill) = vs.GetCompUseClassASFCl(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassASFCl(object:HANDLE; componentIndex:INTEGER; VAR useClassFillColorsForAlternateSectionFill:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class fill colors for alternate section fill flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompUseClassFCl(
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
+		):
+	'''
+		Python: (BOOLEAN, useClassFillColorsForFill) = vs.GetCompUseClassFCl(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassFCl(object:HANDLE; componentIndex:INTEGER; VAR useClassFillColorsForFill:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class fill colors for fill flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompUseClassFill(
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
+		):
+	'''
+		Python: (BOOLEAN, useClassFillStyleForFill) = vs.GetCompUseClassFill(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassFill(object:HANDLE; componentIndex:INTEGER; VAR useClassFillStyleForFill:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class fill style for fill flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompUseClassLPCl(
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
+		):
+	'''
+		Python: (BOOLEAN, useClassPenColorsForLeftPen) = vs.GetCompUseClassLPCl(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassLPCl(object:HANDLE; componentIndex:INTEGER; VAR useClassPenColorsForLeftPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class pen colors for left pen flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompUseClassLPS(
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
+		):
+	'''
+		Python: (BOOLEAN, useClassPenStyleForLeftPen) = vs.GetCompUseClassLPS(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassLPS(object:HANDLE; componentIndex:INTEGER; VAR useClassPenStyleForLeftPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class pen style for left pen flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompUseClassLPW(
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                                                                                                           
+		):
+	'''
+		Python: (BOOLEAN, useClassPenWeightForLeftPen) = vs.GetCompUseClassLPW(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassLPW(object:HANDLE; componentIndex:INTEGER; VAR useClassPenWeightForLeftPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class pen weight for left pen flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompUseClassRPCl(
+		object        , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                
+		):
+	'''
+		Python: (BOOLEAN, useClassPenColorsForRightPen) = vs.GetCompUseClassRPCl(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassRPCl(object:HANDLE; componentIndex:INTEGER; VAR useClassPenColorsForRightPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class pen colors for right pen flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompUseClassRPS(
+		object        , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                
+		):
+	'''
+		Python: (BOOLEAN, useClassPenStyleForRightPen) = vs.GetCompUseClassRPS(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassRPS(object:HANDLE; componentIndex:INTEGER; VAR useClassPenStyleForRightPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class pen style for right pen flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompUseClassRPW(
+		object        , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
+		componentIndex  # INTEGER - The index of the component.                                                
+		):
+	'''
+		Python: (BOOLEAN, useClassPenWeightForRightPen) = vs.GetCompUseClassRPW(object, componentIndex)
+		VectorScript: FUNCTION GetCompUseClassRPW(object:HANDLE; componentIndex:INTEGER; VAR useClassPenWeightForRightPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the use class pen weight for right pen flag of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         False   )
+
+
+def GetCompWallAssBound(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                               
+		):
+	'''
+		Python: (BOOLEAN, wallAssociatedBound) = vs.GetCompWallAssBound(object, componentIndex)
+		VectorScript: FUNCTION GetCompWallAssBound(object:HANDLE; componentIndex:INTEGER; VAR wallAssociatedBound:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the wall associated bound of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         0       )
+
+
+def GetCompWallAssMod(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex  # INTEGER - The index of the component.                                               
+		):
+	'''
+		Python: (BOOLEAN, wallAssociatedModification) = vs.GetCompWallAssMod(object, componentIndex)
+		VectorScript: FUNCTION GetCompWallAssMod(object:HANDLE; componentIndex:INTEGER; VAR wallAssociatedModification:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Gets the wall associated modification of a component in an object.
+	'''
+	pass
+	return ( False  , # 
+	         0       )
 
 
 def GetControlData(
@@ -9154,6 +10042,49 @@ def GetCurrentPlanarRefID():
 	'''
 	pass
 	return 'LONGINT' # 
+
+
+def GetCurrentUserId(
+		):
+	'''
+		Python: (BOOLEAN, userid) = vs.GetCurrentUserId()
+		VectorScript: FUNCTION GetCurrentUserId(VAR userid:STRING) : BOOLEAN;
+		
+		Category: Project Sharing
+		Get the user id for the current user.
+	'''
+	pass
+	return ( False   , # True on success, false on failure
+	         'string' )
+
+
+def GetCurtainWallCutPl(
+		wall  # HANDLE - The wall.
+		):
+	'''
+		Python: REAL = vs.GetCurtainWallCutPl(wall)
+		VectorScript: FUNCTION GetCurtainWallCutPl(wall:HANDLE) : REAL;
+		
+		Category: Objects - Walls
+		Gets the curtain wall cut plane of the wall.
+	'''
+	pass
+	return 'REAL' # 
+
+
+def GetCustomFeedback(
+		ParametricHandle  # HANDLE - The parametric object to which the feedback group was added.
+		):
+	'''
+		Python: (Boolean, FeedbackGroup) = vs.GetCustomFeedback(ParametricHandle)
+		VectorScript: FUNCTION GetCustomFeedback(ParametricHandle:HANDLE; VAR FeedbackGroup:HANDLE) : Boolean;
+		
+		Category: Objects - Custom
+		Gets the group of objects attached to a parametric used only for display on screen, this group will not export or print.
+	'''
+	pass
+	return ( False  , # True if a feedback group was attached to the parametric, false if the object was not a parametric or a feedback group was not attached.
+	         0       )
 
 
 def GetCustomObjectChoice(
@@ -9405,6 +10336,20 @@ def GetDashStyleName(
 	'''
 	pass
 	return 'STRING' # Name of the dash style specified by the index.
+
+
+def GetDatumRoofComp(
+		object  # HANDLE - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		):
+	'''
+		Python: INTEGER = vs.GetDatumRoofComp(object)
+		VectorScript: FUNCTION GetDatumRoofComp(object:HANDLE) : INTEGER;
+		
+		Category: Objects - Architectural
+		Gets the datum roof component of the object.
+	'''
+	pass
+	return 'INTEGER' # The index of the datum roof component.
 
 
 def GetDatumSlabComponent(
@@ -9943,11 +10888,11 @@ def GetFileN(
 
 def GetFilesInFolder(
 		folderName, # STRING  -  
-		index       # INTEGER -  
+		index       # LONGINT -  
 		):
 	'''
 		Python: STRING = vs.GetFilesInFolder(folderName, index)
-		VectorScript: FUNCTION GetFilesInFolder(folderName:STRING; index:INTEGER) : STRING;
+		VectorScript: FUNCTION GetFilesInFolder(folderName:STRING; index:LONGINT) : STRING;
 		
 		Category: File I/O
 		Returns the Nth filename in a folder.
@@ -10070,6 +11015,21 @@ def GetFirstChild(
 	pass
 	return ( 0       , # 
 	         'string' )
+
+
+def GetFldFlag(
+		h, # HANDLE  - Handle to record.            
+		t  # INTEGER - Field index (range of 1 - n).
+		):
+	'''
+		Python: INTEGER = vs.GetFldFlag(h, t)
+		VectorScript: FUNCTION GetFldFlag(h:HANDLE; t:INTEGER) : INTEGER;
+		
+		Category: Database / Record
+		Returns a number indicating the accuracy flag of a specified field in the referenced record.
+	'''
+	pass
+	return 'INTEGER' # 
 
 
 def GetFldName(
@@ -10700,6 +11660,28 @@ def GetLayerOptions():
 	'''
 	pass
 	return 'INTEGER' # Returns an INTEGER indicating the layer visibility status of the document.
+
+
+def GetLayerProjectInfo(
+		layer  # HANDLE - Get status for this Layer
+		):
+	'''
+		Python: (BOOLEAN, masterLayer, modificationDate, checkoutDate, checkoutOwner, workingFileId, comment, outOfDate) = vs.GetLayerProjectInfo(layer)
+		VectorScript: FUNCTION GetLayerProjectInfo(layer:HANDLE; VAR masterLayer:BOOLEAN; VAR modificationDate:LONGINT; VAR checkoutDate:LONGINT; VAR checkoutOwner:STRING; VAR workingFileId:STRING; VAR comment:STRING; VAR outOfDate:BOOLEAN) : BOOLEAN;
+		
+		Category: Project Sharing
+		Retrieves values similar to the Layers tab of the Project Sharing dialog.
+		Timestamps are measured in seconds since January 1, 1904.  The value 0 has special meaning depending on the timestamp.
+	'''
+	pass
+	return ( False   , # True on success, false on failure or not Project Sharing file.
+	         False   , 
+	         0       , 
+	         0       , 
+	         'string', 
+	         'string', 
+	         'string', 
+	         False    )
 
 
 def GetLayerRenderMode(
@@ -11914,7 +12896,7 @@ def GetNextElement(
 
 
 def GetNumberOfComponents(
-		object  # HANDLE - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
+		object  # HANDLE - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
 		):
 	'''
 		Python: (BOOLEAN, numComponents) = vs.GetNumberOfComponents(object)
@@ -12285,7 +13267,7 @@ def GetObject(
 
 def GetObjectHiddenLine(
 		hGeometry3D     , # HANDLE  -  
-		cuttingHeight   , # POINT   -  
+		cuttingHeight   , # REAL    -  
 		bottomOfCutPlane  # BOOLEAN -  
 		):
 	'''
@@ -12416,10 +13398,10 @@ def GetObjectWallHeight(
 		
 		Category: Objects - Walls
 		Gets an object's height value in it's break record.
-		The oject (objH) must be contained in wall (wallH)  to succeed.
+		The object (objH) must be contained in wall (wallH)  to succeed.
 	'''
 	pass
-	return ( False  , # True or False upon successfull setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
+	return ( False  , # True or False upon successful setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
 	         0.0     )
 
 
@@ -12433,10 +13415,10 @@ def GetObjectWallOffset(
 		
 		Category: Objects - Walls
 		Gets an object's offset value in it's break record.
-		The oject (objH) must be contained in wall (wallH)  to succeed.
+		The object (objH) must be contained in wall (wallH)  to succeed.
 	'''
 	pass
-	return ( False  , # True or False upon successfull setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
+	return ( False  , # True or False upon successful setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
 	         0.0     )
 
 
@@ -12576,6 +13558,20 @@ def GetOrigin(
 		
 		Category: Document Settings
 		Procedure GetOrigin returns the current origin location relative to the center of the page.
+	'''
+	pass
+	return ( 0.0, 
+	         0.0 )
+
+
+def GetOriginInDocUnits(
+		):
+	'''
+		Python: (x, y) = vs.GetOriginInDocUnits()
+		VectorScript: PROCEDURE GetOriginInDocUnits(VAR x:REAL; VAR y:REAL);
+		
+		Category: Document Settings
+		Procedure GetOriginInDocUnits returns the current origin location relative to the center of the page in current units. It fixes the problem existing for GetOrigin (see remarks). The behavior is the same while used during objects reset and in commands.
 	'''
 	pass
 	return ( 0.0, 
@@ -12835,7 +13831,7 @@ def GetPluginString(
 
 def GetPointAndParameterOnNurbsCurveAtGivenLength(
 		inNurbCurve      , # HANDLE - Handle to the NURBS curve.                                    
-		inPercentOfLength  # POINT  - Specify location on curve as percent of total length.  (0 - 1)
+		inPercentOfLength  # REAL   - Specify location on curve as percent of total length.  (0 - 1)
 		):
 	'''
 		Python: (BOOLEAN, p, outParam, outIndex) = vs.GetPointAndParameterOnNurbsCurveAtGivenLength(inNurbCurve, inPercentOfLength)
@@ -13067,6 +14063,20 @@ def GetProduct(
 	         0 )
 
 
+def GetProjectFullPath(
+		):
+	'''
+		Python: (BOOLEAN, fullPath) = vs.GetProjectFullPath()
+		VectorScript: FUNCTION GetProjectFullPath(VAR fullPath:STRING) : BOOLEAN;
+		
+		Category: Project Sharing
+		Gets the path and filename of the Project File for Project Sharing.
+	'''
+	pass
+	return ( False   , # Returns True on success, False on failure or if not Project Sharing
+	         'string' )
+
+
 def GetProjection(
 		theyLayer  # HANDLE - Layer which the projection is returned for.
 		):
@@ -13126,6 +14136,36 @@ def GetProjectionWKT(
 	pass
 	return ( False   , # 
 	         'string' )
+
+
+def GetProjectUser(
+		userId  # STRING - The userid to look up
+		):
+	'''
+		Python: (BOOLEAN, fullName, permission) = vs.GetProjectUser(userId)
+		VectorScript: FUNCTION GetProjectUser(userId:STRING; VAR fullName:STRING; VAR permission:INTEGER) : BOOLEAN;
+		
+		Category: Project Sharing
+		For a given userid in the current Project, get their full name and permission level.
+	'''
+	pass
+	return ( False   , # True on success, false on failure or not Project Sharing file.
+	         'string', 
+	         0        )
+
+
+def GetProjectUserNames(
+		):
+	'''
+		Python: (BOOLEAN, userArray) = vs.GetProjectUserNames()
+		VectorScript: FUNCTION GetProjectUserNames(VAR userArray:ARRAY) : BOOLEAN;
+		
+		Category: Project Sharing
+		Get a list of userids that are part of the current project.
+	'''
+	pass
+	return ( False  , # True on success, false on failure or not Project Sharing file.
+	         0       )
 
 
 def GetPt(
@@ -13377,6 +14417,44 @@ def GetRoofFaceCoords(
 	         0,0, 
 	         0.0, 
 	         0,0 )
+
+
+def GetRoofPreferences():
+	'''
+		Python: HANDLE = vs.GetRoofPreferences()
+		VectorScript: FUNCTION GetRoofPreferences : HANDLE;
+		
+		Category: Objects - Architectural
+		Gets the Roof Preferences. This can be used with the component calls and the Style selectors.
+	'''
+	pass
+	return 'HANDLE' # The Roof Preferences.
+
+
+def GetRoofPrefStyle():
+	'''
+		Python: LONGINT = vs.GetRoofPrefStyle()
+		VectorScript: FUNCTION GetRoofPrefStyle : LONGINT;
+		
+		Category: Objects - Architectural
+		Gets the Roof Style of the Roof Preferences.
+	'''
+	pass
+	return 'LONGINT' # The ref number of the Roof Style of the Roof Preferences. 0 for unstyled.
+
+
+def GetRoofStyle(
+		roof  # HANDLE - The roof.
+		):
+	'''
+		Python: LONGINT = vs.GetRoofStyle(roof)
+		VectorScript: FUNCTION GetRoofStyle(roof:HANDLE) : LONGINT;
+		
+		Category: Objects - Roofs
+		Gets the Roof Style of a roof.
+	'''
+	pass
+	return 'LONGINT' # The ref number of the Roof Style of the roof. 0 for unstyled.
 
 
 def GetRoofVertices(
@@ -14706,20 +15784,6 @@ def GetTextWidth(
 	return 'REAL' # 
 
 
-def GetTextWidthInPixels(
-		inTextMeasure  # STRING -  
-		):
-	'''
-		Python: INTEGER = vs.GetTextWidthInPixels(inTextMeasure)
-		VectorScript: FUNCTION GetTextWidthInPixels(inTextMeasure:STRING) : INTEGER;
-		
-		Category: Utility
-		Returns the length of a string in the current port based on the port's text settings.
-	'''
-	pass
-	return 'INTEGER' # 
-
-
 def GetTextWrap(
 		theText  # HANDLE - Handle to text object.
 		):
@@ -15722,6 +16786,23 @@ def GetWallWidth():
 	return 'REAL' # 
 
 
+def GetWorkingFileId(
+		):
+	'''
+		Python: (BOOLEAN, uuid) = vs.GetWorkingFileId()
+		VectorScript: FUNCTION GetWorkingFileId(VAR uuid:STRING) : BOOLEAN;
+		
+		Category: Project Sharing
+		Get the unique id for this Working File.  This is not a filename.
+		Every Working File has a unique identifier. When layers are checked-out, they are reserved for not just a particular user, but also for a particular Working File Id.
+		The reserved layer can then only be edited in that specific Working File.  If the user creates a second Working File and looks at the layer status, it will show in the second Working File as unavailable for checkout or edit, until it has been committed or released in the first file.
+		The specific value of the Working File Id is not meaningful, so it is not directly visible in any of the dialogs.  It is used for the color highlighting of layer names in dialogs that show layer ownership.
+	'''
+	pass
+	return ( False   , # True on success, false on failure or not Project Sharing file.
+	         'string' )
+
+
 def GetWorkingPlane(
 		):
 	'''
@@ -16514,8 +17595,8 @@ def GetXPropVersion(
 
 def GetZatXY(
 		hObject, # HANDLE -  
-		X      , # POINT  -  
-		Y        # POINT  -  
+		X      , # REAL   -  
+		Y        # REAL   -  
 		):
 	'''
 		Python: (BOOLEAN, outZ) = vs.GetZatXY(hObject, X, Y)
@@ -16809,8 +17890,8 @@ def HCenter(
 
 def HDuplicate(
 		objectHandle, # HANDLE - Handle to the object to duplicate                                       
-		x           , # POINT  - X-coordinate of distance object should be shifted from original location
-		y             # POINT  - Y-coordinate of distance object should be shifted from original location
+		x           , # REAL   - X-coordinate of distance object should be shifted from original location
+		y             # REAL   - Y-coordinate of distance object should be shifted from original location
 		):
 	'''
 		Python: HANDLE = vs.HDuplicate(objectHandle, x, y)
@@ -16839,8 +17920,8 @@ def Height(
 
 def HExtrude(
 		objectH, # HANDLE - The profile to be extruded.               
-		bottom , # POINT  - The z height of the bottom of the extrude.
-		top      # POINT  - The z height of the top of the extrude.   
+		bottom , # REAL   - The z height of the bottom of the extrude.
+		top      # REAL   - The z height of the top of the extrude.   
 		):
 	'''
 		Python: HANDLE = vs.HExtrude(objectH, bottom, top)
@@ -16999,8 +18080,8 @@ def HLength(
 
 def HMove(
 		h      , # HANDLE - Handle to object. 
-		xOffset, # POINT  - X offset distance.
-		yOffset  # POINT  - Y offset distance.
+		xOffset, # REAL   - X offset distance.
+		yOffset  # REAL   - Y offset distance.
 		):
 	'''
 		Python: vs.HMove(h, xOffset, yOffset)
@@ -17085,10 +18166,10 @@ def HRotate(
 
 def HScale2D(
 		h        , # HANDLE  -  
-		centerX  , # POINT   -  
-		centerY  , # POINT   -  
-		scaleX   , # POINT   -  
-		scaleY   , # POINT   -  
+		centerX  , # REAL    -  
+		centerY  , # REAL    -  
+		scaleX   , # REAL    -  
+		scaleY   , # REAL    -  
 		scaleText  # BOOLEAN -  
 		):
 	'''
@@ -17103,12 +18184,12 @@ def HScale2D(
 
 def HScale3D(
 		h      , # HANDLE -  
-		centerX, # POINT  -  
-		centerY, # POINT  -  
-		centerZ, # POINT  -  
-		scaleX , # POINT  -  
-		scaleY , # POINT  -  
-		scaleZ   # POINT  -  
+		centerX, # REAL   -  
+		centerY, # REAL   -  
+		centerZ, # REAL   -  
+		scaleX , # REAL   -  
+		scaleY , # REAL   -  
+		scaleZ   # REAL   -  
 		):
 	'''
 		Python: vs.HScale3D(h, centerX, centerY, centerZ, scaleX, scaleY, scaleZ)
@@ -17122,7 +18203,7 @@ def HScale3D(
 
 def HSetLayerTransp(
 		hLayer      , # HANDLE - Handle to the layer.                                       
-		transparency  # POINT  - The transparency for the layer. Value between 0.0 and 100.0
+		transparency  # REAL   - The transparency for the layer. Value between 0.0 and 100.0
 		):
 	'''
 		Python: vs.HSetLayerTransp(hLayer, transparency)
@@ -17235,6 +18316,64 @@ def IFC_CopyIFCData(
 	return 'BOOLEAN' # 
 
 
+def IFC_DefPsetAddMember(
+		psetName, # STRING -  
+		propName, # STRING -  
+		propType  # STRING -  
+		):
+	'''
+		Python: BOOLEAN = vs.IFC_DefPsetAddMember(psetName, propName, propType)
+		VectorScript: FUNCTION IFC_DefPsetAddMember(psetName:STRING; propName:STRING; propType:STRING) : BOOLEAN;
+		
+		Category: IFC
+		Adds a new member to the currently defined Custom Object Preset.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def IFC_DefPsetBegin(
+		psetName  # STRING -  
+		):
+	'''
+		Python: BOOLEAN = vs.IFC_DefPsetBegin(psetName)
+		VectorScript: FUNCTION IFC_DefPsetBegin(psetName:STRING) : BOOLEAN;
+		
+		Category: IFC
+		Marks the beginning of creation of a new Custom Object Preset.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def IFC_DefPsetEnd(
+		psetName  # STRING -  
+		):
+	'''
+		Python: BOOLEAN = vs.IFC_DefPsetEnd(psetName)
+		VectorScript: FUNCTION IFC_DefPsetEnd(psetName:STRING) : BOOLEAN;
+		
+		Category: IFC
+		Marks the end of creation of a new Custom Object Preset.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def IFC_DefPsetImport(
+		strFilePath  # STRING -  
+		):
+	'''
+		Python: BOOLEAN = vs.IFC_DefPsetImport(strFilePath)
+		VectorScript: FUNCTION IFC_DefPsetImport(strFilePath:STRING) : BOOLEAN;
+		
+		Category: IFC
+		Imports Custom Object Presets from XML or text file.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def IFC_ExportWithUI(
 		bExpSingleObj  # BOOLEAN -  
 		):
@@ -17315,18 +18454,18 @@ def IFC_GetNumPsets(
 
 def IFC_GetPsetName(
 		hObject    , # HANDLE  -  
-		inPsetIndex, # INTEGER -  
-		RETURN       # BOOLEAN -  
+		inPsetIndex  # INTEGER -  
 		):
 	'''
-		Python: outStrPsetName = vs.IFC_GetPsetName(hObject, inPsetIndex, RETURN)
-		VectorScript: PROCEDURE IFC_GetPsetName(hObject:HANDLE; inPsetIndex:INTEGER; VAR outStrPsetName:STRING; RETURN:BOOLEAN);
+		Python: (BOOLEAN, outStrPsetName) = vs.IFC_GetPsetName(hObject, inPsetIndex)
+		VectorScript: FUNCTION IFC_GetPsetName(hObject:HANDLE; inPsetIndex:INTEGER; VAR outStrPsetName:STRING) : BOOLEAN;
 		
 		Category: IFC
 		Gets the name of the property set at that index
 	'''
 	pass
-	return ( 'string' )
+	return ( False   , # 
+	         'string' )
 
 
 def IFC_GetPsetProp(
@@ -17508,19 +18647,34 @@ def ImportImageFile(
 
 
 def ImportImageFileN(
-		filePath, # DYNARRAY[] of CHAR - Import file path.                                                                                                                                                                        
-		importPt, # POINT              - The import location.                                                                                                                                                                     
-		mode      # INTEGER            - Import mode: 0 - import using import option dialog; 1 - import using the last options. if the call was never made with option dialog, then the firt time it will show the options dialog.
+		filePath, # DYNARRAY[] of CHAR - Import file path.                                                                                                                                                                         
+		importPt, # POINT              - The import location.                                                                                                                                                                      
+		mode      # INTEGER            - Import mode: 0 - import using import option dialog; 1 - import using the last options. If the call was never made with option dialog, then the first time it will show the options dialog.
 		):
 	'''
 		Python: HANDLE = vs.ImportImageFileN(filePath, importPt, mode)
 		VectorScript: FUNCTION ImportImageFileN(filePath:DYNARRAY of CHAR; importPtX, importPtY:REAL; mode:INTEGER) : HANDLE;
 		
 		Category: Utility
-		Import the specified image file as an Image object in Vectorworks.This funciton allow controlling the options when importing the image.
+		Import the specified image file as an Image object in Vectorworks. This function allow controlling the options when importing the image.
 	'''
 	pass
 	return 'HANDLE' # Return the imported image handle, or NIL if the import failed.
+
+
+def ImportOBJ(
+		fileName   , # STRING  - Full file path.                               
+		bAllMatAsRW  # BOOLEAN - Imports all materials as Renderworks textures.
+		):
+	'''
+		Python: BOOLEAN = vs.ImportOBJ(fileName, bAllMatAsRW)
+		VectorScript: FUNCTION ImportOBJ(fileName:STRING; bAllMatAsRW:BOOLEAN) : BOOLEAN;
+		
+		Category: ImportExport
+		Imports Wavefront (*.obj) files.
+	'''
+	pass
+	return 'BOOLEAN' # TRUE if import is successful.
 
 
 def ImportResourceToCurrentFile(
@@ -17578,6 +18732,21 @@ def ImportSingleDXFDWG():
 		Import single DXF/DWG files
 	'''
 	pass
+
+
+def ImportSketchUp(
+		filePath     , # STRING  - Full file path.                              
+		bImportAsMesh  # BOOLEAN - Import as a Mesh or as 3D polys. Mesh = TRUE.
+		):
+	'''
+		Python: BOOLEAN = vs.ImportSketchUp(filePath, bImportAsMesh)
+		VectorScript: FUNCTION ImportSketchUp(filePath:STRING; bImportAsMesh:BOOLEAN) : BOOLEAN;
+		
+		Category: ImportExport
+		Imports SketchUp ( *.skp)  files.
+	'''
+	pass
+	return 'BOOLEAN' # TRUE if import is successful.
 
 
 def Index2Name(
@@ -17679,8 +18848,8 @@ def InsertEnhanPullDownMenuItem(
 
 def InsertGradientData(
 		gradient        , # HANDLE  - Gradient into which a segment is to be inserted.                                  
-		spotPosition    , # POINT   - Position of the segment's color spot relative to left-most point of the gradient. 
-		midpointPosition, # POINT   - Position of the segment's midpoint relative to color spot immediately to left.    
+		spotPosition    , # REAL    - Position of the segment's color spot relative to left-most point of the gradient. 
+		midpointPosition, # REAL    - Position of the segment's midpoint relative to color spot immediately to left.    
 		red             , # LONGINT - Red component of the color spot's color.                                          
 		green           , # LONGINT - Green component of the color spot's color.                                        
 		blue            , # LONGINT - Blue component of the color spot's color.                                         
@@ -17699,8 +18868,8 @@ def InsertGradientData(
 
 def InsertGradientSegment(
 		gradient        , # HANDLE  - Gradient into which a segment is to be inserted.                                                                             
-		spotPosition    , # POINT   - Position of the segment's color spot relative to left-most point of the gradient. [[BR]](position >= 0.0 and position <= 1.0)
-		midpointPosition, # POINT   - Position of the segment's midpoint relative to color spot immediately to left. [[BR]](position >= 0.0 and position <= 1.0)   
+		spotPosition    , # REAL    - Position of the segment's color spot relative to left-most point of the gradient. [[BR]](position >= 0.0 and position <= 1.0)
+		midpointPosition, # REAL    - Position of the segment's midpoint relative to color spot immediately to left. [[BR]](position >= 0.0 and position <= 1.0)   
 		red             , # LONGINT - Red component of the color spot's color. [[BR]](red >= 0 and red <= 255)                                                     
 		green           , # LONGINT - Green component of the color spot's color. [[BR]](green >= 0 and green <= 255)                                               
 		blue              # LONGINT - Blue component of the color spot's color. [[BR]](blue >= 0 and blue <= 255)                                                  
@@ -17720,7 +18889,7 @@ def InsertGradientSegment(
 def InsertGradientSliderSegment(
 		dialogID    , # LONGINT - Index to the dialog layout that contains the gradient slider component.                                                      
 		componentID , # LONGINT - Index to a specific gradient slider component.                                                                               
-		spotPosition, # POINT   - Position of the segment's color marker relative to left-most point of the slider. [[BR]](position >= 0.0 and position <= 1.0)
+		spotPosition, # REAL    - Position of the segment's color marker relative to left-most point of the slider. [[BR]](position >= 0.0 and position <= 1.0)
 		red         , # LONGINT - Red component of the color spot's color. [[BR]](red >= 0 and red <= 255)                                                     
 		green       , # LONGINT - Green component of the color spot's color. [[BR]](green >= 0 and green <= 255)                                               
 		blue          # LONGINT - Blue component of the color spot's color. [[BR]](blue >= 0 and blue <= 255)                                                  
@@ -17739,7 +18908,7 @@ def InsertGradientSliderSegment(
 def InsertGradientSliSeg(
 		dialogID    , # LONGINT - Index to the dialog layout that contains the gradient slider component.                                                                                                           
 		componentID , # LONGINT - Index to a specific gradient slider component.                                                                                                                                    
-		spotPosition, # POINT   - Position of the segment's color marker relative to left-most point of the slider. The value should be >= 0.0 and <= 1.0, which represents a percentage distance across the slider.
+		spotPosition, # REAL    - Position of the segment's color marker relative to left-most point of the slider. The value should be >= 0.0 and <= 1.0, which represents a percentage distance across the slider.
 		red         , # LONGINT - Red component of the color spot's color.                                                                                                                                          
 		green       , # LONGINT - Green component of the color spot's color.                                                                                                                                        
 		blue        , # LONGINT - Blue component of the color spot's color.                                                                                                                                         
@@ -17861,14 +19030,14 @@ def InsertLBItem(
 
 
 def InsertNewComponent(
-		object              , # HANDLE            - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		beforeComponentIndex, # INTEGER           - The index before which to insert the new component.                                                                
-		width               , # REAL (Coordinate) - The width of the component.                                                                                        
-		fill                , # LONGINT           - The fill of the component.  Positive values for patterns, negative ref numbers for hatches.                        
-		leftPenWeight       , # INTEGER           - The pen weight of the component's left line.                                                                       
-		rightPenWeight      , # INTEGER           - The pen weight of the component's right line.                                                                      
-		leftPenStyle        , # INTEGER           - The pen style of the component's left line.  Positive values for patterns, negative values for dash styles.        
-		rightPenStyle         # INTEGER           - The pen style of the component's right line.  Positive values for patterns, negative values for dash styles.       
+		object              , # HANDLE            - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		beforeComponentIndex, # INTEGER           - The index before which to insert the new component.                                                                                                                   
+		width               , # REAL (Coordinate) - The width of the component.                                                                                                                                           
+		fill                , # LONGINT           - The fill of the component.  Positive values for patterns, negative ref numbers for hatches.                                                                           
+		leftPenWeight       , # INTEGER           - The pen weight of the component's left line.                                                                                                                          
+		rightPenWeight      , # INTEGER           - The pen weight of the component's right line.                                                                                                                         
+		leftPenStyle        , # INTEGER           - The pen style of the component's left line.  Positive values for patterns, negative values for dash styles.                                                           
+		rightPenStyle         # INTEGER           - The pen style of the component's right line.  Positive values for patterns, negative values for dash styles.                                                          
 		):
 	'''
 		Python: BOOLEAN = vs.InsertNewComponent(object, beforeComponentIndex, width, fill, leftPenWeight, rightPenWeight, leftPenStyle, rightPenStyle)
@@ -17987,11 +19156,11 @@ def InsertTreeControlItem(
 
 def InsertVertex(
 		objectHandle   , # HANDLE  - Handle to the polygon or polyline                          
-		x              , # POINT   - X-coordinate of the vertex to add                          
-		y              , # POINT   - Y-coordinate of the vertex to add                          
+		x              , # REAL    - X-coordinate of the vertex to add                          
+		y              , # REAL    - Y-coordinate of the vertex to add                          
 		beforeVertexNum, # INTEGER - Vertex number before which the new vertex is to be inserted
 		vertexType     , # INTEGER - Vertex type of the new vertex                              
-		arcRadius        # POINT   - For arc vertices, the radius of the arc                    
+		arcRadius        # REAL    - For arc vertices, the radius of the arc                    
 		):
 	'''
 		Python: vs.InsertVertex(objectHandle, x, y, beforeVertexNum, vertexType, arcRadius)
@@ -18080,6 +19249,18 @@ def IntersectSurface(
 	return 'HANDLE' # Returns a HANDLE to the new surface object, or to a group containing multiple surface objects.
 
 
+def IsAWorkingFile():
+	'''
+		Python: BOOLEAN = vs.IsAWorkingFile()
+		VectorScript: FUNCTION IsAWorkingFile : BOOLEAN;
+		
+		Category: Project Sharing
+		Returns True if the current document is a Project Sharing Working File. Otherwise returns False.
+	'''
+	pass
+	return 'BOOLEAN' # Returns True if the current document is a Project Sharing Working File. Otherwise returns False.
+
+
 def IsClassChoiceSelected(
 		dialogID   , # LONGINT - Id of the dialog       
 		componentID  # LONGINT - Id of the popup control
@@ -18111,17 +19292,17 @@ def IsCoPlanar(
 
 
 def IsCurtainWall(
-		hWall  # HANDLE - Handle to a wall object to check for curtain wall status
+		wall  # HANDLE - The wall.
 		):
 	'''
-		Python: BOOLEAN = vs.IsCurtainWall(hWall)
-		VectorScript: FUNCTION IsCurtainWall(hWall:HANDLE) : BOOLEAN;
+		Python: BOOLEAN = vs.IsCurtainWall(wall)
+		VectorScript: FUNCTION IsCurtainWall(wall:HANDLE) : BOOLEAN;
 		
 		Category: Objects - Walls
-		Use to check whether wall is being used as a curtain wall.
+		Gets whether or not a wall is a curtain wall.
 	'''
 	pass
-	return 'BOOLEAN' # Will return TRUE if hWall is set to be a curtain wall.[[BR]]Will retrun FALSE if hWall is not a wall node or the wall is not set to be a curtain wall.
+	return 'BOOLEAN' # 
 
 
 def IsFillColorByClass(
@@ -18416,6 +19597,20 @@ def IsPerpPlane(
 	return 'BOOLEAN' # 
 
 
+def IsPlanarObj(
+		object  # HANDLE - Object to test
+		):
+	'''
+		Python: (BOOLEAN, NewParam) = vs.IsPlanarObj(object)
+		VectorScript: FUNCTION IsPlanarObj(object:HANDLE; VAR NewParam:LONGINT) : BOOLEAN;
+		
+		Category: Object Attributes
+	'''
+	pass
+	return ( False  , # 
+	         0       )
+
+
 def IsPluginFormat(
 		theFormat  # HANDLE - Handle to the format node in question.
 		):
@@ -18442,6 +19637,19 @@ def IsPolyClosed(
 	'''
 	pass
 	return 'BOOLEAN' # 
+
+
+def IsProjectOffline():
+	'''
+		Python: BOOLEAN = vs.IsProjectOffline()
+		VectorScript: FUNCTION IsProjectOffline : BOOLEAN;
+		
+		Category: Project Sharing
+		Checks if current document is a Working File operating in Offline Mode.
+		Offline Mode is when the Working File is opened and the Project File cannot be found.
+	'''
+	pass
+	return 'BOOLEAN' # Returns True if current document is a Working File operating in Offline Mode.[[BR]]Returns False on failure or not Project Sharing file, or not in Offline Mode.
 
 
 def IsRW():
@@ -18767,6 +19975,21 @@ def LActLayer():
 	return 'HANDLE' # 
 
 
+def LandmarkMatchSlope(
+		h          , # HANDLE -  
+		h3d        , # HANDLE -  
+		landmarkObj  # HANDLE -  
+		):
+	'''
+		Python: vs.LandmarkMatchSlope(h, h3d, landmarkObj)
+		VectorScript: PROCEDURE LandmarkMatchSlope(h:HANDLE; h3d:HANDLE; landmarkObj:HANDLE);
+		
+		Category: Utility
+		Matches slope and contour angle information of a Landmark object to the specified 3D polygon.
+	'''
+	pass
+
+
 def Layer(
 		name  # STRING - Name of new or existing layer.
 		):
@@ -19046,7 +20269,7 @@ def LinearDim(
 		dimType       , # INTEGER           - Dimension type flag.                          
 		arrow         , # INTEGER           - Arrowhead style flag.                         
 		textFlag      , # INTEGER           - Text style flag.                              
-		textOffset      # POINT             - Dimension text offset distance.               
+		textOffset      # REAL              - Dimension text offset distance.               
 		):
 	'''
 		Python: vs.LinearDim(startPt, endPt, offsetDistance, dimType, arrow, textFlag, textOffset)
@@ -19063,7 +20286,7 @@ def LineCircleIntersect(
 		begPt , # VECTOR -  
 		endPt , # VECTOR -  
 		cenPt , # VECTOR -  
-		radius  # POINT  -  
+		radius  # REAL   -  
 		):
 	'''
 		Python: (BOOLEAN, pt1, pt2) = vs.LineCircleIntersect(begPt, endPt, cenPt, radius)
@@ -19159,7 +20382,7 @@ def LLayer():
 
 
 def Ln(
-		v  # POINT - Numeric value for which to find the natural logarithm.
+		v  # REAL - Numeric value for which to find the natural logarithm.
 		):
 	'''
 		Python: REAL = vs.Ln(v)
@@ -19358,7 +20581,7 @@ def MakePolyline(
 
 def Marker(
 		style, # INTEGER - Marker style constant.                                                     
-		size , # POINT   - Marker size in inches measured in page space.  Legal values are 0.0 to 2.0.
+		size , # REAL    - Marker size in inches measured in page space.  Legal values are 0.0 to 2.0.
 		ang    # INTEGER - Marker angle.                                                              
 		):
 	'''
@@ -19383,8 +20606,8 @@ def MarkerByClass():
 
 
 def Max(
-		val1, # POINT -  
-		val2  # POINT -  
+		val1, # REAL -  
+		val2  # REAL -  
 		):
 	'''
 		Python: REAL = vs.Max(val1, val2)
@@ -19412,8 +20635,8 @@ def MeshToGroup(
 
 
 def Min(
-		val1, # POINT -  
-		val2  # POINT -  
+		val1, # REAL -  
+		val2  # REAL -  
 		):
 	'''
 		Python: REAL = vs.Min(val1, val2)
@@ -19609,8 +20832,8 @@ def MoveTo(
 
 
 def MoveWallByOffset(
-		theWall, # HANDLE       - A handle to the wall to move.                                                                                                                                                                    
-		offset   # in/out POINT - The distance to move the given wall. Negative offsets move the wall to the left and positive offsets move the wall to the right. The actual amount the wall was moved is returned in this field. 
+		theWall, # HANDLE      - A handle to the wall to move.                                                                                                                                                                    
+		offset   # in/out REAL - The distance to move the given wall. Negative offsets move the wall to the left and positive offsets move the wall to the right. The actual amount the wall was moved is returned in this field. 
 		):
 	'''
 		Python: offset = vs.MoveWallByOffset(theWall, offset)
@@ -19868,7 +21091,7 @@ def NotifyPullDownClicked(
 
 def Num2Str(
 		decPlace, # INTEGER - Number of decimal places.
-		v         # POINT   - Numeric value.           
+		v         # REAL    - Numeric value.           
 		):
 	'''
 		Python: STRING = vs.Num2Str(decPlace, v)
@@ -20030,7 +21253,7 @@ def NumVectorFills():
 def NurbsCurveEvalPt(
 		objectHd, # HANDLE  - Handle to a NURBS curve.                             
 		index   , # LONGINT - Segment of curve to be queried.                      
-		u         # POINT   - Parameter between the minimum and maximum knot value.
+		u         # REAL    - Parameter between the minimum and maximum knot value.
 		):
 	'''
 		Python: p = vs.NurbsCurveEvalPt(objectHd, index, u)
@@ -20198,7 +21421,7 @@ def NurbsSetKnot(
 		objectHd, # HANDLE  - Handle to NURBS curve or surface.                                          
 		index1  , # LONGINT - Segment of curve to be queried (NURBS curve), or direction (NURBS surface).
 		index2  , # LONGINT - Index of segment or direction knot.                                        
-		knot      # POINT   - Knot value.                                                                
+		knot      # REAL    - Knot value.                                                                
 		):
 	'''
 		Python: vs.NurbsSetKnot(objectHd, index1, index2, knot)
@@ -20235,7 +21458,7 @@ def NurbsSetWeight(
 		objectHd, # HANDLE  - Handle to NURBS curve or surface.                                        
 		index1  , # LONGINT - Segment of curve to be queried (NURBS curve), or u-index (NURBS surface).
 		index2  , # LONGINT - Index of point (NURBS curve) or v-index (NURBS surface).                 
-		weight    # POINT   - New weight of point.                                                     
+		weight    # REAL    - New weight of point.                                                     
 		):
 	'''
 		Python: vs.NurbsSetWeight(objectHd, index1, index2, weight)
@@ -20252,8 +21475,8 @@ def NurbsSetWeight(
 
 def NurbsSurfaceEvalPt(
 		objectHd, # HANDLE - Handle to a NURBS surface.                                          
-		u       , # POINT  - Parameter between the minimum and maximum knot value in U direction.
-		v         # POINT  - Parameter between the minimum and maximum knot value in V direction.
+		u       , # REAL   - Parameter between the minimum and maximum knot value in U direction.
+		v         # REAL   - Parameter between the minimum and maximum knot value in V direction.
 		):
 	'''
 		Python: p = vs.NurbsSurfaceEvalPt(objectHd, u, v)
@@ -20339,7 +21562,7 @@ def ObjVolume(
 
 def OffsetHandle(
 		h               , # HANDLE  -  
-		offsetDistance  , # POINT   -  
+		offsetDistance  , # REAL    -  
 		EdgeRestoration , # BOOLEAN -  
 		FilletSharpEdges  # BOOLEAN -  
 		):
@@ -20356,12 +21579,12 @@ def OffsetHandle(
 
 def OffsetPoly(
 		h                     , # HANDLE  -  
-		offsetDistance        , # POINT   -  
+		offsetDistance        , # REAL    -  
 		numberOfOffsets       , # INTEGER -  
 		consolidateVertices   , # BOOLEAN -  
 		sharpCorners          , # BOOLEAN -  
 		conversionRes         , # INTEGER -  
-		consolidationTolerance  # POINT   -  
+		consolidationTolerance  # REAL    -  
 		):
 	'''
 		Python: HANDLE = vs.OffsetPoly(h, offsetDistance, numberOfOffsets, consolidateVertices, sharpCorners, conversionRes, consolidationTolerance)
@@ -20376,7 +21599,7 @@ def OffsetPoly(
 
 def OffsetPolyN(
 		h             , # HANDLE  -  
-		offsetDistance, # POINT   -  
+		offsetDistance, # REAL    -  
 		smoothCorners   # BOOLEAN -  
 		):
 	'''
@@ -20527,8 +21750,8 @@ def Oval(
 def OvalN(
 		orgin    , # POINT -  
 		direction, # POINT -  
-		width    , # POINT -  
-		height     # POINT -  
+		width    , # REAL  -  
+		height     # REAL  -  
 		):
 	'''
 		Python: vs.OvalN(orgin, direction, width, height)
@@ -20544,10 +21767,10 @@ def OverlapLineArc(
 		begPt    , # VECTOR -  
 		endpt    , # VECTOR -  
 		cenPt    , # VECTOR -  
-		radius   , # POINT  -  
-		startAng , # POINT  -  
-		sweepAng , # POINT  -  
-		tolerance  # POINT  -  
+		radius   , # REAL   -  
+		startAng , # REAL   -  
+		sweepAng , # REAL   -  
+		tolerance  # REAL   -  
 		):
 	'''
 		Python: (BOOLEAN, lapPt1, lapPt2) = vs.OverlapLineArc(begPt, endpt, cenPt, radius, startAng, sweepAng, tolerance)
@@ -20567,7 +21790,7 @@ def OverlapLineLine(
 		endPt1   , # VECTOR -  
 		begPt2   , # VECTOR -  
 		endPt2   , # VECTOR -  
-		tolerance  # POINT  -  
+		tolerance  # REAL   -  
 		):
 	'''
 		Python: (BOOLEAN, lapPt1, lapPt2) = vs.OverlapLineLine(begPt1, endPt1, begPt2, endPt2, tolerance)
@@ -20586,8 +21809,8 @@ def PDF_AnnotationsFromBlob(
 		inBlobPtr , # PROCEDURE -  
 		inBlobSize, # LONGINT   -  
 		inCurPage , # LONGINT   -  
-		boundsX   , # POINT     -  
-		boundsY   , # POINT     -  
+		boundsX   , # REAL      -  
+		boundsY   , # REAL      -  
 		ioSnapGeom  # HANDLE    -  
 		):
 	'''
@@ -20799,8 +22022,8 @@ def PDF_SnapGeomFromBlob(
 		inBlobPtr , # PROCEDURE -  
 		inBlobSize, # LONGINT   -  
 		inCurPage , # LONGINT   -  
-		boundsX   , # POINT     -  
-		boundsY   , # POINT     -  
+		boundsX   , # REAL      -  
+		boundsY   , # REAL      -  
 		ioSnapGeom  # HANDLE    -  
 		):
 	'''
@@ -20928,6 +22151,20 @@ def PenSize(
 		Procedure PenSize sets the active line weight for the document.
 	'''
 	pass
+
+
+def PercStrFromDeg(
+		fSlopeDeg  # REAL -  
+		):
+	'''
+		Python: STRING = vs.PercStrFromDeg(fSlopeDeg)
+		VectorScript: FUNCTION PercStrFromDeg(fSlopeDeg:REAL) : STRING;
+		
+		Category: SiteModel Interface Library
+		Converts slope from degrees to percent string.
+	'''
+	pass
+	return 'STRING' # 
 
 
 def Perim(
@@ -21105,6 +22342,20 @@ def Plant_ReplacePlant(
 	pass
 
 
+def Plant_ReplacePlantParam(
+		origPlantObj  # HANDLE -  
+		):
+	'''
+		Python: HANDLE = vs.Plant_ReplacePlantParam(origPlantObj)
+		VectorScript: FUNCTION Plant_ReplacePlantParam(origPlantObj:HANDLE) : HANDLE;
+		
+		Category: PlantObjectCoreTools
+		Replaces plant parameters using information from replacement plant object.
+	'''
+	pass
+	return 'HANDLE' # 
+
+
 def Plant_ResetPlantInst(
 		plantSymbolName  # DYNARRAY[] of CHAR -  
 		):
@@ -21150,7 +22401,7 @@ def Plant_UpdateTranslat(
 
 def PointAlongPoly(
 		h   , # HANDLE -  
-		dist  # POINT  -  
+		dist  # REAL   -  
 		):
 	'''
 		Python: (BOOLEAN, pt, tangent) = vs.PointAlongPoly(h, dist)
@@ -21167,8 +22418,8 @@ def PointAlongPoly(
 
 def PointAlongPolyN(
 		h      , # HANDLE -  
-		dist   , # POINT  -  
-		epsilon  # POINT  -  
+		dist   , # REAL   -  
+		epsilon  # REAL   -  
 		):
 	'''
 		Python: (BOOLEAN, pt, tangent) = vs.PointAlongPolyN(h, dist, epsilon)
@@ -21470,7 +22721,7 @@ def ProgressDlgSetTopMsg(
 
 
 def ProgressDlgStart(
-		Percentage, # POINT   -  
+		Percentage, # REAL    -  
 		LoopCount   # LONGINT -  
 		):
 	'''
@@ -21478,17 +22729,17 @@ def ProgressDlgStart(
 		VectorScript: PROCEDURE ProgressDlgStart(Percentage:REAL; LoopCount:LONGINT);
 		
 		Category: Utility
-		Start a progress context. This defines progress percentage and loop count for ProgressDlgYeld calls. LoopCount is fit in the Percentage of the progress
+		Start a progress context. This defines progress percentage and loop count for ProgressDlgYield calls. LoopCount is fit in the Percentage of the progress
 	'''
 	pass
 
 
-def ProgressDlgYeld(
+def ProgressDlgYield(
 		count  # LONGINT -  
 		):
 	'''
-		Python: vs.ProgressDlgYeld(count)
-		VectorScript: PROCEDURE ProgressDlgYeld(count:LONGINT);
+		Python: vs.ProgressDlgYield(count)
+		VectorScript: PROCEDURE ProgressDlgYield(count:LONGINT);
 		
 		Category: Utility
 		Increases the progress. This must be called between ProgressDlgStart and ProgressDlgEnd and defines the LoopCount index.
@@ -21512,6 +22763,30 @@ def Projection(
 		Parameters viewDistance, clip1, and clip2 are used only in perspective projection mode.
 	'''
 	pass
+
+
+def Prot_GetSeatsNum():
+	'''
+		Python: INTEGER = vs.Prot_GetSeatsNum()
+		VectorScript: FUNCTION Prot_GetSeatsNum : INTEGER;
+		
+		Category: Protection
+		Returns the number of Vectorworks seats licensed on the server.
+	'''
+	pass
+	return 'INTEGER' # 
+
+
+def Prot_GetUsedSeatsNum():
+	'''
+		Python: INTEGER = vs.Prot_GetUsedSeatsNum()
+		VectorScript: FUNCTION Prot_GetUsedSeatsNum : INTEGER;
+		
+		Category: Protection
+		Returns the number of running Vectorworks on the network.
+	'''
+	pass
+	return 'INTEGER' # 
 
 
 def PtDialog(
@@ -21584,10 +22859,10 @@ def PtInRect(
 def PtOnArc(
 		pt       , # VECTOR -  
 		cenPt    , # VECTOR -  
-		radius   , # POINT  -  
-		startAng , # POINT  -  
-		sweepAng , # POINT  -  
-		tolerance  # POINT  -  
+		radius   , # REAL   -  
+		startAng , # REAL   -  
+		sweepAng , # REAL   -  
+		tolerance  # REAL   -  
 		):
 	'''
 		Python: BOOLEAN = vs.PtOnArc(pt, cenPt, radius, startAng, sweepAng, tolerance)
@@ -21604,7 +22879,7 @@ def PtOnLine(
 		pt       , # VECTOR -  
 		begPt    , # VECTOR -  
 		endPt    , # VECTOR -  
-		tolerance  # POINT  -  
+		tolerance  # REAL   -  
 		):
 	'''
 		Python: BOOLEAN = vs.PtOnLine(pt, begPt, endPt, tolerance)
@@ -21620,7 +22895,7 @@ def PtOnLine(
 def PtPerpCircle(
 		pt    , # VECTOR -  
 		cenPt , # VECTOR -  
-		radius  # POINT  -  
+		radius  # REAL   -  
 		):
 	'''
 		Python: VECTOR = vs.PtPerpCircle(pt, cenPt, radius)
@@ -21794,7 +23069,7 @@ def QTOpenMovieFile(
 
 def QTSetMovieOptions(
 		movieRef     , # INTEGER - Index of QuickTime movie stream.            
-		frameRate    , # POINT   - Frame rate of movie.                        
+		frameRate    , # REAL    - Frame rate of movie.                        
 		keyFrameRate , # LONGINT - Key frame rate of movie.                    
 		useDlg       , # BOOLEAN - Display QuickTime comprssion options dialog.
 		useDlgPreview  # BOOLEAN - Show dialog preview.                        
@@ -21834,7 +23109,7 @@ def QTWriteFrame(
 
 
 def Rad2Deg(
-		radianValue  # POINT - Value in radians.
+		radianValue  # REAL - Value in radians.
 		):
 	'''
 		Python: REAL = vs.Rad2Deg(radianValue)
@@ -21951,8 +23226,8 @@ def Rect(
 def RectangleN(
 		orgin    , # POINT -  
 		direction, # POINT -  
-		width    , # POINT -  
-		height     # POINT -  
+		width    , # REAL  -  
+		height     # REAL  -  
 		):
 	'''
 		Python: vs.RectangleN(orgin, direction, width, height)
@@ -22041,9 +23316,9 @@ def RegisterDialogForTimerEvents(
 
 
 def RegularPolygon(
-		centerX , # POINT   -  
-		centerY , # POINT   -  
-		radius  , # POINT   -  
+		centerX , # REAL    -  
+		centerY , # REAL    -  
+		radius  , # REAL    -  
 		numSides, # INTEGER -  
 		mode      # INTEGER -  
 		):
@@ -22439,6 +23714,214 @@ def ResetOrientation3D():
 	pass
 
 
+def ResList_DefContInit(
+		uniqueID     , # STRING             -  
+		objectType   , # INTEGER            -  
+		folderSpec   , # INTEGER            -  
+		subFolderName  # DYNARRAY[] of CHAR -  
+		):
+	'''
+		Python: vs.ResList_DefContInit(uniqueID, objectType, folderSpec, subFolderName)
+		VectorScript: PROCEDURE ResList_DefContInit(uniqueID:STRING; objectType:INTEGER; folderSpec:INTEGER; subFolderName:DYNARRAY of CHAR);
+		
+		Category: Document List Handling
+		Initialize a categories resource with items from the default content. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+
+
+def ResList_Dlg_Event(
+		uniqueID, # STRING  -  
+		dialogID, # INTEGER -  
+		ctrlID    # INTEGER -  
+		):
+	'''
+		Python: BOOLEAN = vs.ResList_Dlg_Event(uniqueID, dialogID, ctrlID)
+		VectorScript: FUNCTION ResList_Dlg_Event(uniqueID:STRING; dialogID:INTEGER; ctrlID:INTEGER) : BOOLEAN;
+		
+		Category: Dialogs - Modern
+		Handle events for the category resource popup. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def ResList_Dlg_Init(
+		uniqueID, # STRING  -  
+		dialogID, # INTEGER -  
+		ctrlID    # INTEGER -  
+		):
+	'''
+		Python: vs.ResList_Dlg_Init(uniqueID, dialogID, ctrlID)
+		VectorScript: PROCEDURE ResList_Dlg_Init(uniqueID:STRING; dialogID:INTEGER; ctrlID:INTEGER);
+		
+		Category: Dialogs - Modern
+		Initialize an image popup to support categories list. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+
+
+def ResList_Dlg_Update(
+		uniqueID, # STRING  -  
+		dialogID, # INTEGER -  
+		ctrlID  , # INTEGER -  
+		itemName  # STRING  -  
+		):
+	'''
+		Python: vs.ResList_Dlg_Update(uniqueID, dialogID, ctrlID, itemName)
+		VectorScript: PROCEDURE ResList_Dlg_Update(uniqueID:STRING; dialogID:INTEGER; ctrlID:INTEGER; itemName:STRING);
+		
+		Category: Dialogs - Modern
+		Update the category resource popup. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+
+
+def ResList_DocInit(
+		uniqueID  , # STRING  -  
+		objectType  # INTEGER -  
+		):
+	'''
+		Python: vs.ResList_DocInit(uniqueID, objectType)
+		VectorScript: PROCEDURE ResList_DocInit(uniqueID:STRING; objectType:INTEGER);
+		
+		Category: Document List Handling
+		Initialize a categories resource with items from the current document. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+
+
+def ResList_DocInitDef(
+		uniqueID        , # STRING             -  
+		objectType      , # INTEGER            -  
+		defItemName     , # STRING             -  
+		defItemImageSpec  # DYNARRAY[] of CHAR -  
+		):
+	'''
+		Python: vs.ResList_DocInitDef(uniqueID, objectType, defItemName, defItemImageSpec)
+		VectorScript: PROCEDURE ResList_DocInitDef(uniqueID:STRING; objectType:INTEGER; defItemName:STRING; defItemImageSpec:DYNARRAY of CHAR);
+		
+		Category: Document List Handling
+		Initialize a categories resource with items from the current document with a default item that is always first in the list. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+
+
+def ResList_FilesInit(
+		uniqueID    , # STRING             -  
+		objectType  , # INTEGER            -  
+		folderSpec  , # INTEGER            -  
+		relativePath  # DYNARRAY[] of CHAR -  
+		):
+	'''
+		Python: vs.ResList_FilesInit(uniqueID, objectType, folderSpec, relativePath)
+		VectorScript: PROCEDURE ResList_FilesInit(uniqueID:STRING; objectType:INTEGER; folderSpec:INTEGER; relativePath:DYNARRAY of CHAR);
+		
+		Category: Document List Handling
+		Initialize a categories resource with items from the arbitrary location. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+
+
+def ResList_GetCatType(
+		uniqueID  # STRING -  
+		):
+	'''
+		Python: INTEGER = vs.ResList_GetCatType(uniqueID)
+		VectorScript: FUNCTION ResList_GetCatType(uniqueID:STRING) : INTEGER;
+		
+		Category: Document List Handling
+		Return the category type currently selected: 0 = Document; 1 = Default Content; 2 = File. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+	return 'INTEGER' # 
+
+
+def ResList_GetResList(
+		uniqueID  # STRING -  
+		):
+	'''
+		Python: LONGINT = vs.ResList_GetResList(uniqueID)
+		VectorScript: FUNCTION ResList_GetResList(uniqueID:STRING) : LONGINT;
+		
+		Category: Document List Handling
+		Return the resource list that is currently displayed. This is the list that typically is created by call to BuildResourceList. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+	return 'LONGINT' # 
+
+
+def ResList_GetResListS(
+		uniqueID  # STRING -  
+		):
+	'''
+		Python: LONGINT = vs.ResList_GetResListS(uniqueID)
+		VectorScript: FUNCTION ResList_GetResListS(uniqueID:STRING) : LONGINT;
+		
+		Category: Document List Handling
+		Return the selection in the resource list from the ResList_GetResList call. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+	return 'LONGINT' # 
+
+
+def ResList_IsSpecItem(
+		uniqueID  # STRING -  
+		):
+	'''
+		Python: BOOLEAN = vs.ResList_IsSpecItem(uniqueID)
+		VectorScript: FUNCTION ResList_IsSpecItem(uniqueID:STRING) : BOOLEAN;
+		
+		Category: Document List Handling
+		Return TRUE if the default(special) item is selected. This item is always first in the list and created by call to ResList_DocInitDef. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def ResList_SetCatTitle(
+		uniqueID, # STRING -  
+		title     # STRING -  
+		):
+	'''
+		Python: vs.ResList_SetCatTitle(uniqueID, title)
+		VectorScript: PROCEDURE ResList_SetCatTitle(uniqueID:STRING; title:STRING);
+		
+		Category: Document List Handling
+		Set the category title column name in the  categories resource popup. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+
+
+def ResList_SetInitSel(
+		uniqueID, # STRING  -  
+		itemName, # STRING  -  
+		force     # BOOLEAN -  
+		):
+	'''
+		Python: vs.ResList_SetInitSel(uniqueID, itemName, force)
+		VectorScript: PROCEDURE ResList_SetInitSel(uniqueID:STRING; itemName:STRING; force:BOOLEAN);
+		
+		Category: Document List Handling
+		Set the initial selected item. 'force' is typically FALSE. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+
+
+def ResList_SetSelItem(
+		uniqueID, # STRING -  
+		itemName  # STRING -  
+		):
+	'''
+		Python: vs.ResList_SetSelItem(uniqueID, itemName)
+		VectorScript: PROCEDURE ResList_SetSelItem(uniqueID:STRING; itemName:STRING);
+		
+		Category: Document List Handling
+		Set selected item by item name. The 'uniqueID' is a string identifier uniquely identifying this control.
+	'''
+	pass
+
+
 def ResolveByClassTextureRef(
 		obj   , # HANDLE  - Handle to object.                                         
 		partID  # INTEGER - Primary, secondary, or tertiary texture ID to be returned.
@@ -22624,6 +24107,20 @@ def RightBoundN(
 	return 'REAL' # 
 
 
+def RiseRunFromDeg(
+		fSlopeDeg  # REAL -  
+		):
+	'''
+		Python: STRING = vs.RiseRunFromDeg(fSlopeDeg)
+		VectorScript: FUNCTION RiseRunFromDeg(fSlopeDeg:REAL) : STRING;
+		
+		Category: SiteModel Interface Library
+		Converts slope from degrees to rise-over-run string.
+	'''
+	pass
+	return 'STRING' # 
+
+
 def Road_GetStationCount(
 		hRoadwayObject  # HANDLE -  
 		):
@@ -22766,7 +24263,7 @@ def RotatePoint(
 
 
 def Round(
-		v  # POINT - Real value to round.
+		v  # REAL - Real value to round.
 		):
 	'''
 		Python: LONGINT = vs.Round(v)
@@ -22826,7 +24323,7 @@ def Rpstr_GetValueInt(
 
 def Rpstr_GetValueReal(
 		name        , # STRING - The name of the value.                                                        
-		defaultValue  # POINT  - Default value if the name does not exist in the VectorScript value repository.
+		defaultValue  # REAL   - Default value if the name does not exist in the VectorScript value repository.
 		):
 	'''
 		Python: REAL = vs.Rpstr_GetValueReal(name, defaultValue)
@@ -22909,7 +24406,7 @@ def Rpstr_SetValueInt(
 
 def Rpstr_SetValueReal(
 		name , # STRING - The name of the value.                                                    
-		value  # POINT  - Set a value associated with the name in the VectorScript value repository.
+		value  # REAL   - Set a value associated with the name in the VectorScript value repository.
 		):
 	'''
 		Python: vs.Rpstr_SetValueReal(name, value)
@@ -22954,10 +24451,10 @@ def RRect(
 def RRectangleN(
 		orgin    , # POINT -  
 		direction, # POINT -  
-		width    , # POINT -  
-		height   , # POINT -  
-		xDiam    , # POINT -  
-		yDiam      # POINT -  
+		width    , # REAL  -  
+		height   , # REAL  -  
+		xDiam    , # REAL  -  
+		yDiam      # REAL  -  
 		):
 	'''
 		Python: vs.RRectangleN(orgin, direction, width, height, xDiam, yDiam)
@@ -23084,8 +24581,8 @@ def SaveSheet(
 
 
 def Scale(
-		scaleXR, # POINT - X scale factor.
-		scaleYR  # POINT - Y scale factor.
+		scaleXR, # REAL - X scale factor.
+		scaleYR  # REAL - Y scale factor.
 		):
 	'''
 		Python: vs.Scale(scaleXR, scaleYR)
@@ -23321,7 +24818,7 @@ def SetActSymbol(
 
 def SetAngle(
 		h    , # HANDLE - Handle to object.                                                                            
-		value  # POINT  - The new rotation angle of the object. Angle in degrees (-180;180] measured from (1,0) vector.
+		value  # REAL   - The new rotation angle of the object. Angle in degrees (-180;180] measured from (1,0) vector.
 		):
 	'''
 		Python: vs.SetAngle(h, value)
@@ -23404,7 +24901,7 @@ def SetBBox(
 
 def SetBeamAngle(
 		h         , # HANDLE - Handle to light.    
-		beamAngleR  # POINT  - Beam angle of light.
+		beamAngleR  # REAL   - Beam angle of light.
 		):
 	'''
 		Python: vs.SetBeamAngle(h, beamAngleR)
@@ -23500,6 +24997,21 @@ def SetCDATA(
 	return 'INTEGER' # 
 
 
+def SetCheckoutsComment(
+		comment  # STRING - The comment to replace any currently in use.
+		):
+	'''
+		Python: BOOLEAN = vs.SetCheckoutsComment(comment)
+		VectorScript: FUNCTION SetCheckoutsComment(comment:STRING) : BOOLEAN;
+		
+		Category: Project Sharing
+		Set the comment that will be used for checkouts and commits.
+		The Enter Comment dialogs will still be shown when a checkout or commit is done; the dialog will be prepopulated with the comment set with this command.
+	'''
+	pass
+	return 'BOOLEAN' # True on success, false on failure or not Project Sharing file.
+
+
 def SetClass(
 		h    , # HANDLE - Handle to object.                 
 		clas   # STRING - Name of class to assign to object.
@@ -23517,7 +25029,7 @@ def SetClass(
 def SetClassArrow(
 		clasName , # STRING  - The indicated class.                            
 		style    , # INTEGER - The arrow style.                                
-		size     , # POINT   - The arrow size in inches measured in page space.
+		size     , # REAL    - The arrow size in inches measured in page space.
 		angle      # INTEGER - The arrow angle (in degrees).                   
 		):
 	'''
@@ -23534,10 +25046,10 @@ def SetClassBeginningMarker(
 		name          , # STRING  - Name of the class                                      
 		style         , # LONGINT - The marker style (see comments for details)            
 		angle         , # INTEGER - The marker angle in degrees (0 to 90)                  
-		size          , # POINT   - The marker size in pages inches                        
-		width         , # POINT   - The marker width in page inches                        
+		size          , # REAL    - The marker size in pages inches                        
+		width         , # REAL    - The marker width in page inches                        
 		thicknessBasis, # INTEGER - The marker thickness basis. ( see comments for details)
-		thickness       # POINT   - The marker thickness                                   
+		thickness       # REAL    - The marker thickness                                   
 		):
 	'''
 		Python: BOOLEAN = vs.SetClassBeginningMarker(name, style, angle, size, width, thicknessBasis, thickness)
@@ -23554,10 +25066,10 @@ def SetClassEndMarker(
 		name          , # STRING  - Name of the class.                                     
 		style         , # LONGINT - The marker style. (see comments for details)           
 		angle         , # INTEGER - The marker angle in degrees. (0 to 90)                 
-		size          , # POINT   - The marker size in page inches.                        
-		width         , # POINT   - The marker width in page inches.                       
+		size          , # REAL    - The marker size in page inches.                        
+		width         , # REAL    - The marker width in page inches.                       
 		thicknessBasis, # INTEGER - The marker thickness basis. ( see comments for details)
-		thickness       # POINT   - The marker thickness.                                  
+		thickness       # REAL    - The marker thickness.                                  
 		):
 	'''
 		Python: BOOLEAN = vs.SetClassEndMarker(name, style, angle, size, width, thicknessBasis, thickness)
@@ -23926,6 +25438,55 @@ def SetColorName(
 	return 'BOOLEAN' # 'true' if the operation was successful.[[BR]]'false' otherwise.[[BR]]
 
 
+def SetCompAltSecFill(
+		object              , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex      , # INTEGER - The index of the component.                                               
+		alternateSectionFill  # LONGINT - The alternate section fill of the component.                              
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompAltSecFill(object, componentIndex, alternateSectionFill)
+		VectorScript: FUNCTION SetCompAltSecFill(object:HANDLE; componentIndex:INTEGER; alternateSectionFill:LONGINT) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the alternate section fill of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompAltSecFillCl(
+		object                       , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex               , # INTEGER - The index of the component.                                               
+		alternateSectionFillForeColor, # INTEGER - The alternate section fill fore color of the component.                   
+		alternateSectionFillBackColor  # INTEGER - The alternate section fill back color of the component.                   
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompAltSecFillCl(object, componentIndex, alternateSectionFillForeColor, alternateSectionFillBackColor)
+		VectorScript: FUNCTION SetCompAltSecFillCl(object:HANDLE; componentIndex:INTEGER; alternateSectionFillForeColor:INTEGER; alternateSectionFillBackColor:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the alternate section fill colors of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompAutoJoinCap(
+		object                        , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
+		componentIndex                , # INTEGER - The index of the component.                                                
+		alwaysAutoJoinInCappedJoinMode  # BOOLEAN - Whether or not the component always auto joins in Capped Join mode.        
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompAutoJoinCap(object, componentIndex, alwaysAutoJoinInCappedJoinMode)
+		VectorScript: FUNCTION SetCompAutoJoinCap(object:HANDLE; componentIndex:INTEGER; alwaysAutoJoinInCappedJoinMode:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the always auto join in Capped Join mode flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def SetCompBotIsRelStory(
 		object                 , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.
 		componentIndex         , # INTEGER - The index of the component.                                                
@@ -23942,10 +25503,58 @@ def SetCompBotIsRelStory(
 	return 'BOOLEAN' # 
 
 
+def SetCompBoundOffset(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                               
+		boundOffset     # REAL    - The bound offset of the component.                                        
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompBoundOffset(object, componentIndex, boundOffset)
+		VectorScript: FUNCTION SetCompBoundOffset(object:HANDLE; componentIndex:INTEGER; boundOffset:REAL) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the bound offset of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompDatTopOfComp(
+		object               , # HANDLE  - The object. Can be a slab, roof face, roof, Slab Style, Roof Style, the Slab Preferences, or the Roof Preferences.
+		componentIndex       , # INTEGER - The index of the component.                                                                                       
+		datumIsTopOfComponent  # BOOLEAN - Whether or not the datum is the top of the component.                                                             
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompDatTopOfComp(object, componentIndex, datumIsTopOfComponent)
+		VectorScript: FUNCTION SetCompDatTopOfComp(object:HANDLE; componentIndex:INTEGER; datumIsTopOfComponent:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the datum is top of component flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompManualBound(
+		object        , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                               
+		manualBound     # INTEGER - The manual bound of the component.  0 - Roof edge 1 - Roof axis line      
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompManualBound(object, componentIndex, manualBound)
+		VectorScript: FUNCTION SetCompManualBound(object:HANDLE; componentIndex:INTEGER; manualBound:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the manual bound of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def SetComponentAutoBoundEdgeOffset(
-		object             , # HANDLE  - The object. Can be a  slab, Slab Style, or the Slab Preferences.                                                                                                                                                                                               
-		componentIndex     , # INTEGER - The index of the component.                                                                                                                                                                                                                                    
-		autoBoundEdgeOffset  # INTEGER -            The auto-bound edge offset.            0 - Inner face           1 - Outer face of inner component           2 - Inner face of core           3 - Center of core           4 - Outer face of core           5 - Inner face of outer component        
+		object             , # HANDLE  - The object. Can be a  slab, Slab Style, or the Slab Preferences.                                                                                                                
+		componentIndex     , # INTEGER - The index of the component.                                                                                                                                                     
+		autoBoundEdgeOffset  # INTEGER - The auto-bound edge offset.  0 - Inner face 1 - Outer face of inner component 2 - Inner face of core 3 - Center of core 4 - Outer face of core 5 - Inner face of outer component
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentAutoBoundEdgeOffset(object, componentIndex, autoBoundEdgeOffset)
@@ -23959,9 +25568,9 @@ def SetComponentAutoBoundEdgeOffset(
 
 
 def SetComponentClass(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex, # INTEGER - The index of the component.                                                                                        
-		componentClass  # LONGINT - The class of the component.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                                                                                                                           
+		componentClass  # LONGINT - The class of the component.                                                                                                                                           
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentClass(object, componentIndex, componentClass)
@@ -23975,9 +25584,9 @@ def SetComponentClass(
 
 
 def SetComponentFill(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex, # INTEGER - The index of the component.                                                                                        
-		fill            # LONGINT - The fill of the component.  Positive values for patterns, negative object indexes for hatches.                     
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                                                                                                                           
+		fill            # LONGINT - The fill of the component.  Positive values for patterns, negative object indexes for hatches.                                                                        
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentFill(object, componentIndex, fill)
@@ -23991,10 +25600,10 @@ def SetComponentFill(
 
 
 def SetComponentFillColors(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex, # INTEGER - The index of the component.                                                                                        
-		fillForeColor , # INTEGER - The fore color of the fill.                                                                                        
-		fillBackColor   # INTEGER - The back color of the fill.                                                                                        
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                                                                                                                           
+		fillForeColor , # INTEGER - The fore color of the fill.                                                                                                                                           
+		fillBackColor   # INTEGER - The back color of the fill.                                                                                                                                           
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentFillColors(object, componentIndex, fillForeColor, fillBackColor)
@@ -24072,9 +25681,9 @@ def SetComponentManualEdgeOffset(
 
 
 def SetComponentName(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex, # INTEGER - The index of the component.                                                                                        
-		componentName   # STRING  - The name of the component.                                                                                         
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                                                                                                                           
+		componentName   # STRING  - The name of the component.                                                                                                                                            
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentName(object, componentIndex, componentName)
@@ -24088,12 +25697,12 @@ def SetComponentName(
 
 
 def SetComponentPenColors(
-		object           , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex   , # INTEGER - The index of the component.                                                                                        
-		leftPenForeColor , # INTEGER - The fore color of the left pen.                                                                                    
-		leftPenBackColor , # INTEGER - The back color of the left pen.                                                                                    
-		rightPenForeColor, # INTEGER - The fore color of the right pen.                                                                                   
-		rightPenBackColor  # INTEGER - The back color of the right pen.                                                                                   
+		object           , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex   , # INTEGER - The index of the component.                                                                                                                                           
+		leftPenForeColor , # INTEGER - The fore color of the left pen.                                                                                                                                       
+		leftPenBackColor , # INTEGER - The back color of the left pen.                                                                                                                                       
+		rightPenForeColor, # INTEGER - The fore color of the right pen.                                                                                                                                      
+		rightPenBackColor  # INTEGER - The back color of the right pen.                                                                                                                                      
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentPenColors(object, componentIndex, leftPenForeColor, leftPenBackColor, rightPenForeColor, rightPenBackColor)
@@ -24107,10 +25716,10 @@ def SetComponentPenColors(
 
 
 def SetComponentPenStyles(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex, # INTEGER - The index of the component.                                                                                        
-		leftPenStyle  , # INTEGER - The pen style of the component's left line.  Positive values for patterns, negative values for dash styles.        
-		rightPenStyle   # INTEGER - The pen style of the component's right line.  Positive values for patterns, negative values for dash styles.       
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                                                                                                                           
+		leftPenStyle  , # INTEGER - The pen style of the component's left line.  Positive values for patterns, negative values for dash styles.                                                           
+		rightPenStyle   # INTEGER - The pen style of the component's right line.  Positive values for patterns, negative values for dash styles.                                                          
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentPenStyles(object, componentIndex, leftPenStyle, rightPenStyle)
@@ -24124,10 +25733,10 @@ def SetComponentPenStyles(
 
 
 def SetComponentPenWeights(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex, # INTEGER - The index of the component.                                                                                        
-		leftPenWeight , # INTEGER - The pen weight of the component's left line.                                                                       
-		rightPenWeight  # INTEGER - The pen weight of the component's right line.                                                                      
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                                                                                                                           
+		leftPenWeight , # INTEGER - The pen weight of the component's left line.                                                                                                                          
+		rightPenWeight  # INTEGER - The pen weight of the component's right line.                                                                                                                         
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentPenWeights(object, componentIndex, leftPenWeight, rightPenWeight)
@@ -24158,9 +25767,9 @@ def SetComponentSize(
 
 
 def SetComponentTexture(
-		object        , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex, # INTEGER - The index of the component.                                                                                        
-		texture         # LONGINT - The ref number of the texture. 0 for no texture. -1 for class texture.                                             
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                                                                                                                           
+		texture         # LONGINT - The ref number of the texture. 0 for no texture. -1 for class texture.                                                                                                
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentTexture(object, componentIndex, texture)
@@ -24174,9 +25783,9 @@ def SetComponentTexture(
 
 
 def SetComponentUseFillClassAttr(
-		object                , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex        , # INTEGER - The index of the component.                                                                                        
-		useFillClassAttributes  # BOOLEAN - Whether or not the component will use class attributes for its fill.                                               
+		object                , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex        , # INTEGER - The index of the component.                                                                                                                                           
+		useFillClassAttributes  # BOOLEAN - Whether or not the component will use class attributes for its fill.                                                                                                  
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentUseFillClassAttr(object, componentIndex, useFillClassAttributes)
@@ -24190,10 +25799,10 @@ def SetComponentUseFillClassAttr(
 
 
 def SetComponentUsePenClassAttr(
-		object                    , # HANDLE  - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex            , # INTEGER - The index of the component.                                                                                        
-		useLeftPenClassAttributes , # BOOLEAN - Whether or not the component will use class attributes for its left pen.                                           
-		useRightPenClassAttributes  # BOOLEAN - Whether or not the component will use class attributes for its right pen.                                          
+		object                    , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex            , # INTEGER - The index of the component.                                                                                                                                           
+		useLeftPenClassAttributes , # BOOLEAN - Whether or not the component will use class attributes for its left pen.                                                                                              
+		useRightPenClassAttributes  # BOOLEAN - Whether or not the component will use class attributes for its right pen.                                                                                             
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentUsePenClassAttr(object, componentIndex, useLeftPenClassAttributes, useRightPenClassAttributes)
@@ -24239,9 +25848,9 @@ def SetComponentWallTopOffset(
 
 
 def SetComponentWidth(
-		object        , # HANDLE            - The object. Can be a wall, round wall, slab, Wall Style, Slab Style, the Wall Preferences, or the Slab Preferences.
-		componentIndex, # INTEGER           - The index of the component.                                                                                        
-		width           # REAL (Coordinate) - The width of the component.                                                                                        
+		object        , # HANDLE            - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex, # INTEGER           - The index of the component.                                                                                                                                           
+		width           # REAL (Coordinate) - The width of the component.                                                                                                                                           
 		):
 	'''
 		Python: BOOLEAN = vs.SetComponentWidth(object, componentIndex, width)
@@ -24249,6 +25858,39 @@ def SetComponentWidth(
 		
 		Category: Objects - Architectural
 		Sets the width of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompPenStylesN(
+		object        , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex, # INTEGER - The index of the component.                                                                                                                                           
+		leftPenStyle  , # LONGINT - The left pen style of the component.                                                                                                                                  
+		rightPenStyle   # LONGINT - The right pen style of the component.                                                                                                                                 
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompPenStylesN(object, componentIndex, leftPenStyle, rightPenStyle)
+		VectorScript: FUNCTION SetCompPenStylesN(object:HANDLE; componentIndex:INTEGER; leftPenStyle:LONGINT; rightPenStyle:LONGINT) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the pen styles of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompSecFillChgPt(
+		object                              , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.                                                                                                                                                   
+		componentIndex                      , # INTEGER - The index of the component.                                                                                                                                                                                                  
+		wallAssociatedSectionFillChangePoint  # INTEGER - The wall associated section fill change point of the component.  0 - Inner face 1 - Outer face of inner component 2 - Inner face of core 3 - Center of core 4 - Outer face of core 5 - Inner face of outer component 6 - None
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompSecFillChgPt(object, componentIndex, wallAssociatedSectionFillChangePoint)
+		VectorScript: FUNCTION SetCompSecFillChgPt(object:HANDLE; componentIndex:INTEGER; wallAssociatedSectionFillChangePoint:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the wall associated section fill change point of a component in an object.
 	'''
 	pass
 	return 'BOOLEAN' # 
@@ -24270,6 +25912,198 @@ def SetCompTopIsRelStory(
 	return 'BOOLEAN' # 
 
 
+def SetCompUseClassASF(
+		object                                  , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.            
+		componentIndex                          , # INTEGER - The index of the component.                                                           
+		useClassFillStyleForAlternateSectionFill  # BOOLEAN - Whether or not the component will use class attributes for its alternate section fill.
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassASF(object, componentIndex, useClassFillStyleForAlternateSectionFill)
+		VectorScript: FUNCTION SetCompUseClassASF(object:HANDLE; componentIndex:INTEGER; useClassFillStyleForAlternateSectionFill:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class fill style for alternate section fill flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompUseClassASFCl(
+		object                                   , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.                   
+		componentIndex                           , # INTEGER - The index of the component.                                                                  
+		useClassFillColorsForAlternateSectionFill  # BOOLEAN - Whether or not the component will use class attributes for its alternate section fill colors.
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassASFCl(object, componentIndex, useClassFillColorsForAlternateSectionFill)
+		VectorScript: FUNCTION SetCompUseClassASFCl(object:HANDLE; componentIndex:INTEGER; useClassFillColorsForAlternateSectionFill:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class fill colors for alternate section fill flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompUseClassFCl(
+		object                   , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex           , # INTEGER - The index of the component.                                                                                                                                           
+		useClassFillColorsForFill  # BOOLEAN - Whether or not the component will use class attributes for its fill colors.                                                                                           
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassFCl(object, componentIndex, useClassFillColorsForFill)
+		VectorScript: FUNCTION SetCompUseClassFCl(object:HANDLE; componentIndex:INTEGER; useClassFillColorsForFill:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class fill colors for fill flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompUseClassFill(
+		object                  , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex          , # INTEGER - The index of the component.                                                                                                                                           
+		useClassFillStyleForFill  # BOOLEAN - Whether or not the component will use class attributes for its fill.                                                                                                  
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassFill(object, componentIndex, useClassFillStyleForFill)
+		VectorScript: FUNCTION SetCompUseClassFill(object:HANDLE; componentIndex:INTEGER; useClassFillStyleForFill:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class fill style for fill flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompUseClassLPCl(
+		object                     , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex             , # INTEGER - The index of the component.                                                                                                                                           
+		useClassPenColorsForLeftPen  # BOOLEAN - Whether or not the component will use class attributes for its left pen colors.                                                                                       
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassLPCl(object, componentIndex, useClassPenColorsForLeftPen)
+		VectorScript: FUNCTION SetCompUseClassLPCl(object:HANDLE; componentIndex:INTEGER; useClassPenColorsForLeftPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class pen colors for left pen flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompUseClassLPS(
+		object                    , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex            , # INTEGER - The index of the component.                                                                                                                                           
+		useClassPenStyleForLeftPen  # BOOLEAN - Whether or not the component will use class attributes for its left pen style.                                                                                        
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassLPS(object, componentIndex, useClassPenStyleForLeftPen)
+		VectorScript: FUNCTION SetCompUseClassLPS(object:HANDLE; componentIndex:INTEGER; useClassPenStyleForLeftPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class pen style for left pen flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompUseClassLPW(
+		object                     , # HANDLE  - The object. Can be a wall, round wall, slab, roof face, roof, Wall Style, Slab Style, Roof Style, the Wall Preferences, the Slab Preferences, or the Roof Preferences.
+		componentIndex             , # INTEGER - The index of the component.                                                                                                                                           
+		useClassPenWeightForLeftPen  # BOOLEAN - Whether or not the component will use class attributes for its left pen weight.                                                                                       
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassLPW(object, componentIndex, useClassPenWeightForLeftPen)
+		VectorScript: FUNCTION SetCompUseClassLPW(object:HANDLE; componentIndex:INTEGER; useClassPenWeightForLeftPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class pen weight for left pen flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompUseClassRPCl(
+		object                      , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.     
+		componentIndex              , # INTEGER - The index of the component.                                                     
+		useClassPenColorsForRightPen  # BOOLEAN - Whether or not the component will use class attributes for its right pen colors.
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassRPCl(object, componentIndex, useClassPenColorsForRightPen)
+		VectorScript: FUNCTION SetCompUseClassRPCl(object:HANDLE; componentIndex:INTEGER; useClassPenColorsForRightPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class pen colors for right pen flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompUseClassRPS(
+		object                     , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.    
+		componentIndex             , # INTEGER - The index of the component.                                                    
+		useClassPenStyleForRightPen  # BOOLEAN - Whether or not the component will use class attributes for its right pen style.
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassRPS(object, componentIndex, useClassPenStyleForRightPen)
+		VectorScript: FUNCTION SetCompUseClassRPS(object:HANDLE; componentIndex:INTEGER; useClassPenStyleForRightPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class pen style for right pen flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompUseClassRPW(
+		object                      , # HANDLE  - The object. Can be a wall, round wall, Wall Style, or the Wall Preferences.     
+		componentIndex              , # INTEGER - The index of the component.                                                     
+		useClassPenWeightForRightPen  # BOOLEAN - Whether or not the component will use class attributes for its right pen weight.
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompUseClassRPW(object, componentIndex, useClassPenWeightForRightPen)
+		VectorScript: FUNCTION SetCompUseClassRPW(object:HANDLE; componentIndex:INTEGER; useClassPenWeightForRightPen:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the use class pen weight for right pen flag of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompWallAssBound(
+		object             , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.                                                                                                                                                       
+		componentIndex     , # INTEGER - The index of the component.                                                                                                                                                                                                      
+		wallAssociatedBound  # INTEGER - The wall associated bound of the component.  0 - Inner face 1 - Outer face of inner component 2 - Inner face of core 3 - Center of core 4 - Outer face of core 5 - Inner face of outer component 6 - Roof edge 7 - Roof axis line
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompWallAssBound(object, componentIndex, wallAssociatedBound)
+		VectorScript: FUNCTION SetCompWallAssBound(object:HANDLE; componentIndex:INTEGER; wallAssociatedBound:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the wall associated bound of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
+def SetCompWallAssMod(
+		object                    , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.                      
+		componentIndex            , # INTEGER - The index of the component.                                                                     
+		wallAssociatedModification  # INTEGER - The wall associated modification of the component.  0 - None 1 - Clip walls 2 - Clipped by walls
+		):
+	'''
+		Python: BOOLEAN = vs.SetCompWallAssMod(object, componentIndex, wallAssociatedModification)
+		VectorScript: FUNCTION SetCompWallAssMod(object:HANDLE; componentIndex:INTEGER; wallAssociatedModification:INTEGER) : BOOLEAN;
+		
+		Category: Objects - Architectural
+		Sets the wall associated modification of a component in an object.
+	'''
+	pass
+	return 'BOOLEAN' # 
+
+
 def SetConstrain(
 		str  # STRING - Constraint constant string.
 		):
@@ -24285,7 +26119,7 @@ def SetConstrain(
 
 def SetConstraintValue(
 		constraint, # HANDLE - Handle to constraint being modified.
-		value       # POINT  - New value for the constraint.       
+		value       # REAL   - New value for the constraint.       
 		):
 	'''
 		Python: vs.SetConstraintValue(constraint, value)
@@ -24367,6 +26201,35 @@ def SetCursor(
 		Procedure SetCursor changes the appearance of the screen cursor.
 	'''
 	pass
+
+
+def SetCurtainWallCutPl(
+		wall               , # HANDLE - The wall.                              
+		curtainWallCutPlane  # REAL   - The curtain wall cut plane of the wall.
+		):
+	'''
+		Python: vs.SetCurtainWallCutPl(wall, curtainWallCutPlane)
+		VectorScript: PROCEDURE SetCurtainWallCutPl(wall:HANDLE; curtainWallCutPlane:REAL);
+		
+		Category: Objects - Walls
+		Sets the curtain wall cut plane of the wall.
+	'''
+	pass
+
+
+def SetCustomFeedback(
+		ParametricHandle, # HANDLE - The parametric object to which the feedback group will be added.
+		FeedbackGroup     # HANDLE - The feedback group which will only display on screen.           
+		):
+	'''
+		Python: Boolean = vs.SetCustomFeedback(ParametricHandle, FeedbackGroup)
+		VectorScript: FUNCTION SetCustomFeedback(ParametricHandle:HANDLE; FeedbackGroup:HANDLE) : Boolean;
+		
+		Category: Objects - Custom
+		Attaches a group of objects to a parametric used only for display on screen, this group will not export or print.
+	'''
+	pass
+	return 'Boolean' # True if the feedback group was successfully added to the parametric, false if the object was not a parametric or the feedback objects were not a group.
 
 
 def SetCustomObjectColor(
@@ -24522,6 +26385,20 @@ def SetDashStyleName(
 	return 'BOOLEAN' # 'true' if the operation was successful.[[BR]]'false' otherwise.
 
 
+def SetDatumRoofComp(
+		object            , # HANDLE  - The object. Can be a roof face, roof, Roof Style, or the Roof Preferences.
+		datumRoofComponent  # INTEGER - The index of the datum roof component.                                    
+		):
+	'''
+		Python: vs.SetDatumRoofComp(object, datumRoofComponent)
+		VectorScript: PROCEDURE SetDatumRoofComp(object:HANDLE; datumRoofComponent:INTEGER);
+		
+		Category: Objects - Architectural
+		Sets the datum roof component of the object.
+	'''
+	pass
+
+
 def SetDatumSlabComponent(
 		object            , # HANDLE  - The object. Can be a slab, Slab Style, or the Slab Preferences.
 		datumSlabComponent  # INTEGER - The index of the datum slab component.                         
@@ -24539,10 +26416,10 @@ def SetDatumSlabComponent(
 def SetDefaultBeginningMarker(
 		style         , # LONGINT - The marker style. (see comments for details)           
 		angle         , # INTEGER - The marker angle in degrees. (0 to 90)                 
-		size          , # POINT   - The marker size in page inches.                        
-		width         , # POINT   - The marker width in page inches.                       
+		size          , # REAL    - The marker size in page inches.                        
+		width         , # REAL    - The marker width in page inches.                       
 		thicknessBasis, # INTEGER - The marker thickness basis. ( see comments for details)
-		thickness     , # POINT   - The marker thickness.                                  
+		thickness     , # REAL    - The marker thickness.                                  
 		visibility      # BOOLEAN - The marker visibility.                                 
 		):
 	'''
@@ -24559,10 +26436,10 @@ def SetDefaultBeginningMarker(
 def SetDefaultEndMarker(
 		style         , # LONGINT - The marker style. (see comments for details)           
 		angle         , # INTEGER - The marker angle in degrees. (0 to 90)                 
-		size          , # POINT   - The marker size in page inches.                        
-		width         , # POINT   - The marker width in page inches.                       
+		size          , # REAL    - The marker size in page inches.                        
+		width         , # REAL    - The marker width in page inches.                       
 		thicknessBasis, # INTEGER - The marker thickness basis. ( see comments for details)
-		thickness     , # POINT   - The marker thickness.                                  
+		thickness     , # REAL    - The marker thickness.                                  
 		visibility      # BOOLEAN - The marker visibility.                                 
 		):
 	'''
@@ -24964,8 +26841,8 @@ def SetDormerThick(
 
 
 def SetDrawingRect(
-		paperWidth , # POINT - The width of the drawing rectangle 
-		paperHeight  # POINT - The height of the drawing rectangle
+		paperWidth , # REAL - The width of the drawing rectangle 
+		paperHeight  # REAL - The height of the drawing rectangle
 		):
 	'''
 		Python: vs.SetDrawingRect(paperWidth, paperHeight)
@@ -25041,7 +26918,7 @@ def SetEditReal(
 		dialogID    , # LONGINT - The index of the dialog layout containing the control.
 		itemID      , # LONGINT - The index of the control item.                        
 		editRealType, # LONGINT - The type of REAL value displayed in the field.        
-		value         # POINT   - The new value for the field.                          
+		value         # REAL    - The new value for the field.                          
 		):
 	'''
 		Python: vs.SetEditReal(dialogID, itemID, editRealType, value)
@@ -25072,9 +26949,9 @@ def SetElementValue(
 def SetEntityMatrix(
 		objectHandle  , # HANDLE  - The object whose plane is being set.                  
 		offset        , # POINT3D - The offset of the plane in current document units.    
-		rotationXAngle, # POINT   - The rotation of the plane about the X-axis in degrees.
-		rotationYAngle, # POINT   - The rotation of the plane about the Y-axis in degrees.
-		rotationZAngle  # POINT   - The rotation of the plane about the Z-axis in degrees.
+		rotationXAngle, # REAL    - The rotation of the plane about the X-axis in degrees.
+		rotationYAngle, # REAL    - The rotation of the plane about the Y-axis in degrees.
+		rotationZAngle  # REAL    - The rotation of the plane about the Z-axis in degrees.
 		):
 	'''
 		Python: BOOLEAN = vs.SetEntityMatrix(objectHandle, offset, rotationXAngle, rotationYAngle, rotationZAngle)
@@ -25085,6 +26962,24 @@ def SetEntityMatrix(
 	'''
 	pass
 	return 'BOOLEAN' # Returns true if the object passed is a planar object.
+
+
+def SetEntityMatrixN(
+		objectHandle, # HANDLE  - The object whose plane is being set.                                    
+		u           , # POINT3D - The X, Y and Z values of the plane's u-vector in current document units.
+		v           , # POINT3D - The X, Y and Z values of the plane's v-vector in current document units.
+		w           , # POINT3D - The X, Y and Z values of the plane's w-vector in current document units.
+		offset        # POINT3D - The X, Y and Z offsets of the plane in current document units.          
+		):
+	'''
+		Python: BOOLEAN = vs.SetEntityMatrixN(objectHandle, u, v, w, offset)
+		VectorScript: FUNCTION SetEntityMatrixN(objectHandle:HANDLE; uX, uY, uZ:REAL; vX, vY, vZ:REAL; wX, wY, wZ:REAL; offsetX, offsetY, offsetZ:REAL) : BOOLEAN;
+		
+		Category: Object Attributes
+		Sets the matrix of the plane for a planar object. If there is already a plane in the document with that matrix, the object will be set to be in that plane. Otherwise a new plane will be added to the document.
+	'''
+	pass
+	return 'BOOLEAN' # Returns True if data was set successfully, False otherwise.
 
 
 def SetFenceAttrs(
@@ -25143,8 +27038,8 @@ def SetFillFore(
 
 def SetFillIAxisEndPoint(
 		objectHandle  , # HANDLE - Handle to the object with fill.
-		xIAxisEndPoint, # POINT  - X coordinate of I-axis point.  
-		yIAxisEndPoint  # POINT  - Y coordinate of I-axis point.  
+		xIAxisEndPoint, # REAL   - X coordinate of I-axis point.  
+		yIAxisEndPoint  # REAL   - Y coordinate of I-axis point.  
 		):
 	'''
 		Python: vs.SetFillIAxisEndPoint(objectHandle, xIAxisEndPoint, yIAxisEndPoint)
@@ -25159,8 +27054,8 @@ def SetFillIAxisEndPoint(
 
 def SetFillJAxisEndPoint(
 		objectHandle  , # HANDLE - Handle to object with fill.  
-		xJAxisEndPoint, # POINT  - X coordinate of J-axis point.
-		yJAxisEndPoint  # POINT  - Y coordinate of J-axis point.
+		xJAxisEndPoint, # REAL   - X coordinate of J-axis point.
+		yJAxisEndPoint  # REAL   - Y coordinate of J-axis point.
 		):
 	'''
 		Python: vs.SetFillJAxisEndPoint(objectHandle, xJAxisEndPoint, yJAxisEndPoint)
@@ -25175,8 +27070,8 @@ def SetFillJAxisEndPoint(
 
 def SetFillOriginPoint(
 		objectHandle, # HANDLE - Handle to the object with fill.
-		xOriginPoint, # POINT  - X coordinate of origin point.  
-		yOriginPoint  # POINT  - Y coordinate of origin point.  
+		xOriginPoint, # REAL   - X coordinate of origin point.  
+		yOriginPoint  # REAL   - Y coordinate of origin point.  
 		):
 	'''
 		Python: vs.SetFillOriginPoint(objectHandle, xOriginPoint, yOriginPoint)
@@ -25312,8 +27207,8 @@ def SetGISLayer(
 def SetGradientData(
 		gradient        , # HANDLE         - Gradient that contains the segment.                                                                                          
 		segmentIndex    , # in/out INTEGER - Segment for which to set the data.[[BR]](segment indexes begin with 1)                                                       
-		spotPosition    , # POINT          - Position of the segment's color spot relative to left-most point of the gradient. [[BR]](position >= 0.0 and position <= 1.0)
-		midpointPosition, # POINT          - Position of the segment's midpoint relative to color spot immediately to left. [[BR]](position >= 0.0 and position <= 1.0)   
+		spotPosition    , # REAL           - Position of the segment's color spot relative to left-most point of the gradient. [[BR]](position >= 0.0 and position <= 1.0)
+		midpointPosition, # REAL           - Position of the segment's midpoint relative to color spot immediately to left. [[BR]](position >= 0.0 and position <= 1.0)   
 		red             , # LONGINT        - Red component of the color spot's color. [[BR]](red >= 0 and red <= 255)                                                     
 		green           , # LONGINT        - Green component of the color spot's color. [[BR]](green >= 0 and green <= 255)                                               
 		blue              # LONGINT        - Blue component of the color spot's color. [[BR]](blue >= 0 and blue <= 255)                                                  
@@ -25333,8 +27228,8 @@ def SetGradientData(
 def SetGradientDataN(
 		gradient        , # HANDLE         - Gradient that contains the segment.                                               
 		segmentIndex    , # in/out INTEGER - Segment for which to set the data.                                                
-		spotPosition    , # POINT          - Position of the segment's color spot relative to left-most point of the gradient. 
-		midpointPosition, # POINT          - Position of the segment's midpoint relative to color spot immediately to left.    
+		spotPosition    , # REAL           - Position of the segment's color spot relative to left-most point of the gradient. 
+		midpointPosition, # REAL           - Position of the segment's midpoint relative to color spot immediately to left.    
 		red             , # LONGINT        - Red component of the color spot's color.                                          
 		green           , # LONGINT        - Green component of the color spot's color.                                        
 		blue            , # LONGINT        - Blue component of the color spot's color.                                         
@@ -25354,7 +27249,7 @@ def SetGradientDataN(
 def SetGradientMidpointPosition(
 		gradient    , # HANDLE  - Gradient that contains the segment.                                                                                       
 		segmentIndex, # INTEGER - Segment for which to set the data.[[BR]](segment indexes begin with 1)                                                    
-		position      # POINT   - Position of the segment's midpoint relatvie to color spot immediately to left. [[BR]](position >= 0.0 and position <= 1.0)
+		position      # REAL    - Position of the segment's midpoint relatvie to color spot immediately to left. [[BR]](position >= 0.0 and position <= 1.0)
 		):
 	'''
 		Python: vs.SetGradientMidpointPosition(gradient, segmentIndex, position)
@@ -25384,8 +27279,8 @@ def SetGradientSlider(
 		dialogID        , # LONGINT        - Index to the dialog layout that contains the gradient slider component.                
 		componentID     , # LONGINT        - Index to a specific gradient slider component.                                         
 		segmentIndex    , # in/out INTEGER - Segment for which to set the data.                                                     
-		spotPosition    , # POINT          - Position of the segment's color marker relative to left-most point of the slider.      
-		midpointPosition, # POINT          - Position of the segment's midpoint marker relative to color marker immediately to left.
+		spotPosition    , # REAL           - Position of the segment's color marker relative to left-most point of the slider.      
+		midpointPosition, # REAL           - Position of the segment's midpoint marker relative to color marker immediately to left.
 		red             , # LONGINT        - Red component of the color spot's color.                                               
 		green           , # LONGINT        - Green component of the color spot's color.                                             
 		blue            , # LONGINT        - Blue component of the color spot's color.                                              
@@ -25406,8 +27301,8 @@ def SetGradientSliderData(
 		dialogID        , # LONGINT        - Index to the dialog layout that contains the gradient slider component.                                                            
 		componentID     , # LONGINT        - Index to a specific gradient slider component.                                                                                     
 		segmentIndex    , # in/out INTEGER - Segment for which to set the data.[[BR]](segment indexes begin with 1)                                                             
-		spotPosition    , # POINT          - Position of the segment's color marker relative to left-most point of the slider. [[BR]](position >= 0.0 and position <= 1.0)      
-		midpointPosition, # POINT          - Position of the segment's midpoint marker relative to color marker immediately to left. [[BR]](position >= 0.0 and position <= 1.0)
+		spotPosition    , # REAL           - Position of the segment's color marker relative to left-most point of the slider. [[BR]](position >= 0.0 and position <= 1.0)      
+		midpointPosition, # REAL           - Position of the segment's midpoint marker relative to color marker immediately to left. [[BR]](position >= 0.0 and position <= 1.0)
 		red             , # LONGINT        - Red component of the color spot's color. [[BR]](red >= 0 and red <= 255)                                                           
 		green           , # LONGINT        - Green component of the color spot's color. [[BR]](green >= 0 and green <= 255)                                                     
 		blue              # LONGINT        - Blue component of the color spot's color. [[BR]](blue >= 0 and blue <= 255)                                                        
@@ -25461,7 +27356,7 @@ def SetGradientSpotColor(
 def SetGradientSpotPosition(
 		gradient    , # HANDLE         - Gradient that contains the segment.                                                                                          
 		segmentIndex, # in/out INTEGER - Segment for which to set the data.[[BR]](segment indexes begin with 1)                                                       
-		position      # POINT          - Position of the segment's color spot relative to left-most point of the gradient. [[BR]](position >= 0.0 and position <= 1.0)
+		position      # REAL           - Position of the segment's color spot relative to left-most point of the gradient. [[BR]](position >= 0.0 and position <= 1.0)
 		):
 	'''
 		Python: segmentIndex = vs.SetGradientSpotPosition(gradient, segmentIndex, position)
@@ -25491,7 +27386,7 @@ def SetHDef(
 
 def SetHeight(
 		h    , # HANDLE - Handle to object.            
-		value  # POINT  - The new height of the object.
+		value  # REAL   - The new height of the object.
 		):
 	'''
 		Python: vs.SetHeight(h, value)
@@ -25630,6 +27525,20 @@ def SetImagePopupSelectedItem(
 	pass
 
 
+def SetIsCurtainWall(
+		wall         , # HANDLE  - The wall.                                 
+		isCurtainWall  # BOOLEAN - Whether or not the wall is a curtain wall.
+		):
+	'''
+		Python: vs.SetIsCurtainWall(wall, isCurtainWall)
+		VectorScript: PROCEDURE SetIsCurtainWall(wall:HANDLE; isCurtainWall:BOOLEAN);
+		
+		Category: Objects - Walls
+		Sets whether or not a wall is a curtain wall.
+	'''
+	pass
+
+
 def SetItemClickable(
 		dialogID   , # LONGINT -  
 		componentID, # LONGINT -  
@@ -25726,7 +27635,7 @@ def SetLayerAmbientInfo(
 
 def SetLayerDeltaZOffset(
 		theWall          , # HANDLE - The wall.                                     
-		layerDeltaZOffset  # POINT  - The wall height's offset to the layer delta z.
+		layerDeltaZOffset  # REAL   - The wall height's offset to the layer delta z.
 		):
 	'''
 		Python: BOOLEAN = vs.SetLayerDeltaZOffset(theWall, layerDeltaZOffset)
@@ -25741,8 +27650,8 @@ def SetLayerDeltaZOffset(
 
 def SetLayerElevation(
 		h        , # HANDLE - Handle to the layer        
-		baseElev , # POINT  - Base elevation of the layer
-		thickness  # POINT  - Thickness of the layer     
+		baseElev , # REAL   - Base elevation of the layer
+		thickness  # REAL   - Thickness of the layer     
 		):
 	'''
 		Python: vs.SetLayerElevation(h, baseElev, thickness)
@@ -25799,7 +27708,7 @@ def SetLayerRenderMode(
 
 
 def SetLayerTransparency(
-		transparency  # POINT -  
+		transparency  # REAL -  
 		):
 	'''
 		Python: vs.SetLayerTransparency(transparency)
@@ -26340,7 +28249,7 @@ def SetLBNumericItemInfo(
 		itemIndex   , # INTEGER - the item index                                  
 		subItemIndex, # INTEGER - the subitem index                               
 		itemString  , # STRING  - the item text                                   
-		itemNumVal  , # POINT   - the item numeric value                          
+		itemNumVal  , # REAL    - the item numeric value                          
 		imageIndex    # INTEGER - the item image list index                       
 		):
 	'''
@@ -26409,7 +28318,7 @@ def SetLBSortColumn(
 def SetLevelElevation(
 		storyHandle , # HANDLE - The handle of the Story with the desired Story Level.        
 		levelType   , # STRING - The level type of the Story Level to change the elevation of.
-		newElevation  # POINT  - The new elevation for the Story Level.                       
+		newElevation  # REAL   - The new elevation for the Story Level.                       
 		):
 	'''
 		Python: BOOLEAN = vs.SetLevelElevation(storyHandle, levelType, newElevation)
@@ -26470,8 +28379,8 @@ def SetLightColorRGB(
 
 def SetLightDirection(
 		h         , # HANDLE - Handle to light.    
-		panAngleR , # POINT  - Pan angle of light. 
-		tiltAngleR  # POINT  - Tilt angle of light.
+		panAngleR , # REAL   - Pan angle of light. 
+		tiltAngleR  # REAL   - Tilt angle of light.
 		):
 	'''
 		Python: vs.SetLightDirection(h, panAngleR, tiltAngleR)
@@ -26518,7 +28427,7 @@ def SetLightInfo(
 def SetLightLocation(
 		h     , # HANDLE - Handle to light.                 
 		p     , # POINT  - X-Y coordinate location of light.
-		zValue  # POINT  - Elevation of light.              
+		zValue  # REAL   - Elevation of light.              
 		):
 	'''
 		Python: vs.SetLightLocation(h, p, zValue)
@@ -26667,7 +28576,7 @@ def SetLSByClass(
 
 def SetLScale(
 		h    , # HANDLE - Handle to layer.      
-		scale  # POINT  - Scale value for layer.
+		scale  # REAL   - Scale value for layer.
 		):
 	'''
 		Python: vs.SetLScale(h, scale)
@@ -26726,7 +28635,7 @@ def SetMarker(
 		start, # BOOLEAN - True if a marker is visible at start of object.                                                                                                                                                     
 		end  , # BOOLEAN - True if a marker is visible at end of object.                                                                                                                                                       
 		style, # INTEGER - Marker style:[[BR]]0 - Filled Arrow Marker[[BR]]1 - Empty Arrow Marker[[BR]]2 - Open Arrow Marker[[BR]]3 - Filled Ball Marker[[BR]]4 - Empty Ball Marker[[BR]]5 - Slash Marker[[BR]]6 - Cross Marker
-		size   # POINT   - Size of marker                                                                                                                                                                                      
+		size   # REAL    - Size of marker                                                                                                                                                                                      
 		):
 	'''
 		Python: vs.SetMarker(h, start, end, style, size)
@@ -26757,7 +28666,7 @@ def SetMarkerChoice(
 		index   , # INTEGER -  
 		style   , # INTEGER -  
 		angle   , # INTEGER -  
-		size      # POINT   -  
+		size      # REAL    -  
 		):
 	'''
 		Python: vs.SetMarkerChoice(dialogID, itemID, index, style, angle, size)
@@ -26778,10 +28687,10 @@ def SetMarkerValue(
 		itemID   , # LONGINT - ID of the marker popup control
 		style    , # INTEGER - Marker Style                  
 		angle    , # INTEGER - Marker Angle                  
-		length   , # POINT   - Marker Length (In Inches)     
-		width    , # POINT   - Marker Width (In Inches)      
+		length   , # REAL    - Marker Length (In Inches)     
+		width    , # REAL    - Marker Width (In Inches)      
 		basis    , # INTEGER - Marker Thickness Basis        
-		thickness  # POINT   - Marker Thickness              
+		thickness  # REAL    - Marker Thickness              
 		):
 	'''
 		Python: vs.SetMarkerValue(dialogID, itemID, style, angle, length, width, basis, thickness)
@@ -26865,7 +28774,7 @@ def SetName(
 def SetObjArrow(
 		obj  , # HANDLE  - The indicated object.                              
 		style, # INTEGER - The arrow style.                                   
-		size , # POINT   - The arrow size in inches measured in page space.   
+		size , # REAL    - The arrow size in inches measured in page space.   
 		angle, # INTEGER - The arrow angle (in degrees).                      
 		start, # BOOLEAN - Whether the start point of the object has an arrow.
 		end    # BOOLEAN - Whether the endpoint of the object has an arrow.   
@@ -26884,10 +28793,10 @@ def SetObjBeginningMarker(
 		object        , # HANDLE  - Handle to object.                                      
 		style         , # LONGINT - The marker style. (see comments for details)           
 		angle         , # INTEGER - The marker angle in degrees. (0 to 90)                 
-		size          , # POINT   - The marker size in page inches.                        
-		width         , # POINT   - The marker width in page inches.                       
+		size          , # REAL    - The marker size in page inches.                        
+		width         , # REAL    - The marker width in page inches.                       
 		thicknessBasis, # INTEGER - The marker thickness basis. ( see comments for details)
-		thickness     , # POINT   - The marker thickness.                                  
+		thickness     , # REAL    - The marker thickness.                                  
 		visibility      # BOOLEAN - The marker visibility.                                 
 		):
 	'''
@@ -26920,13 +28829,32 @@ def SetObjectAsCornerBreak(
 	return 'BOOLEAN' # True or False upon successfull setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.[[BR]]
 
 
+def SetObjectAsSpanBreak(
+		objH         , # HANDLE  - The handle of the object to update.                              
+		wallH        , # HANDLE  - The handle of the wall cotainting the object referenced in objH. 
+		spanWallBreak  # BOOLEAN - Boolean value to set or unset the span wall  flag for the object.
+		):
+	'''
+		Python: BOOLEAN = vs.SetObjectAsSpanBreak(objH, wallH, spanWallBreak)
+		VectorScript: FUNCTION SetObjectAsSpanBreak(objH:HANDLE; wallH:HANDLE; spanWallBreak:BOOLEAN) : BOOLEAN;
+		
+		Category: Objects - Walls
+		Sets an object's span wall flag in it's break record.
+		Setting the flag to TRUE will force the object the center of the wall and set the offset position of the break record to reflect this.
+		Setting the flag to FALSE will unset the span wall flag, but no further updating to the object will occur.
+		The oject (objH) must be contained in wall (wallH) for the setting to succeed.
+	'''
+	pass
+	return 'BOOLEAN' # True or False upon successfull setting of the flag[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
+
+
 def SetObjectStoryBound(
 		object        , # HANDLE  - The object.                                                                                                                                                                                                       
 		boundID       , # INTEGER - The identifier of the story bound.                                                                                                                                                                                
 		boundType     , # INTEGER - Bounding type: 0 - LayerZ; 1 - DefaultWallHeight; 2 - Story                                                                                                                                                       
 		boundStory    , # INTEGER - The story identified by 'boundType' = (2 - Story). If 'boundStory' = 0 then it is this story (the object's story); If 'boundStory' = 1 then it is the story above; If 'boundStory' = 2 then it is the story below.
 		layerLevelType, # STRING  - The layer type which defines this bound                                                                                                                                                                           
-		offset          # POINT   - The offset distance from the specified bound story                                                                                                                                                                
+		offset          # REAL    - The offset distance from the specified bound story                                                                                                                                                                
 		):
 	'''
 		Python: vs.SetObjectStoryBound(object, boundID, boundType, boundStory, layerLevelType, offset)
@@ -27018,7 +28946,7 @@ def SetObjectVariablePoint(
 def SetObjectVariableReal(
 		h    , # HANDLE  - Handle to object.      
 		index, # INTEGER - Object property index. 
-		value  # POINT   - New value for property.
+		value  # REAL    - New value for property.
 		):
 	'''
 		Python: vs.SetObjectVariableReal(h, index, value)
@@ -27056,10 +28984,10 @@ def SetObjectWallHeight(
 		
 		Category: Objects - Walls
 		Sets an object's height value in it's break record.
-		The oject (objH) must be contained in wall (wallH)  to succeed.
+		The object (objH) must be contained in wall (wallH)  to succeed.
 	'''
 	pass
-	return 'BOOLEAN' # True or False upon successfull setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
+	return 'BOOLEAN' # True or False upon successful setting of the flag.[[BR]][[BR]]False can occur for the following conditions:[[BR]]objH is null.[[BR]]wallH is null.[[BR]]objH is not contained in wallH.
 
 
 def SetObjectWallOffset(
@@ -27083,10 +29011,10 @@ def SetObjEndMarker(
 		object        , # HANDLE  - Handle to object.                                      
 		style         , # LONGINT - The marker style. (see comments for details)           
 		angle         , # INTEGER - The marker angle in degrees. (0 to 90)                 
-		size          , # POINT   - The marker size in page inches.                        
-		width         , # POINT   - The marker width in page inches.                       
+		size          , # REAL    - The marker size in page inches.                        
+		width         , # REAL    - The marker width in page inches.                       
 		thicknessBasis, # INTEGER - The marker thickness basis. ( see comments for details)
-		thickness     , # POINT   - The marker thickness.                                  
+		thickness     , # REAL    - The marker thickness.                                  
 		visibility      # BOOLEAN - The marker visibility.                                 
 		):
 	'''
@@ -27130,7 +29058,7 @@ def SetObjPropCharVS(
 
 def SetObjPropDoubleVS(
 		PropertyID , # LONGINT -  
-		PropertyVal  # POINT   -  
+		PropertyVal  # REAL    -  
 		):
 	'''
 		Python: BOOLEAN = vs.SetObjPropDoubleVS(PropertyID, PropertyVal)
@@ -27199,8 +29127,8 @@ def SetOpenGLPrefs(
 
 
 def SetOrigin(
-		x, # POINT - X-offset from current origin.
-		y  # POINT - Y-offset from current origin.
+		x, # REAL - X-offset from current origin.
+		y  # REAL - Y-offset from current origin.
 		):
 	'''
 		Python: vs.SetOrigin(x, y)
@@ -27215,8 +29143,8 @@ def SetOrigin(
 
 
 def SetOriginAbsolute(
-		xValue, # POINT - X coordinate of origin.
-		yValue  # POINT - Y coordinate of origin.
+		xValue, # REAL - X coordinate of origin.
+		yValue  # REAL - Y coordinate of origin.
 		):
 	'''
 		Python: vs.SetOriginAbsolute(xValue, yValue)
@@ -27370,6 +29298,20 @@ def SetPlanarRefIDToGround(
 	pass
 
 
+def SetPlanarTransform(
+		h  # HANDLE -  
+		):
+	'''
+		Python: HANDLE = vs.SetPlanarTransform(h)
+		VectorScript: FUNCTION SetPlanarTransform(h:HANDLE) : HANDLE;
+		
+		Category: Utility
+		Get planar matrix and transform polygon points.
+	'''
+	pass
+	return 'HANDLE' # 
+
+
 def SetPolyClosed(
 		polyHandle, # HANDLE  -  
 		isClosed    # BOOLEAN -  
@@ -27405,8 +29347,8 @@ def SetPolylineVertex(
 def SetPolyPt(
 		objectHd, # HANDLE  - Handle to polygon.         
 		index   , # INTEGER - Index of vertex.           
-		xR      , # POINT   - New X coordinate of vertex.
-		yR        # POINT   - New Y coordinate of vertex.
+		xR      , # REAL    - New X coordinate of vertex.
+		yR        # REAL    - New Y coordinate of vertex.
 		):
 	'''
 		Python: vs.SetPolyPt(objectHd, index, xR, yR)
@@ -27422,7 +29364,7 @@ def SetPolyPt3D(
 		objectHd, # HANDLE  - Handle to mesh or 3D poly object.
 		index   , # INTEGER - Index of vertex point.           
 		p       , # POINT   - New X-Y coordinates of vertex.   
-		zValue    # POINT   - New elevation of vertex.         
+		zValue    # REAL    - New elevation of vertex.         
 		):
 	'''
 		Python: vs.SetPolyPt3D(objectHd, index, p, zValue)
@@ -27478,7 +29420,7 @@ def SetPrefLongInt(
 
 def SetPrefReal(
 		index, # INTEGER - Preference item index.   
-		value  # POINT   - New value for preference.
+		value  # REAL    - New value for preference.
 		):
 	'''
 		Python: vs.SetPrefReal(index, value)
@@ -27640,6 +29582,33 @@ def SetRoofEdge(
 	pass
 
 
+def SetRoofPrefStyle(
+		roofStyle  # LONGINT - The ref number of the Roof Style to apply to the Roof Preferences. 0 for unstyled.
+		):
+	'''
+		Python: vs.SetRoofPrefStyle(roofStyle)
+		VectorScript: PROCEDURE SetRoofPrefStyle(roofStyle:LONGINT);
+		
+		Category: Objects - Architectural
+		Sets the Roof Style of the Roof Preferences.
+	'''
+	pass
+
+
+def SetRoofStyle(
+		roof     , # HANDLE  - The roof.      
+		roofStyle  # LONGINT - The Roof Style.
+		):
+	'''
+		Python: vs.SetRoofStyle(roof, roofStyle)
+		VectorScript: PROCEDURE SetRoofStyle(roof:HANDLE; roofStyle:LONGINT);
+		
+		Category: Objects - Roofs
+		Sets the Roof Style of a roof.
+	'''
+	pass
+
+
 def SetRot3D(
 		h        , # HANDLE            - Handle to 3D object.            
 		xAngle   , # REAL              - New X rotation angle.           
@@ -27662,8 +29631,8 @@ def SetRot3D(
 
 def SetRRDiam(
 		h    , # HANDLE -  
-		xDiam, # POINT  -  
-		yDiam  # POINT  -  
+		xDiam, # REAL   -  
+		yDiam  # REAL   -  
 		):
 	'''
 		Python: vs.SetRRDiam(h, xDiam, yDiam)
@@ -27691,7 +29660,7 @@ def SetSavedSetting(
 
 
 def SetScale(
-		actualSize  # POINT - Drawing scale factor.
+		actualSize  # REAL - Drawing scale factor.
 		):
 	'''
 		Python: vs.SetScale(actualSize)
@@ -27815,8 +29784,8 @@ def SetShedAttributes(
 
 def SetSheetLayerUserOrigin(
 		layerHandle, # HANDLE -  
-		xOrigin    , # POINT  -  
-		yOrigin      # POINT  -  
+		xOrigin    , # REAL   -  
+		yOrigin      # REAL   -  
 		):
 	'''
 		Python: BOOLEAN = vs.SetSheetLayerUserOrigin(layerHandle, xOrigin, yOrigin)
@@ -27960,7 +29929,7 @@ def SetSprdSortSumColumns(
 
 def SetSpreadAngle(
 		h           , # HANDLE - Handle to light.           
-		spreadAngleR  # POINT  - Beam spread angle of light.
+		spreadAngleR  # REAL   - Beam spread angle of light.
 		):
 	'''
 		Python: vs.SetSpreadAngle(h, spreadAngleR)
@@ -28011,7 +29980,7 @@ def SetStaticTextStyle(
 
 def SetStoryElevation(
 		story    , # HANDLE - The Story whose elevation is to be set.
-		elevation  # POINT  - The elevation to set the Story to.     
+		elevation  # REAL   - The elevation to set the Story to.     
 		):
 	'''
 		Python: BOOLEAN = vs.SetStoryElevation(story, elevation)
@@ -28117,7 +30086,7 @@ def SetTexBFeatureStart(
 
 def SetTexBitFeatureSize(
 		textureBitmap, # HANDLE - Handle to texture bitmap.
-		featureSize    # POINT  - Feature size value.      
+		featureSize    # REAL   - Feature size value.      
 		):
 	'''
 		Python: vs.SetTexBitFeatureSize(textureBitmap, featureSize)
@@ -28256,7 +30225,7 @@ def SetTexMapReal(
 		h       , # HANDLE  -  
 		partID  , # LONGINT -  
 		selector, # INTEGER -  
-		value     # POINT   -  
+		value     # REAL    -  
 		):
 	'''
 		Python: vs.SetTexMapReal(h, partID, selector, value)
@@ -28273,7 +30242,7 @@ def SetTexMapRealN(
 		texPartID , # LONGINT -                          
 		texLayerID, # LONGINT - 0 for base, >0 for decals
 		selector  , # INTEGER -                          
-		value       # POINT   -                          
+		value       # REAL    -                          
 		):
 	'''
 		Python: vs.SetTexMapRealN(obj, texPartID, texLayerID, selector, value)
@@ -28287,8 +30256,8 @@ def SetTexMapRealN(
 
 def SetTexSpace2DOffset(
 		textureSpace, # HANDLE - Handle to texture space.   
-		offsetU     , # POINT  - Texture offset U component.
-		offsetV       # POINT  - Texture offset V component.
+		offsetU     , # REAL   - Texture offset U component.
+		offsetV       # REAL   - Texture offset V component.
 		):
 	'''
 		Python: vs.SetTexSpace2DOffset(textureSpace, offsetU, offsetV)
@@ -28302,7 +30271,7 @@ def SetTexSpace2DOffset(
 
 def SetTexSpace2DRadius(
 		textureSpace, # HANDLE - Handle to texture space.
-		radius        # POINT  - Radius of texture space.
+		radius        # REAL   - Radius of texture space.
 		):
 	'''
 		Python: vs.SetTexSpace2DRadius(textureSpace, radius)
@@ -28316,7 +30285,7 @@ def SetTexSpace2DRadius(
 
 def SetTexSpace2DRot(
 		textureSpace   , # HANDLE - Handle to texture space.              
-		rotationDegrees  # POINT  - Rotation of texture space(in degrees).
+		rotationDegrees  # REAL   - Rotation of texture space(in degrees).
 		):
 	'''
 		Python: vs.SetTexSpace2DRot(textureSpace, rotationDegrees)
@@ -28330,7 +30299,7 @@ def SetTexSpace2DRot(
 
 def SetTexSpace2DScale(
 		textureSpace, # HANDLE - Handle to texture space.
-		scale         # POINT  - Scale for texture space.
+		scale         # REAL   - Scale for texture space.
 		):
 	'''
 		Python: vs.SetTexSpace2DScale(textureSpace, scale)
@@ -28372,9 +30341,9 @@ def SetTexSpaceKind(
 
 def SetTexSpaceOrientU(
 		textureSpace, # HANDLE - Handle to texture space.       
-		uXAxis      , # POINT  - Sets u-axis vector X component.
-		uYAxis      , # POINT  - Sets u-axis vector Y component.
-		uZAxis        # POINT  - Sets u-axis vector Z component.
+		uXAxis      , # REAL   - Sets u-axis vector X component.
+		uYAxis      , # REAL   - Sets u-axis vector Y component.
+		uZAxis        # REAL   - Sets u-axis vector Z component.
 		):
 	'''
 		Python: vs.SetTexSpaceOrientU(textureSpace, uXAxis, uYAxis, uZAxis)
@@ -28388,9 +30357,9 @@ def SetTexSpaceOrientU(
 
 def SetTexSpaceOrientV(
 		textureSpace, # HANDLE - Handle to texture space.       
-		vXAxis      , # POINT  - Sets v-axis vector X component.
-		vYAxis      , # POINT  - Sets v-axis vector Y component.
-		vZAxis        # POINT  - Sets v-axis vector Z component.
+		vXAxis      , # REAL   - Sets v-axis vector X component.
+		vYAxis      , # REAL   - Sets v-axis vector Y component.
+		vZAxis        # REAL   - Sets v-axis vector Z component.
 		):
 	'''
 		Python: vs.SetTexSpaceOrientV(textureSpace, vXAxis, vYAxis, vZAxis)
@@ -28404,9 +30373,9 @@ def SetTexSpaceOrientV(
 
 def SetTexSpaceOrientW(
 		textureSpace, # HANDLE - Handle to texture space.       
-		wXAxis      , # POINT  - Sets w-axis vector X component.
-		wYAxis      , # POINT  - Sets w-axis vector Y component.
-		wZAxis        # POINT  - Sets w-axis vector Z component.
+		wXAxis      , # REAL   - Sets w-axis vector X component.
+		wYAxis      , # REAL   - Sets w-axis vector Y component.
+		wZAxis        # REAL   - Sets w-axis vector Z component.
 		):
 	'''
 		Python: vs.SetTexSpaceOrientW(textureSpace, wXAxis, wYAxis, wZAxis)
@@ -28536,7 +30505,7 @@ def SetTextJustN(
 
 def SetTextLeading(
 		theText, # HANDLE - Handle to text object.        
-		leading  # POINT  - Custom leading value for text.
+		leading  # REAL   - Custom leading value for text.
 		):
 	'''
 		Python: vs.SetTextLeading(theText, leading)
@@ -28568,7 +30537,7 @@ def SetTextSize(
 		objectHd, # HANDLE  - Handle to text object.          
 		Start   , # INTEGER - Start position in text string.  
 		Count   , # INTEGER - Length of substring.            
-		Size      # POINT   - Text size setting for substring.
+		Size      # REAL    - Text size setting for substring.
 		):
 	'''
 		Python: vs.SetTextSize(objectHd, Start, Count, Size)
@@ -28716,8 +30685,8 @@ def SetTextureRefN(
 
 
 def SetTextureSet(
-		object    , # HANDLE  - The object.
-		textureSet  # INTEGER -            
+		object    , # HANDLE  - The object.                                                                                         
+		textureSet  # INTEGER -            The texture set.            0 - Object textures           1 - Component textures         
 		):
 	'''
 		Python: vs.SetTextureSet(object, textureSet)
@@ -28759,7 +30728,7 @@ def SetTextureShininess(
 
 def SetTextureSize(
 		texture, # HANDLE -  
-		newSize  # POINT  -  
+		newSize  # REAL   -  
 		):
 	'''
 		Python: vs.SetTextureSize(texture, newSize)
@@ -28866,7 +30835,7 @@ def SetTileBackgroundColor(
 		VectorScript: PROCEDURE SetTileBackgroundColor(tileHandle:HANDLE; backgroundColorR, backgroundColorG, backgroundColorB:LONGINT);
 		
 		Category: Document Attributes
-		Gets the specified tile resource's background color.
+		Sets the specified tile resource's background color.
 	'''
 	pass
 
@@ -28955,6 +30924,21 @@ def SetToolHelpMessage(
 	pass
 
 
+def SetToolWithMode(
+		toolIndex , # INTEGER - Vectorworks tool constant.       
+		modeGroup , # LONGINT - Index of the mode group.         
+		modeButton  # LONGINT - Index of the button in the group.
+		):
+	'''
+		Python: vs.SetToolWithMode(toolIndex, modeGroup, modeButton)
+		VectorScript: PROCEDURE SetToolWithMode(toolIndex:INTEGER; modeGroup:LONGINT; modeButton:LONGINT);
+		
+		Category: Utility
+		Activates the specified Vectorworks tool for use with specified tool mode. The tool remains selected as the active tool after use.
+	'''
+	pass
+
+
 def SetTopVisibleWS(
 		worksheet  # HANDLE - Handle to worksheet.
 		):
@@ -29010,7 +30994,7 @@ def SetUnits(
 		fraction  , # LONGINT - Stored accuracy for the document.         
 		display   , # LONGINT - Minimum display accuracy for the document.
 		format    , # INTEGER - Unit format style.                        
-		upi       , # POINT   - Units per inch.                           
+		upi       , # REAL    - Units per inch.                           
 		name      , # STRING  - Unit label for displayed values           
 		squareName  # STRING  - Squared unit label for displayed values.  
 		):
@@ -29104,9 +31088,9 @@ def SetView(
 def SetViewMatrix(
 		objectHandle, # HANDLE  -  
 		offset      , # POINT3D -  
-		rotationXAng, # POINT   -  
-		rotationYAng, # POINT   -  
-		rotationZAng  # POINT   -  
+		rotationXAng, # REAL    -  
+		rotationYAng, # REAL    -  
+		rotationZAng  # REAL    -  
 		):
 	'''
 		Python: BOOLEAN = vs.SetViewMatrix(objectHandle, offset, rotationXAng, rotationYAng, rotationZAng)
@@ -29427,7 +31411,7 @@ def SetWallCapsOffsets(
 
 
 def SetWallControlOffset(
-		offset  # POINT - New offset value.
+		offset  # REAL - New offset value.
 		):
 	'''
 		Python: vs.SetWallControlOffset(offset)
@@ -29570,7 +31554,7 @@ def SetWallWidth(
 
 def SetWidth(
 		h    , # HANDLE - Handle to object.           
-		value  # POINT  - The new width of the object.
+		value  # REAL   - The new width of the object.
 		):
 	'''
 		Python: vs.SetWidth(h, value)
@@ -29583,12 +31567,12 @@ def SetWidth(
 
 
 def SetWorkingPlane(
-		x        , # POINT - X-coordinate of the working plane
-		y        , # POINT - Y-coordinate of the working plane
-		z        , # POINT - Z-coordinate of the working plane
-		xRotation, # POINT - X-coordinate of the rotation     
-		yRotation, # POINT - Y-coordinate of the rotation     
-		zRotation  # POINT - Z-coordinate of the rotation     
+		x        , # REAL - X-coordinate of the working plane
+		y        , # REAL - Y-coordinate of the working plane
+		z        , # REAL - Z-coordinate of the working plane
+		xRotation, # REAL - X-coordinate of the rotation     
+		yRotation, # REAL - Y-coordinate of the rotation     
+		zRotation  # REAL - Z-coordinate of the rotation     
 		):
 	'''
 		Python: vs.SetWorkingPlane(x, y, z, xRotation, yRotation, zRotation)
@@ -30119,7 +32103,7 @@ def SetWSImgAngle(
 		leftColumn , # INTEGER - Left column of cell range. 
 		bottomRow  , # INTEGER - Bottom row of cell range.  
 		rightColumn, # INTEGER - Right column of cell range.
-		angle        # POINT   - The image angle.           
+		angle        # REAL    - The image angle.           
 		):
 	'''
 		Python: vs.SetWSImgAngle(worksheet, topRow, leftColumn, bottomRow, rightColumn, angle)
@@ -30173,7 +32157,7 @@ def SetWSImgScale(
 		leftColumn , # INTEGER - Left column of cell range. 
 		bottomRow  , # INTEGER - Bottom row of cell range.  
 		rightColumn, # INTEGER - Right column of cell range.
-		scale        # POINT   - The image scale.           
+		scale        # REAL    - The image scale.           
 		):
 	'''
 		Python: vs.SetWSImgScale(worksheet, topRow, leftColumn, bottomRow, rightColumn, scale)
@@ -30643,7 +32627,7 @@ def ShowWSDialog(
 
 
 def Sin(
-		v  # POINT - Numeric value for which to find the sine.
+		v  # REAL - Numeric value for which to find the sine.
 		):
 	'''
 		Python: REAL = vs.Sin(v)
@@ -30825,7 +32809,7 @@ def Space_CountAvailableZones():
 
 def Space_CreateSpace(
 		space      , # HANDLE -  
-		spaceHeight  # POINT  -  
+		spaceHeight  # REAL   -  
 		):
 	'''
 		Python: HANDLE = vs.Space_CreateSpace(space, spaceHeight)
@@ -30981,7 +32965,7 @@ def Space_Net3DBoundary(
 
 def Space_Set3DGrossHeightOffset(
 		space , # HANDLE  -  
-		offset, # POINT   -  
+		offset, # REAL    -  
 		selObj  # BOOLEAN -  
 		):
 	'''
@@ -30996,7 +32980,7 @@ def Space_Set3DGrossHeightOffset(
 
 def Space_Set3DNetHeightOffset(
 		space , # HANDLE  -  
-		offset, # POINT   -  
+		offset, # REAL    -  
 		selObj  # BOOLEAN -  
 		):
 	'''
@@ -31087,7 +33071,7 @@ def SprdSize(
 
 
 def SprdWidth(
-		width  # POINT - Width of worksheet cell (0-255 characters).
+		width  # REAL - Width of worksheet cell (0-255 characters).
 		):
 	'''
 		Python: vs.SprdWidth(width)
@@ -31100,7 +33084,7 @@ def SprdWidth(
 
 
 def Sqr(
-		v  # POINT - Value to square.
+		v  # REAL - Value to square.
 		):
 	'''
 		Python: REAL = vs.Sqr(v)
@@ -31114,7 +33098,7 @@ def Sqr(
 
 
 def Sqrt(
-		v  # POINT - Value for which to find the square root.
+		v  # REAL - Value for which to find the square root.
 		):
 	'''
 		Python: REAL = vs.Sqrt(v)
@@ -31146,10 +33130,10 @@ def Stipple(
 		shapeType     , # INTEGER -  
 		density       , # INTEGER -  
 		clipToProfile , # INTEGER -  
-		minSize       , # POINT   -  
-		maxSize       , # POINT   -  
-		minAspectRatio, # POINT   -  
-		maxAspectRatio, # POINT   -  
+		minSize       , # REAL    -  
+		maxSize       , # REAL    -  
+		minAspectRatio, # REAL    -  
+		maxAspectRatio, # REAL    -  
 		randomRotate    # BOOLEAN -  
 		):
 	'''
@@ -31284,7 +33268,7 @@ def SubString(
 def SubtractPolygon(
 		hMinuedPoly, # HANDLE -  
 		hSubtrahend, # HANDLE -  
-		dFuzz        # POINT  -  
+		dFuzz        # REAL   -  
 		):
 	'''
 		Python: HANDLE = vs.SubtractPolygon(hMinuedPoly, hSubtrahend, dFuzz)
@@ -31423,7 +33407,7 @@ def Tab(
 
 
 def Tan(
-		v  # POINT - Angle, in radians.
+		v  # REAL - Angle, in radians.
 		):
 	'''
 		Python: REAL = vs.Tan(v)
@@ -31503,7 +33487,7 @@ def TextJust(
 
 
 def TextLeading(
-		leading  # POINT - Custom leading value for document.
+		leading  # REAL - Custom leading value for document.
 		):
 	'''
 		Python: vs.TextLeading(leading)
@@ -31530,7 +33514,7 @@ def TextOrigin(
 
 
 def TextRotate(
-		Rotation  # POINT - Rotation angle, in degrees, for text.
+		Rotation  # REAL - Rotation angle, in degrees, for text.
 		):
 	'''
 		Python: vs.TextRotate(Rotation)
@@ -31543,7 +33527,7 @@ def TextRotate(
 
 
 def TextSize(
-		size  # POINT - Point size of text.
+		size  # REAL - Point size of text.
 		):
 	'''
 		Python: vs.TextSize(size)
@@ -31704,7 +33688,7 @@ def TrueTypeToPoly(
 
 
 def Trunc(
-		v  # POINT - Real value to truncate.
+		v  # REAL - Real value to truncate.
 		):
 	'''
 		Python: LONGINT = vs.Trunc(v)
@@ -32017,7 +34001,7 @@ def Volume(
 
 
 def Volume2Str(
-		value  # POINT - The volume value.
+		value  # REAL - The volume value.
 		):
 	'''
 		Python: STRING = vs.Volume2Str(value)
@@ -32294,6 +34278,21 @@ def vsoInsertWidget(
 	'''
 	pass
 	return 'BOOLEAN' # 
+
+
+def vsoParamName2Index(
+		formatName   , # STRING -  
+		paramUnivName  # STRING -  
+		):
+	'''
+		Python: INTEGER = vs.vsoParamName2Index(formatName, paramUnivName)
+		VectorScript: FUNCTION vsoParamName2Index(formatName:STRING; paramUnivName:STRING) : INTEGER;
+		
+		Category: Object Events
+		Return the zero-based index of a prameter specified by its universal name. Return -1 if not found.
+	'''
+	pass
+	return 'INTEGER' # 
 
 
 def vsoPrmName2WidgetID(
@@ -32588,6 +34587,20 @@ def vsoWidgetPopupClear(
 	pass
 
 
+def vsoWidgetPopupEnergy(
+		widgetID, # LONGINT -  
+		dataType  # INTEGER -  
+		):
+	'''
+		Python: vs.vsoWidgetPopupEnergy(widgetID, dataType)
+		VectorScript: PROCEDURE vsoWidgetPopupEnergy(widgetID:LONGINT; dataType:INTEGER);
+		
+		Category: Object Events
+		Attach a widget for energy data to appear in the Object Info Palette.
+	'''
+	pass
+
+
 def vsoWidgetPopupGet(
 		widgetID, # LONGINT -  
 		index     # LONGINT -  
@@ -32755,11 +34768,24 @@ def vstAddRadioMode(
 	pass
 
 
+def vstAddResPDMenuMode(
+		label, # STRING -  
+		value  # STRING -  
+		):
+	'''
+		Python: vs.vstAddResPDMenuMode(label, value)
+		VectorScript: PROCEDURE vstAddResPDMenuMode(label:STRING; value:STRING);
+		
+		Category: Tool Events
+	'''
+	pass
+
+
 def vstCustomProcNNA(
 		inEvent   , # LONGINT -  
 		inMode    , # LONGINT -  
-		inDiameter, # POINT   -  
-		inSpacing   # POINT   -  
+		inDiameter, # REAL    -  
+		inSpacing   # REAL    -  
 		):
 	'''
 		Python: (BOOLEAN, outEvtResult) = vs.vstCustomProcNNA(inEvent, inMode, inDiameter, inSpacing)
@@ -32793,12 +34819,12 @@ def vstDefault3DToolDraw():
 
 
 def vstDrawCoordArcN(
-		ptLeftTopX, # POINT -  
-		ptLeftTopY, # POINT -  
-		ptRghtBotX, # POINT -  
-		ptRghtBotY, # POINT -  
-		startAngle, # POINT -  
-		sweepAngle  # POINT -  
+		ptLeftTopX, # REAL -  
+		ptLeftTopY, # REAL -  
+		ptRghtBotX, # REAL -  
+		ptRghtBotY, # REAL -  
+		startAngle, # REAL -  
+		sweepAngle  # REAL -  
 		):
 	'''
 		Python: vs.vstDrawCoordArcN(ptLeftTopX, ptLeftTopY, ptRghtBotX, ptRghtBotY, startAngle, sweepAngle)
@@ -32810,10 +34836,10 @@ def vstDrawCoordArcN(
 
 
 def vstDrawCoordEllipse(
-		ptLeftTopX, # POINT -  
-		ptLeftTopY, # POINT -  
-		ptRghtBotX, # POINT -  
-		ptRghtBotY  # POINT -  
+		ptLeftTopX, # REAL -  
+		ptLeftTopY, # REAL -  
+		ptRghtBotX, # REAL -  
+		ptRghtBotY  # REAL -  
 		):
 	'''
 		Python: vs.vstDrawCoordEllipse(ptLeftTopX, ptLeftTopY, ptRghtBotX, ptRghtBotY)
@@ -32825,10 +34851,10 @@ def vstDrawCoordEllipse(
 
 
 def vstDrawCoordLine(
-		pt1X, # POINT -  
-		pt1Y, # POINT -  
-		pt2X, # POINT -  
-		pt2Y  # POINT -  
+		pt1X, # REAL -  
+		pt1Y, # REAL -  
+		pt2X, # REAL -  
+		pt2Y  # REAL -  
 		):
 	'''
 		Python: vs.vstDrawCoordLine(pt1X, pt1Y, pt2X, pt2Y)
@@ -32853,10 +34879,10 @@ def vstDrawCoordLine3D(
 
 
 def vstDrawCoordLineN(
-		pt1X      , # POINT   -  
-		pt1Y      , # POINT   -  
-		pt2X      , # POINT   -  
-		pt2Y      , # POINT   -  
+		pt1X      , # REAL    -  
+		pt1Y      , # REAL    -  
+		pt2X      , # REAL    -  
+		pt2Y      , # REAL    -  
 		planeRefID  # LONGINT -  
 		):
 	'''
@@ -32869,10 +34895,10 @@ def vstDrawCoordLineN(
 
 
 def vstDrawCoordLineN3D(
-		pt1X      , # POINT   -  
-		pt1Y      , # POINT   -  
-		pt2X      , # POINT   -  
-		pt2Y      , # POINT   -  
+		pt1X      , # REAL    -  
+		pt1Y      , # REAL    -  
+		pt2X      , # REAL    -  
+		pt2Y      , # REAL    -  
 		planeRefID  # LONGINT -  
 		):
 	'''
@@ -32885,10 +34911,10 @@ def vstDrawCoordLineN3D(
 
 
 def vstDrawCoordRect(
-		ptLeftTopX, # POINT -  
-		ptLeftTopY, # POINT -  
-		ptRghtBotX, # POINT -  
-		ptRghtBotY  # POINT -  
+		ptLeftTopX, # REAL -  
+		ptLeftTopY, # REAL -  
+		ptRghtBotX, # REAL -  
+		ptRghtBotY  # REAL -  
 		):
 	'''
 		Python: vs.vstDrawCoordRect(ptLeftTopX, ptLeftTopY, ptRghtBotX, ptRghtBotY)
@@ -33153,6 +35179,35 @@ def vstNumPts(
 	return ( 0 )
 
 
+def vstResPDMenuInit(
+		uniqueID , # STRING  -  
+		modeGroup, # INTEGER -  
+		emptyMsg   # STRING  -  
+		):
+	'''
+		Python: vs.vstResPDMenuInit(uniqueID, modeGroup, emptyMsg)
+		VectorScript: PROCEDURE vstResPDMenuInit(uniqueID:STRING; modeGroup:INTEGER; emptyMsg:STRING);
+		
+		Category: Tool Events
+		Use this call during tool setup. Initialize a tool resource popup created by vstAddResPDMenuMode and initialized by the ResList_* calls of the uniqueID identifying the resource list data.
+	'''
+	pass
+
+
+def vstResPDMenuShow(
+		uniqueID , # STRING  -  
+		modeGroup  # INTEGER -  
+		):
+	'''
+		Python: vs.vstResPDMenuShow(uniqueID, modeGroup)
+		VectorScript: PROCEDURE vstResPDMenuShow(uniqueID:STRING; modeGroup:INTEGER);
+		
+		Category: Tool Events
+		Use this call during tool mode bar event. Show a tool resource popup created by vstAddResPDMenuMode and initialized by the ResList_* calls of the uniqueID identifying the resource list data.
+	'''
+	pass
+
+
 def vstRestoreWPHybridTool(
 		message1  # LONGINT -  
 		):
@@ -33205,7 +35260,7 @@ def vstSetDataLong(
 
 def vstSetDataReal(
 		inDataID , # LONGINT -  
-		inDataVal  # POINT   -  
+		inDataVal  # REAL    -  
 		):
 	'''
 		Python: result = vs.vstSetDataReal(inDataID, inDataVal)
@@ -33334,8 +35389,8 @@ def vstSetWPHybridTool(
 
 
 def VWCoordToGeog(
-		inCoordX, # POINT -  
-		inCoordY  # POINT -  
+		inCoordX, # REAL -  
+		inCoordY  # REAL -  
 		):
 	'''
 		Python: (BOOLEAN, outLat, outLon) = vs.VWCoordToGeog(inCoordX, inCoordY)
@@ -33603,6 +35658,116 @@ def WriteXMLMemory(
 	pass
 	return ( 0       , # 
 	         'string' )
+
+
+def WSScript_GetObject():
+	'''
+		Python: HANDLE = vs.WSScript_GetObject()
+		VectorScript: FUNCTION WSScript_GetObject : HANDLE;
+		
+		Category: Worksheets
+		This function must be used inside a worksheet script called by 'RunScript' worksheet formula.
+	'''
+	pass
+	return 'HANDLE' # Returns the object currently being processed by the worksheet criteria at the time of the script execution.
+
+
+def WSScript_GetPrmInt(
+		paramIndex  # INTEGER - Zero based index of the parameter passed to the RunScript worksheet function.
+		):
+	'''
+		Python: INTEGER = vs.WSScript_GetPrmInt(paramIndex)
+		VectorScript: FUNCTION WSScript_GetPrmInt(paramIndex:INTEGER) : INTEGER;
+		
+		Category: Worksheets
+		This function must be used inside a worksheet script called by 'RunScript' worksheet formula.
+	'''
+	pass
+	return 'INTEGER' # Returns the integer value of the specified parameter.
+
+
+def WSScript_GetPrmReal(
+		paramIndex  # INTEGER - Zero based index of the parameter passed to the RunScript worksheet function.
+		):
+	'''
+		Python: REAL = vs.WSScript_GetPrmReal(paramIndex)
+		VectorScript: FUNCTION WSScript_GetPrmReal(paramIndex:INTEGER) : REAL;
+		
+		Category: Worksheets
+		This function must be used inside a worksheet script called by 'RunScript' worksheet formula.
+	'''
+	pass
+	return 'REAL' # Returns the real value of the specified parameter.
+
+
+def WSScript_GetPrmStr(
+		paramIndex  # INTEGER - Zero based index of the parameter passed to the RunScript worksheet function.
+		):
+	'''
+		Python: STRING = vs.WSScript_GetPrmStr(paramIndex)
+		VectorScript: FUNCTION WSScript_GetPrmStr(paramIndex:INTEGER) : STRING;
+		
+		Category: Worksheets
+		This function must be used inside a worksheet script called by 'RunScript' worksheet formula.
+	'''
+	pass
+	return 'STRING' # Returns the string value of the specified parameter.
+
+
+def WSScript_SetResImage(
+		h  # HANDLE - The handle of the object that will be used for image in the cell.
+		):
+	'''
+		Python: vs.WSScript_SetResImage(h)
+		VectorScript: PROCEDURE WSScript_SetResImage(h:HANDLE);
+		
+		Category: Worksheets
+		This function must be used inside a worksheet script called by 'RunScript' worksheet formula.
+		Set the result of the worksheet script to the object to be used as image in the cell.
+	'''
+	pass
+
+
+def WSScript_SetResInt(
+		resultCellValue  # INTEGER - The value for the result of the worksheet script called by the RunScript worksheet function.
+		):
+	'''
+		Python: vs.WSScript_SetResInt(resultCellValue)
+		VectorScript: PROCEDURE WSScript_SetResInt(resultCellValue:INTEGER);
+		
+		Category: Worksheets
+		This function must be used inside a worksheet script called by 'RunScript' worksheet formula.
+		Set the result of the worksheet script to the integer value specified.
+	'''
+	pass
+
+
+def WSScript_SetResReal(
+		resultCellValue  # REAL - The value for the result of the worksheet script called by the RunScript worksheet function.
+		):
+	'''
+		Python: vs.WSScript_SetResReal(resultCellValue)
+		VectorScript: PROCEDURE WSScript_SetResReal(resultCellValue:REAL);
+		
+		Category: Worksheets
+		This function must be used inside a worksheet script called by 'RunScript' worksheet formula.
+		Set the result of the worksheet script to the real value specified.
+	'''
+	pass
+
+
+def WSScript_SetResStr(
+		resultCellValue  # DYNARRAY[] of CHAR - The value for the result of the worksheet script called by the RunScript worksheet function.
+		):
+	'''
+		Python: vs.WSScript_SetResStr(resultCellValue)
+		VectorScript: PROCEDURE WSScript_SetResStr(resultCellValue:DYNARRAY of CHAR);
+		
+		Category: Worksheets
+		This function must be used inside a worksheet script called by 'RunScript' worksheet formula.
+		Set the result of the worksheet script to the string value specified.
+	'''
+	pass
 
 
 def XCenter(
