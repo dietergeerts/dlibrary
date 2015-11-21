@@ -289,6 +289,7 @@ class AbstractActivePlugInDrawingXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 class Security(object):
     """
     Decorator to secure a function based on the dongle and VW version running.
+    Make sure you use this as the topmost decorator in order for the check to be the first thing that will happen!
     """
 
     @staticmethod
