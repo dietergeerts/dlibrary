@@ -143,6 +143,7 @@ class ActivePlugInEvent(object):
     VSO_ON_RESET = 3           # Args: ResetArgs, if functionality is turned on!
     VSO_ON_INITIALIZATION = 5  # Args: -
     VSO_ON_DOUBLE_CLICK = 7    # Args: -; Will only happen when double click behaviour is set to custom dialog!
+    VSO_ON_WIDGET_CLICK = 35   # Args: widget_id
     VSO_ON_ADD_STATE = 44      # Args: widget_id
 
 
@@ -203,7 +204,7 @@ class ActivePlugInEvents(object):
     def __execute_event_handler(self, event_handler: callable, event: int, widget_id: int, args: AbstractResetArgs):
         if self.__with_reset_args and event == ActivePlugInEvent.VSO_ON_RESET:
             event_handler(args)
-        elif event == ActivePlugInEvent.VSO_ON_ADD_STATE:
+        elif event == ActivePlugInEvent.VSO_ON_ADD_STATE or event == ActivePlugInEvent.VSO_ON_WIDGET_CLICK:
             event_handler(widget_id)
         else:
             event_handler()
@@ -221,9 +222,24 @@ class ParameterWidget(AbstractWidget):
     def __init__(self, parameter: str):
         self.__parameter = parameter
 
-    def add(self, widget_id: int) -> bool:
+    def add(self, widget_id: int):
         if not vs.vsoAddParamWidget(widget_id, self.__parameter, ''):  # '' for using parameter alternate name.
-            raise VSException('vsoAddParamWidget')
+            raise VSException('vsoAddParamWidget(%s, %s, '')' % (widget_id, self.__parameter))
+
+
+class ButtonWidget(AbstractWidget):
+
+    def __init__(self, text: str, on_click: callable):
+        self.__text = text
+        self.__on_click = on_click
+
+    @property
+    def on_click(self) -> callable:
+        return self.__on_click
+
+    def add(self, widget_id: int):
+        if not vs.vsoInsertWidget(widget_id, 12, widget_id, self.__text, 0):  # 12 = Button.
+            raise VSException('vsoAddWidget(%s, 12, %s)' % (widget_id, self.__text))
 
 
 class DoubleClickBehaviour(object):
@@ -246,7 +262,9 @@ class ActivePlugInSetup(object):
         self.__double_click_behaviour = double_click_behaviour
 
     def __call__(self, function: callable) -> callable:
-        @ActivePlugInEvents(events={ActivePlugInEvent.VSO_ON_INITIALIZATION: self.__on_initialization})
+        @ActivePlugInEvents(events={
+            ActivePlugInEvent.VSO_ON_INITIALIZATION: self.__on_initialization,
+            ActivePlugInEvent.VSO_ON_WIDGET_CLICK: self.__on_widget_click})
         def setup_active_plugin_function(*args, **kwargs):
             function(*args, **kwargs)
         return setup_active_plugin_function
@@ -264,6 +282,11 @@ class ActivePlugInSetup(object):
     def __init_double_click(self):
         if not vs.SetObjPropCharVS(3, self.__double_click_behaviour):  # 3 = Double click behavior!
             raise VSException('SetObjPropCharVS(3, %s)' % self.__double_click_behaviour)
+
+    def __on_widget_click(self, widget_id):
+        if self.__info_pallet is not None:
+            widget = self.__info_pallet[widget_id - 1]  # We enumerated from 1 at initialization of widgets!
+            widget.on_click() if isinstance(widget, ButtonWidget) else None
 
 
 class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
