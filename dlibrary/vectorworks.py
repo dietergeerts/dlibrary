@@ -142,6 +142,7 @@ class ParameterChangedResetArgs(AbstractResetArgs):
 class ActivePlugInEvent(object):
     VSO_ON_RESET = 3           # Args: ResetArgs, if functionality is turned on!
     VSO_ON_INITIALIZATION = 5  # Args: -
+    VSO_ON_DOUBLE_CLICK = 7    # Args: -; Will only happen when double click behaviour is set to custom dialog!
     VSO_ON_ADD_STATE = 44      # Args: widget_id
 
 
@@ -225,16 +226,24 @@ class ParameterWidget(AbstractWidget):
             raise VSException('vsoAddParamWidget')
 
 
+class DoubleClickBehaviour(object):
+    DEFAULT = 0            # The default behaviour for the object type will be used.
+    CUSTOM_EVENT = 1       # The VSO_ON_DOUBLE_CLICK event will be thrown.
+    PROPERTIES_DIALOG = 2  # Is actually the object info palette that will be shown.
+    RESHAPE_MODE = 3       # Go into reshape mode, practical for path shaped objects.
+
+
 class ActivePlugInSetup(object):
     """
     Decorator to setup the active plugin with event-enabled setup things like custom info pallet.
     """
 
-    def __init__(self, info_pallet: list=None):
+    def __init__(self, info_pallet: list=None, double_click_behaviour: int=DoubleClickBehaviour.DEFAULT):
         """
         :type info_pallet: list[AbstractWidget]
         """
         self.__info_pallet = info_pallet
+        self.__double_click_behaviour = double_click_behaviour
 
     def __call__(self, function: callable) -> callable:
         @ActivePlugInEvents(events={ActivePlugInEvent.VSO_ON_INITIALIZATION: self.__on_initialization})
@@ -243,9 +252,18 @@ class ActivePlugInSetup(object):
         return setup_active_plugin_function
 
     def __on_initialization(self):
-        if self.__info_pallet is not None and vs.SetObjPropVS(8, True):  # 8 = Custom Info Palette property!
-            for index, widget in enumerate(self.__info_pallet, 1):
-                widget.add(index)
+        self.__init_info_pallet() if self.__info_pallet is not None else None
+        self.__init_double_click() if self.__double_click_behaviour is not DoubleClickBehaviour.DEFAULT else None
+
+    def __init_info_pallet(self):
+        if not vs.SetObjPropVS(8, True):  # 8 = Custom Info Palette property!
+            raise VSException('SetObjPropVS(8, True)')
+        for index, widget in enumerate(self.__info_pallet, 1):
+            widget.add(index)
+
+    def __init_double_click(self):
+        if not vs.SetObjPropCharVS(3, self.__double_click_behaviour):  # 3 = Double click behavior!
+            raise VSException('SetObjPropCharVS(3, %s)' % self.__double_click_behaviour)
 
 
 class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
