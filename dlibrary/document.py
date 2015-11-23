@@ -1,7 +1,7 @@
 """Used for all document related stuff, like units, layers, ....
 """
 
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 from dlibrary.utility import SingletonMeta, ObservableList
 import vs
 
@@ -178,6 +178,12 @@ class Clazz(object):
 
 
 class AbstractResource(object, metaclass=ABCMeta):
+
+    @staticmethod
+    @abstractmethod
+    def create_placeholder(name: str):
+        pass
+
     def __init__(self, handle, name: str):
         self.__handle = handle
         self.__name = name
@@ -192,10 +198,12 @@ class AbstractResource(object, metaclass=ABCMeta):
 
 
 class AbstractResourceList(object, metaclass=ABCMeta):
+
     def __init__(self, resource_type: int, abstract_resource: callable):
+        self.__resource_type = resource_type
         self.__abstract_resource = abstract_resource
         self.__resource_names = ObservableList()
-        self.__resource_list, count = vs.BuildResourceList(resource_type, 0, '')
+        self.__resource_list_id, count = vs.BuildResourceList(resource_type, 0, '')
         resources_to_delete = list()
         for index in range(count):
             handle = self.__get_resource(index)
@@ -207,6 +215,14 @@ class AbstractResourceList(object, metaclass=ABCMeta):
                 self.__resource_names.append(name)
         for index in resources_to_delete:
             self.__remove_resource(index)
+
+    @property
+    def id(self) -> int:
+        return self.__resource_list_id
+
+    @property
+    def type(self) -> int:
+        return self.__resource_type
 
     @property
     def names(self) -> ObservableList:
@@ -222,25 +238,57 @@ class AbstractResourceList(object, metaclass=ABCMeta):
             return self.__abstract_resource(handle, name)
 
     def __get_resource(self, index) -> object:
-        return vs.GetResourceFromList(self.__resource_list, index + 1)
+        return vs.GetResourceFromList(self.__resource_list_id, index + 1)
 
     def __get_resource_name(self, index) -> str:
-        return vs.GetNameFromResourceList(self.__resource_list, index + 1)
+        return vs.GetNameFromResourceList(self.__resource_list_id, index + 1)
 
     def __import_resource(self, index) -> object:
-        handle = vs.ImportResToCurFileN(self.__resource_list, index + 1, lambda s: 1)  # 1 >> Replace if needed!
-        self.__resource_names[index] = vs.GetActualNameFromResourceList(self.__resource_list, index + 1)
+        handle = vs.ImportResToCurFileN(self.__resource_list_id, index + 1, lambda s: 1)  # 1 >> Replace if needed!
+        self.__resource_names[index] = vs.GetActualNameFromResourceList(self.__resource_list_id, index + 1)
         return handle
 
     def __remove_resource(self, index):
-        vs.DeleteResourceFromList(self.__resource_list, index + 1)
+        vs.DeleteResourceFromList(self.__resource_list_id, index + 1)
+
+    def get_abstract_resource_clazz(self) -> callable:
+        return self.__abstract_resource
 
 
 class DefinitionTypeEnum(object):
+    SYMBOL_DEFINITION = 16
     RECORD_DEFINITION = 47
 
 
+class SymbolDefinition(AbstractResource):
+
+    @staticmethod
+    def create_placeholder(name: str):
+        if vs.GetObject(name) is None:
+            vs.BeginSym(name)
+            vs.EndSym()
+            vs.SetObjectVariableBoolean(vs.GetObject(name), 900, False)
+        return SymbolDefinition(vs.GetObject(name), name)
+
+    def __init__(self, handle, name: str):
+        super().__init__(handle, name)
+
+
+class SymbolDefinitionResourceList(AbstractResourceList):
+
+    def __init__(self):
+        super().__init__(DefinitionTypeEnum.SYMBOL_DEFINITION, SymbolDefinition)
+
+
 class RecordDefinition(AbstractResource):
+
+    @staticmethod
+    def create_placeholder(name: str):
+        if vs.GetObject(name) is None:
+            vs.NewField(name, 'placeholder', '', 4, 0)
+            vs.SetObjectVariableBoolean(vs.GetObject(name), 900, False)
+        return RecordDefinition(vs.GetObject(name), name)
+
     def __init__(self, handle, name: str):
         super().__init__(handle, name)
         self.__fields = ObservableList(vs.GetFldName(self._handle, index)
@@ -252,5 +300,6 @@ class RecordDefinition(AbstractResource):
 
 
 class RecordDefinitionResourceList(AbstractResourceList):
+
     def __init__(self):
         super().__init__(DefinitionTypeEnum.RECORD_DEFINITION, RecordDefinition)

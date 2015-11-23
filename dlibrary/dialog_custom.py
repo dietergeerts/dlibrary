@@ -573,16 +573,17 @@ class AbstractListControl(AbstractControl, metaclass=ABCMeta):
 
     def _delete_selected(self):
         if vs.AlertQuestion('Are you sure you want to delete the selected items?', '', 0, 'Ok', 'Cancel', '', '') == 1:
-            max_index = max(self.__items_observable.index(item) for item in self.__selected_items_observable)
-            self.__items_observable.suspend_events()
-            for item in self.__selected_items_observable:
-                self.__items_observable.remove(item)
-            self.__items_observable.resume_events()
-            # Build-in VW lists will select a new item if possible, mostly the highest selected index!
-            # We will mimic this behavior for consistency.
-            length = len(self.__items_observable)
-            if length > 0:
-                self._change_selection((self.__items_observable[max_index if max_index < length else length - 1],))
+            if len(self.__selected_items_observable) > 0:
+                max_index = max(self.__items_observable.index(item) for item in self.__selected_items_observable)
+                self.__items_observable.suspend_events()
+                for item in self.__selected_items_observable:
+                    self.__items_observable.remove(item)
+                self.__items_observable.resume_events()
+                # Build-in VW lists will select a new item if possible, mostly the highest selected index!
+                # We will mimic this behavior for consistency.
+                length = len(self.__items_observable)
+                if length > 0:
+                    self._change_selection((self.__items_observable[max_index if max_index < length else length - 1],))
 
 
 @Align(mode=AlignMode.SHIFT)
@@ -1009,24 +1010,25 @@ class ListBrowser(AbstractListControl):
         self._change_selection(tuple(self._items[index] for index in sorted(selected_indexes)))
 
 
-@Align(mode={Layout.VERTICAL: AlignMode.RESIZE})
-class PullDownMenu(AbstractFieldControl):
+class AbstractChoiceControl(AbstractFieldControl, metaclass=ABCMeta):
 
     def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
-                 data_context: str, data_disabled: str, data_available_items: str, data_value: str, data_items: str,
-                 width: int):
+                 data_context: str, data_disabled: str, data_available_items: str, data_value: str, data_items: str):
         super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled, data_value,
                          data_items)
         self.__data_available_items = data_available_items
         self.__available_items_resources_list = None
         """@type: AbstractResourceList"""
-        self.__available_items_observable = None
+        self._available_items_observable = None
         """@type: ObservableList"""
         self.__item_multi_value = 0
         self.__item_none_existent = 0
         self.__item_none_existent_value = None
-        vs.CreatePullDownMenu(dialog_id, control_id, width)
         self.__init_observables()
+
+    @property
+    def _available_items_resources_list(self) -> AbstractResourceList:
+        return self.__available_items_resources_list
 
     def _update(self):
         self.__reset_observables()
@@ -1039,68 +1041,86 @@ class PullDownMenu(AbstractFieldControl):
         available_items = self.getattr(self.__data_available_items, ObservableList())
         if isinstance(available_items, ObservableList):
             self.__available_items_resources_list = None
-            self.__available_items_observable = available_items
+            self._available_items_observable = available_items
         elif isinstance(available_items, AbstractResourceList):
             self.__available_items_resources_list = available_items
-            self.__available_items_observable = available_items.names
+            self._available_items_observable = available_items.names
         """@type: ObservableList"""
-        self.__available_items_observable.list_changed_event.subscribe(self.__on_available_items_changed)
-        self.__available_items_observable.list_reordered_event.subscribe(self.__on_available_items_reordered)
+        self._available_items_observable.list_changed_event.subscribe(self.__on_available_items_changed)
+        self._available_items_observable.list_reordered_event.subscribe(self.__on_available_items_reordered)
         self.__setup_control()
 
     def __reset_observables(self):
-        self.__available_items_observable.list_changed_event.unsubscribe(self.__on_available_items_changed)
-        self.__available_items_observable.list_reordered_event.unsubscribe(self.__on_available_items_reordered)
+        self._available_items_observable.list_changed_event.unsubscribe(self.__on_available_items_changed)
+        self._available_items_observable.list_reordered_event.unsubscribe(self.__on_available_items_reordered)
         self.__clear_control()
         self.__setup_observables()
 
-    # noinspection PyUnusedLocal
     def __on_available_items_changed(self, removed: dict, added: dict):
         for index in sorted(removed.keys(), reverse=True):
-            self.__remove_item(index + self.__item_multi_value + self.__item_none_existent)
+            self._remove_item(index + self.__item_multi_value + self.__item_none_existent)
         for index in sorted(added.keys(), reverse=False):
-            self.__add_item(added[index], index + self.__item_multi_value + self.__item_none_existent)
+            self._add_item(added[index], index + self.__item_multi_value + self.__item_none_existent)
         self._set_control_value(self._value)
 
+    # noinspection PyUnusedLocal
     def __on_available_items_reordered(self):
         self.__clear_control()
         self.__setup_control()
         self._set_control_value(self._value)
 
     def __setup_control(self):
-        for index, item in enumerate(self.__available_items_observable):
-            self.__add_item(item, index)
+        for index, item in enumerate(self._available_items_observable):
+            self._add_item(item, index)
 
     def __clear_control(self):
         self.__item_multi_value = 0
         self.__item_none_existent = 0
         self.__item_none_existent_value = None
         for index in range(vs.GetChoiceCount(self._dialog_id, self.control_id) - 1, -1, -1):
-            self.__remove_item(index)
+            self._remove_item(index)
 
-    def __add_item(self, item, index):
-        vs.AddChoice(self._dialog_id, self.control_id, str(item), index)
+    @abstractmethod
+    def _get_control_item_count(self):
+        pass
+
+    @abstractmethod
+    def _add_item(self, item, index: int):
+        pass
+
+    @abstractmethod
+    def _add_special_item(self, item: str, index: int):
+        pass
 
     def __add_item_multi_value(self):
         self.__item_multi_value = 1
-        self.__add_item(self._multi_value_constant, 0)
+        self._add_special_item(self._multi_value_constant, 0)
 
     def __add_item_none_existent(self, value):
         self.__item_none_existent = 1
         self.__item_none_existent_value = value
-        self.__add_item(str(value) + ' (None existent)', 0)
+        self._add_special_item(self._get_none_existent_value(str(value)), 0)
 
-    def __remove_item(self, index):
-        vs.RemoveChoice(self._dialog_id, self.control_id, index)
+    @abstractmethod
+    def _get_none_existent_value(self, value: str) -> str:
+        pass
+
+    @abstractmethod
+    def _remove_item(self, index: int):
+        pass
+
+    @abstractmethod
+    def _remove_special_item(self, index: int):
+        pass
 
     def __remove_item_multi_value(self):
         self.__item_multi_value = 0
-        self.__remove_item(0)
+        self._remove_special_item(0)
 
     def __remove_item_none_existent(self):
         self.__item_none_existent = 0
         self.__item_none_existent_value = None
-        self.__remove_item(0)
+        self._remove_special_item(0)
 
     def __try_add_special_items(self, new_value):
         if self.__item_multi_value == 0 and new_value == self._multi_value_constant:
@@ -1115,17 +1135,21 @@ class PullDownMenu(AbstractFieldControl):
             self.__remove_item_none_existent()
 
     def _set_control_value(self, value):
-        index = self.__available_items_observable.index(value)
+        index = self._available_items_observable.index(value)
         self.__try_remove_special_items(value)
         if index == -1 and value is not None:
             self.__try_add_special_items(value)
         index += self.__item_multi_value + self.__item_none_existent
-        vs.SelectChoice(self._dialog_id, self.control_id, index, True)
+        self._set_control_choice(index)
+
+    @abstractmethod
+    def _set_control_choice(self, index):
+        pass
 
     def _get_control_value(self):
-        index = vs.GetSelectedChoiceIndex(self._dialog_id, self.control_id, 0)
+        index = self._get_control_choice_index()
         if index > 0 or (self.__item_multi_value == 0 and self.__item_none_existent == 0):
-            return self.__available_items_observable[index - self.__item_multi_value - self.__item_none_existent]
+            return self._available_items_observable[index - self.__item_multi_value - self.__item_none_existent]
         elif index == -1:
             return None
         elif self.__item_multi_value == 1:
@@ -1133,14 +1157,111 @@ class PullDownMenu(AbstractFieldControl):
         elif self.__item_none_existent == 1:
             return self.__item_none_existent_value
 
+    @abstractmethod
+    def _get_control_choice_index(self) -> int:
+        pass
+
     def _on_control_event(self, data: int):
         # It can be that the resource needs to be imported, thus changing names and possibly changing the list.
         if self.__available_items_resources_list is not None:
-            value = self.__available_items_resources_list.get_resource(self._get_control_value()).name
+            resource = self.__available_items_resources_list.get_resource(self._get_control_value())
+            value = resource.name if resource is not None else None  # Because of the special items!
         else:
             value = self._get_control_value()
         self.__try_remove_special_items(value)
-        self._value = value
+        self._value = value if value is not None else self._value  # Leave values on special items!
+
+
+@Align(mode={Layout.VERTICAL: AlignMode.RESIZE})
+class PullDownMenu(AbstractChoiceControl):
+
+    def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
+                 data_context: str, data_disabled: str, data_available_items: str, data_value: str, data_items: str,
+                 width: int):
+        vs.CreatePullDownMenu(dialog_id, control_id, width)  # Must exists because of parent initialization!
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled,
+                         data_available_items, data_value, data_items)
+
+    def _get_none_existent_value(self, value: str) -> str:
+        return '%s (None existent)' % value
+
+    def _get_control_item_count(self):
+        return vs.GetChoiceCount(self._dialog_id, self.control_id)
+
+    def _add_item(self, item, index):
+        vs.AddChoice(self._dialog_id, self.control_id, str(item), index)
+
+    def _add_special_item(self, item: str, index: int):
+        self._add_item(item, index)
+
+    def _remove_item(self, index):
+        vs.RemoveChoice(self._dialog_id, self.control_id, index)
+
+    def _remove_special_item(self, index: int):
+        self._remove_item(index)
+
+    def _set_control_choice(self, index):
+        vs.SelectChoice(self._dialog_id, self.control_id, index, True)
+
+    def _get_control_choice_index(self):
+        return vs.GetSelectedChoiceIndex(self._dialog_id, self.control_id, 0)
+
+
+@Align(mode={Layout.VERTICAL: AlignMode.RESIZE})
+class ResourcePullDownMenu(AbstractChoiceControl):
+
+    def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
+                 data_context: str, data_disabled: str, data_available_items: str, data_value: str, data_items: str):
+        # TODO: Add check if LineTypes are used as resources, as then we need to use 1 for the size!
+        vs.CreateCustThumbPopup(dialog_id, control_id, 0)  # 0 = default size;
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled,
+                         data_available_items, data_value, data_items)
+        if self._available_items_resources_list is None:
+            raise TypeError('Attribute data_available_items has to be an AbstractResourceList!')
+
+    @property
+    def _multi_value_constant(self) -> str:
+        return '__%s%s' % (self._available_items_resources_list.type, super()._multi_value_constant)
+
+    def _get_none_existent_value(self, value: str) -> str:
+        return '__%s_None_existent' % self._available_items_resources_list.type
+
+    def _get_control_item_count(self):
+        return vs.GetNumImagePopupItems(self._dialog_id, self.control_id)
+
+    def _add_item(self, item, index):
+        vs.InsertImagePopupResource(self._dialog_id, self.control_id, self._available_items_resources_list.id, index)
+
+    def _re_add_items(self, add_specials: callable, has_specials: bool):
+        vs.RemoveAllImagePopupItems(self._dialog_id, self.control_id)
+        add_specials()
+        for index, item in enumerate(self._available_items_observable):
+            vs.InsertImagePopupResource(self._dialog_id, self.control_id, self._available_items_resources_list.id,
+                                        index+1 if has_specials else index)  # Because we have that special item!
+
+    def _add_special_item(self, item: str, index: int):
+        # First create placeholder (This will check if it already exists before creating!)
+        self._available_items_resources_list.get_abstract_resource_clazz().create_placeholder(item)
+        # We can't insert items at a specified index here, so we'll clear and add all again....
+        self._re_add_items(lambda : self.__add_special_item(item), True)
+
+    def __add_special_item(self, item: str):
+        vs.InsertImagePopupObjectItem(self._dialog_id, self.control_id, item)
+        vs.InsertImagePopupSeparator(self._dialog_id, self.control_id, '')
+
+    def _remove_item(self, index):
+        vs.RemoveImagePopupItem(self._dialog_id, self.control_id, index)
+
+    def _remove_special_item(self, index: int):
+        # Removing that special item also needs to remove the separator!
+        # But a separator can't be removed, so we'll clear and rebuild!
+        self._re_add_items(lambda : None, False)
+
+    def _set_control_choice(self, index):
+        vs.SetImagePopupSelectedItem(self._dialog_id, self.control_id, index + 1)  # +1 seems needed!?
+
+    def _get_control_choice_index(self):
+        return vs.GetImagePopupSelectedItem(self._dialog_id, self.control_id) - 1  # -1 seems needed!?
 
 
 class Separator(AbstractControl):
@@ -1361,6 +1482,23 @@ class ControlFactory(object, metaclass=SingletonMeta):
         return PullDownMenu(dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''),
                             data.get('@data-disabled', ''), data['@data-available-items'], data['@data-value'],
                             data.get('@data-items', ''), data.get('@width', 20))
+
+    @staticmethod
+    def _create_resource_pull_down_menu(dialog_id: int, control_id: int, data: dict,
+                                        data_parent: AbstractDataContext) -> ResourcePullDownMenu:
+        """
+        <resource-pull-down-menu
+            optional: @help                 -> str
+            optional: @data-context         -> str (property up data-context tree)            -> ObservableField
+            optional: @data-disabled        -> str (property up data-context tree)            -> ObservableMethod()
+                                                                                                    -> bool
+            required: @data-available-items -> str (property up data-context tree)            -> AbstractResourceList
+            required: @data-value           -> str (property up data-context tree or of item) -> ObservableField
+            optional: @data-items           -> str (property up data-context tree)            -> ObservableList/>
+        """
+        return ResourcePullDownMenu(dialog_id, control_id, data.get('@help', ''), data_parent,
+                                    data.get('@data-context', ''), data.get('@data-disabled', ''),
+                                    data['@data-available-items'], data['@data-value'], data.get('@data-items', ''))
 
     @staticmethod
     def _create_separator(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDataContext) -> Separator:
