@@ -5,7 +5,7 @@ import shutil
 
 import dlibrary
 
-from dlibrary_docs.customdoc import MarkdownDoc
+from dlibrary_docs.customdoc import MarkdownDoc, BitbucketMarkdownDoc
 
 
 # SETTINGS #############################################################################################################
@@ -13,6 +13,17 @@ from dlibrary_docs.customdoc import MarkdownDoc
 # Best to check out the wiki next to this repo, so that the docs will be directly build there, ready for commit. #######
 
 api_docs_path = os.path.abspath(os.path.join('..', '..', 'DLibrary wiki', 'API', dlibrary.__version__.split('.')[0]))
+
+
+# DLIBRARY FORMATTER ###################################################################################################
+
+class DLibraryDoc(BitbucketMarkdownDoc):
+
+    def _create_name_section_header(self, default_header: str, name: str) -> str:
+        return 'MODULE %s' % name
+
+    def _create_name_section_content(self, default_content: str, name: str, synopsis: str) -> str:
+        return synopsis
 
 
 # CLEAN API DOCS #######################################################################################################
@@ -26,11 +37,11 @@ def clean_api_docs():
 
 def write_api_module(module, module_name: str):
     with open(os.path.join(api_docs_path, '%s.md' % module_name), 'w', encoding='utf-8') as file:
-        file.write(MarkdownDoc().docmodule(module))
+        file.write(DLibraryDoc().docmodule(module))
 
 
 def write_api_docs():
-    for importer, module_name, is_package in pkgutil.walk_packages(dlibrary.__path__,'%s.' % dlibrary.__name__):
+    for importer, module_name, is_package in pkgutil.walk_packages(dlibrary.__path__, '%s.' % dlibrary.__name__):
         if 'libs' not in module_name:  # We don't document libs!
             module, module_name = pydoc.resolve(module_name)
             write_api_module(module, '.'.join(module_name.split('.')[1:]))  # Removing `dlibrary.` from module name!
