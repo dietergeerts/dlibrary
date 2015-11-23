@@ -270,8 +270,17 @@ class SymbolDefinition(AbstractResource):
             vs.SetObjectVariableBoolean(vs.GetObject(name), 900, False)
         return SymbolDefinition(vs.GetObject(name), name)
 
+    @staticmethod
+    def get_by_name(name: str):
+        obj_handle = vs.GetObject(name)
+        obj_handle = obj_handle if vs.GetTypeN(obj_handle) == 16 else None  # 16 = symbol definition.
+        return SymbolDefinition(obj_handle, name) if obj_handle is not None else None
+
     def __init__(self, handle, name: str):
         super().__init__(handle, name)
+
+    def place_symbol(self, insertion_point: tuple, rotation: float):
+        vs.Symbol(self.name, insertion_point, rotation)
 
 
 class SymbolDefinitionResourceList(AbstractResourceList):
