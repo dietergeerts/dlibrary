@@ -1,6 +1,5 @@
 """Used for getting stuff (objects or properties of objects) based on some criteria.
 """
-
 from dlibrary.document import Layer
 from dlibrary.object import AbstractObject, Viewport
 import vs

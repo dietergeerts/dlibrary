@@ -1,12 +1,180 @@
-"""Used for all document related stuff, like units, layers, ....
+"""Used for all document related stuff, like units, layers, resources, ....
 """
-
 from abc import ABCMeta, abstractmethod
-from dlibrary.utility import SingletonMeta, ObservableList
+
+from dlibrary.object_base import ObjectRepository, AbstractObjectKey
+from dlibrary.utility import SingletonMeta, ObservableList, VSException
 import vs
 
 
-class Document(object, metaclass=SingletonMeta):
+# ---------------------------------------------------------------------------------------------------------- ATTRIBUTES
+
+
+class PatternFillEnum(object):
+    """"Holds the most important pattern fill indices in a human readable name.
+    These are No fill, background color fill and foreground color fill. It is recommended to not use any other fills
+    anymore, as there are several issues with them, especially with printing.
+    """
+
+    NONE = 0
+    BACKGROUND_COLOR = 1
+    FOREGROUND_COLOR = 2
+
+
+class AbstractVectorFill(AbstractObjectKey, metaclass=ABCMeta):
+
+    def __init__(self, handle_or_name):
+        super().__init__(handle_or_name)
+
+
+class IAttributes(object, metaclass=ABCMeta):
+
+    @property
+    def fill(self):
+        """
+        :rtype: PatternFillEnum|AbstractVectorFill
+        """
+        return self._get_vector_fill() or self._get_pattern_fill()
+
+    @fill.setter
+    def fill(self, value):
+        """
+        :type value: PatternFillEnum|AbstractVectorFill
+        """
+        self._set_pattern_fill(value) if isinstance(value, int) else None
+        self._set_vector_fill(value) if isinstance(value, AbstractVectorFill) else None
+
+    @abstractmethod
+    def _get_pattern_fill(self) -> int:
+        pass
+
+    @abstractmethod
+    def _get_vector_fill(self) -> AbstractVectorFill:
+        """Should return the vector fill, if any, otherwise None!
+        """
+        pass
+
+    @abstractmethod
+    def _set_pattern_fill(self, value: int):
+        pass
+
+    @abstractmethod
+    def _set_vector_fill(self, value: AbstractVectorFill):
+        pass
+
+
+# ------------------------------------------------------------------------------------------------------------- CLASSES
+
+
+class IClazzAttributes(IAttributes, metaclass=ABCMeta):
+
+    @property
+    @abstractmethod
+    def _clazz_name(self) -> str:
+        pass
+
+    def _get_pattern_fill(self) -> int:
+        return vs.GetClFPat(self._clazz_name)
+
+    def _get_vector_fill(self) -> AbstractVectorFill:
+        has_vector_fill, name = vs.GetClVectorFill(self._clazz_name)
+        return ObjectRepository().get(name) if has_vector_fill else None
+
+    def _set_pattern_fill(self, value: int):
+        vs.SetClFPat(self._clazz_name, value)
+
+    def _set_vector_fill(self, value: AbstractVectorFill):
+        if not vs.SetClVectorFill(self._clazz_name, value.name):
+            raise VSException('SetClVectorFill(%s, %s)' % (self._clazz_name, value.name))
+
+
+class Clazz(object, IClazzAttributes):
+
+    def __init__(self, name: str):
+        self.__name = name
+
+    @property
+    def name(self):
+        return self.__name
+
+    def _clazz_name(self) -> str:
+        return self.name
+
+
+# -------------------------------------------------------------------------------------------------------------- LAYERS
+
+
+class Layer(object):
+
+    @staticmethod
+    def get(layer_handle):
+        return {1: DesignLayer, 2: SheetLayer}.get(vs.GetObjectVariableInt(layer_handle, 154))(layer_handle)
+
+    def __init__(self, handle):
+        self.__handle = handle
+
+    @property
+    def _handle(self):
+        return self.__handle
+
+    @property
+    def name(self) -> str:
+        """
+        For a sheet layer, VW calls this the number!
+        """
+        return vs.GetLName(self._handle)
+
+    @property
+    def description(self) -> str:
+        return vs.GetDescriptionText(self._handle)
+
+    @property
+    def drawing_area(self) -> float:
+        (p1x, p1y), (p2x, p2y) = vs.GetDrawingSizeRectN(self._handle)
+        return Units.to_area_units(Units.to_inches(p2x - p1x) * Units.to_inches(p1y - p2y))
+
+
+class DesignLayer(Layer):
+
+    def __init__(self, handle):
+        super().__init__(handle)
+
+    @property
+    def scale(self) -> float:
+        return vs.GetLScale(self._handle)
+
+
+class SheetLayer(Layer):
+
+    def __init__(self, handle):
+        super().__init__(handle)
+
+    @property
+    def title(self) -> str:
+        return vs.GetObjectVariableString(self._handle, 159)
+
+
+# ------------------------------------------------------------------------------------------------------------ DOCUMENT
+
+
+class IDocumentAttributes(IAttributes, metaclass=ABCMeta):
+
+    def _get_pattern_fill(self) -> int:
+        return vs.FFillPat()
+
+    def _get_vector_fill(self) -> AbstractVectorFill:
+        has_vector_fill, name = vs.GetVectorFillDefault()
+        return ObjectRepository().get(name) if has_vector_fill else None
+
+    def _set_pattern_fill(self, value: int):
+        vs.FillPat(value)
+
+    def _set_vector_fill(self, value: AbstractVectorFill):
+        if not vs.SetVectorFillDefault(value.name):
+            raise VSException('SetVectorFillDefault(%s)' % value.name)
+
+
+class Document(object, IDocumentAttributes, metaclass=SingletonMeta):
 
     @property
     def saved(self) -> bool:
@@ -39,6 +207,9 @@ class Document(object, metaclass=SingletonMeta):
         :rtype: set(SheetLayer)
         """
         return {layer for layer in self.layers if isinstance(layer, SheetLayer)}
+
+
+# --------------------------------------------------------------------------------------------------------------- UNITS
 
 
 class Units(object, metaclass=SingletonMeta):
@@ -117,64 +288,31 @@ class Units(object, metaclass=SingletonMeta):
         return Units.__to_str(volume_in_volume_units, vs.GetPrefLongInt(183), with_unit_mark, vs.GetPrefString(182))
 
 
-class Layer(object):
-
-    @staticmethod
-    def get(layer_handle):
-        return {1: DesignLayer, 2: SheetLayer}.get(vs.GetObjectVariableInt(layer_handle, 154))(layer_handle)
-
-    def __init__(self, handle):
-        self.__handle = handle
-
-    @property
-    def _handle(self):
-        return self.__handle
-
-    @property
-    def name(self) -> str:
-        """
-        For a sheet layer, VW calls this the number!
-        """
-        return vs.GetLName(self._handle)
-
-    @property
-    def description(self) -> str:
-        return vs.GetDescriptionText(self._handle)
-
-    @property
-    def drawing_area(self) -> float:
-        (p1x, p1y), (p2x, p2y) = vs.GetDrawingSizeRectN(self._handle)
-        return Units.to_area_units(Units.to_inches(p2x - p1x) * Units.to_inches(p1y - p2y))
+# ----------------------------------------------------------------------------------------------------------- RESOURCES
 
 
-class DesignLayer(Layer):
+class HatchVectorFill(AbstractVectorFill):
 
-    def __init__(self, handle):
-        super().__init__(handle)
-
-    @property
-    def scale(self) -> float:
-        return vs.GetLScale(self._handle)
+    def __init__(self, handle_or_name):
+        super().__init__(handle_or_name)
 
 
-class SheetLayer(Layer):
+class TileVectorFill(AbstractVectorFill):
 
-    def __init__(self, handle):
-        super().__init__(handle)
-
-    @property
-    def title(self) -> str:
-        return vs.GetObjectVariableString(self._handle, 159)
+    def __init__(self, handle_or_name):
+        super().__init__(handle_or_name)
 
 
-class Clazz(object):
+class GradientVectorFill(AbstractVectorFill):
 
-    def __init__(self, name: str):
-        self.__name = name
+    def __init__(self, handle_or_name):
+        super().__init__(handle_or_name)
 
-    @property
-    def name(self):
-        return self.__name
+
+class ImageVectorFill(AbstractVectorFill):
+
+    def __init__(self, handle_or_name):
+        super().__init__(handle_or_name)
 
 
 class AbstractResource(object, metaclass=ABCMeta):

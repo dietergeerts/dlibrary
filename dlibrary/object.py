@@ -1,23 +1,36 @@
 """Used for all object related stuff, except for plug-in objects.
 """
+from abc import ABCMeta, abstractmethod
 
-from abc import ABCMeta
-
-from dlibrary.document import Layer, Units, Clazz
+from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill
+from dlibrary.object_base import AbstractObjectKey, ObjectRepository
+from dlibrary.utility import VSException
 import vs
 
 
-class AbstractHandle(object, metaclass=ABCMeta):
-
-    def __init__(self, handle):
-        self.__handle = handle
+class IObjectAttributes(IAttributes, metaclass=ABCMeta):
 
     @property
-    def handle(self):
-        return self.__handle
+    @abstractmethod
+    def _object_handle(self) -> str:
+        pass
+
+    def _get_pattern_fill(self) -> int:
+        return vs.GetFPat(self._object_handle)
+
+    def _get_vector_fill(self) -> AbstractVectorFill:
+        has_vector_fill, name = vs.GetVectorFill(self._object_handle)
+        return ObjectRepository().get(name) if has_vector_fill else None
+
+    def _set_pattern_fill(self, value: int):
+        vs.SetFPat(self._object_handle, value)
+
+    def _set_vector_fill(self, value: AbstractVectorFill):
+        if not vs.SetVectorFill(self._object_handle, value.name):
+            raise VSException('SetVectorFill(%s, %s)' % (self._object_handle, value.name))
 
 
-class RecordField(AbstractHandle):
+class RecordField(AbstractObjectKey):
     """We will use the record handle to get the data out of the field.
     """
 
@@ -30,13 +43,13 @@ class RecordField(AbstractHandle):
         return vs.GetFldName(self.handle, self.__index)
 
 
-class Record(AbstractHandle):
+class Record(AbstractObjectKey):
 
     def get_field(self, index: int) -> RecordField:
         return RecordField(self.handle, index)
 
 
-class Attributes(AbstractHandle):
+class Attributes(AbstractObjectKey):
     """We will use the object handle to get/set the attributes for it.
     """
 
@@ -82,7 +95,7 @@ class Attributes(AbstractHandle):
         vs.SetObjEndMarker(self.handle, style, angle, size, width, thickness_basis, thickness, visibility)
 
 
-class AbstractObject(AbstractHandle, metaclass=ABCMeta):
+class AbstractObject(AbstractObjectKey, IObjectAttributes, metaclass=ABCMeta):
 
     @property
     def layer(self) -> Layer:
@@ -99,6 +112,9 @@ class AbstractObject(AbstractHandle, metaclass=ABCMeta):
     @property
     def attributes(self):
         return Attributes(self.handle)
+
+    def _object_handle(self):
+        return self.handle
 
     def move(self, delta_x: float, delta_y: float):
         vs.HMove(self.handle, delta_x, delta_y)

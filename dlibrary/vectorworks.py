@@ -1,6 +1,5 @@
 """Used for all Vectorworks related stuff, like settings, and for plug-in objects and their setup and working.
 """
-
 from abc import ABCMeta, abstractmethod
 import os
 
