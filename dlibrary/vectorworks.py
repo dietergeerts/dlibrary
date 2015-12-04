@@ -229,9 +229,12 @@ class ParameterWidget(AbstractWidget):
 
 class ButtonWidget(AbstractWidget):
 
-    def __init__(self, text: str, on_click: callable):
+    def __init__(self, text: str, on_click: callable, reset: bool=False):
+        """
+        :param reset: If true, the pio instance will be reset after the on_click def.
+        """
         self.__text = text
-        self.__on_click = on_click
+        self.__on_click = on_click if not reset else lambda : self.__on_click_and_reset(on_click)
 
     @property
     def on_click(self) -> callable:
@@ -240,6 +243,11 @@ class ButtonWidget(AbstractWidget):
     def add(self, widget_id: int):
         if not vs.vsoInsertWidget(widget_id, 12, widget_id, self.__text, 0):  # 12 = Button.
             raise VSException('vsoAddWidget(%s, 12, %s)' % (widget_id, self.__text))
+
+    @staticmethod
+    def __on_click_and_reset(on_click: callable):
+        on_click()
+        vs.ResetObject(ActivePlugIn().handle)
 
 
 class DoubleClickBehaviour(object):
