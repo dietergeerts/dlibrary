@@ -12,18 +12,18 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def _object_handle(self) -> str:
+    def _object_handle(self):
         pass
 
     def _get_pattern_fill(self) -> int:
         return vs.GetFPat(self._object_handle)
 
+    def _set_pattern_fill(self, value: int):
+        vs.SetFPat(self._object_handle, value)
+
     def _get_vector_fill(self) -> AbstractVectorFill:
         has_vector_fill, name = vs.GetVectorFill(self._object_handle)
         return ObjectRepository().get(name) if has_vector_fill else None
-
-    def _set_pattern_fill(self, value: int):
-        vs.SetFPat(self._object_handle, value)
 
     def _set_vector_fill(self, value: AbstractVectorFill):
         if not vs.SetVectorFill(self._object_handle, value.name):
@@ -113,6 +113,7 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, metaclass=ABCMeta):
     def attributes(self):
         return Attributes(self.handle)
 
+    @property
     def _object_handle(self):
         return self.handle
 

@@ -7,9 +7,6 @@ from dlibrary.utility import SingletonMeta, ObservableList, VSException, Singlet
 import vs
 
 
-# ---------------------------------------------------------------------------------------------------------- ATTRIBUTES
-
-
 class PatternFillEnum(object):
     """"Holds the most important pattern fill indices in a human readable name.
     These are No fill, background color fill and foreground color fill. It is recommended to not use any other fills
@@ -49,21 +46,18 @@ class IAttributes(object, metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def _set_pattern_fill(self, value: int):
+        pass
+
+    @abstractmethod
     def _get_vector_fill(self) -> AbstractVectorFill:
         """Should return the vector fill, if any, otherwise None!
         """
         pass
 
     @abstractmethod
-    def _set_pattern_fill(self, value: int):
-        pass
-
-    @abstractmethod
     def _set_vector_fill(self, value: AbstractVectorFill):
         pass
-
-
-# ------------------------------------------------------------------------------------------------------------- CLASSES
 
 
 class IClazzAttributes(IAttributes, metaclass=ABCMeta):
@@ -76,12 +70,12 @@ class IClazzAttributes(IAttributes, metaclass=ABCMeta):
     def _get_pattern_fill(self) -> int:
         return vs.GetClFPat(self._clazz_name)
 
+    def _set_pattern_fill(self, value: int):
+        vs.SetClFPat(self._clazz_name, value)
+
     def _get_vector_fill(self) -> AbstractVectorFill:
         has_vector_fill, name = vs.GetClVectorFill(self._clazz_name)
         return ObjectRepository().get(name) if has_vector_fill else None
-
-    def _set_pattern_fill(self, value: int):
-        vs.SetClFPat(self._clazz_name, value)
 
     def _set_vector_fill(self, value: AbstractVectorFill):
         if not vs.SetClVectorFill(self._clazz_name, value.name):
@@ -97,11 +91,9 @@ class Clazz(IClazzAttributes):
     def name(self):
         return self.__name
 
+    @property
     def _clazz_name(self) -> str:
         return self.name
-
-
-# -------------------------------------------------------------------------------------------------------------- LAYERS
 
 
 class Layer(object):
@@ -154,20 +146,17 @@ class SheetLayer(Layer):
         return vs.GetObjectVariableString(self._handle, 159)
 
 
-# ------------------------------------------------------------------------------------------------------------ DOCUMENT
-
-
 class IDocumentAttributes(IAttributes, metaclass=ABCMeta):
 
     def _get_pattern_fill(self) -> int:
         return vs.FFillPat()
 
+    def _set_pattern_fill(self, value: int):
+        vs.FillPat(value)
+
     def _get_vector_fill(self) -> AbstractVectorFill:
         has_vector_fill, name = vs.GetVectorFillDefault()
         return ObjectRepository().get(name) if has_vector_fill else None
-
-    def _set_pattern_fill(self, value: int):
-        vs.FillPat(value)
 
     def _set_vector_fill(self, value: AbstractVectorFill):
         if not vs.SetVectorFillDefault(value.name):
@@ -207,9 +196,6 @@ class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
         :rtype: set(SheetLayer)
         """
         return {layer for layer in self.layers if isinstance(layer, SheetLayer)}
-
-
-# --------------------------------------------------------------------------------------------------------------- UNITS
 
 
 class Units(object, metaclass=SingletonMeta):
@@ -286,9 +272,6 @@ class Units(object, metaclass=SingletonMeta):
     @staticmethod
     def to_volume_string(volume_in_volume_units: float, with_unit_mark: bool=False) -> str:
         return Units.__to_str(volume_in_volume_units, vs.GetPrefLongInt(183), with_unit_mark, vs.GetPrefString(182))
-
-
-# ----------------------------------------------------------------------------------------------------------- RESOURCES
 
 
 class HatchVectorFill(AbstractVectorFill):

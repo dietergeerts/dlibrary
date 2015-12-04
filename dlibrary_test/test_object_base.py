@@ -21,6 +21,7 @@ class ObjectTypeEnumTest(TestCase):
         vs.EndVectorFill()
         cls.__hatch_fill = HatchVectorFill('[LA] TEST')
         cls.__tile_fill = TileVectorFill(vs.CreateTile('[MO] TEST'))
+        vs.AddTileGeometryObject(cls.__tile_fill.handle, Line.create((0, 0), (10, 10)).handle)
         # TODO: For some reason, it didn't work to create an image fill.
         # TODO: We'll investigate later, I'll add it to the doc for now.
         cls.__image_fill = ImageVectorFill('[AB] TEST')
@@ -74,6 +75,7 @@ class AbstractKeyedObjectTest(TestCase):
     def setUpClass(cls):
         # TODO: Replace creation by our own when implemented.
         cls.__tile_handle = vs.CreateTile(cls.__tile_name)
+        vs.AddTileGeometryObject(cls.__tile_handle, Line.create((0, 0), (10, 10)).handle)
         cls.__line_handle = Line.create((0, 0), (10, 10)).handle
 
     @classmethod
@@ -123,6 +125,7 @@ class ObjectRepositoryTest(TestCase):
         vs.EndVectorFill()
         cls.__hatch_fill = HatchVectorFill('[LA] TEST')
         cls.__tile_fill = TileVectorFill(vs.CreateTile('[MO] TEST'))
+        vs.AddTileGeometryObject(cls.__tile_fill.handle, Line.create((0, 0), (10, 10)).handle)
         # TODO: For some reason, it didn't work to create an image fill.
         # TODO: We'll investigate later, I'll add it to the doc for now.
         cls.__image_fill = ImageVectorFill('[AB] TEST')
