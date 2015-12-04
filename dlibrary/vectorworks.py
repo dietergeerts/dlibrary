@@ -88,7 +88,10 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
         # This result isn't the same during that session, it depends on the active plugin!
         succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
         if not succeeded:
-            raise VSException('GetCustomObjectInfo')
+            # If not succeeded, then it means that it's not an instance, so we want to get the definition handle.
+            # TODO: Make the difference in plugin definition and instance clearer, probably more generic!
+            plugin_handle = vs.GetObject(self.name)
+            # raise VSException('GetCustomObjectInfo')
         return plugin_handle
 
     @property
