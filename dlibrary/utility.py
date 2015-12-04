@@ -14,6 +14,12 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 
+class SingletonABCMeta(SingletonMeta, ABCMeta):
+    """For singletons that are derived from abstract classes.
+    """
+    pass
+
+
 class Event(object):
 
     def __init__(self):

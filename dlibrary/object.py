@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 
 from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill
-from dlibrary.object_base import AbstractObjectKey, ObjectRepository
+from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 from dlibrary.utility import VSException
 import vs
 
@@ -30,7 +30,7 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
             raise VSException('SetVectorFill(%s, %s)' % (self._object_handle, value.name))
 
 
-class RecordField(AbstractObjectKey):
+class RecordField(AbstractKeyedObject):
     """We will use the record handle to get the data out of the field.
     """
 
@@ -43,13 +43,13 @@ class RecordField(AbstractObjectKey):
         return vs.GetFldName(self.handle, self.__index)
 
 
-class Record(AbstractObjectKey):
+class Record(AbstractKeyedObject):
 
     def get_field(self, index: int) -> RecordField:
         return RecordField(self.handle, index)
 
 
-class Attributes(AbstractObjectKey):
+class Attributes(AbstractKeyedObject):
     """We will use the object handle to get/set the attributes for it.
     """
 
@@ -95,7 +95,7 @@ class Attributes(AbstractObjectKey):
         vs.SetObjEndMarker(self.handle, style, angle, size, width, thickness_basis, thickness, visibility)
 
 
-class AbstractObject(AbstractObjectKey, IObjectAttributes, metaclass=ABCMeta):
+class AbstractObject(AbstractKeyedObject, IObjectAttributes, metaclass=ABCMeta):
 
     @property
     def layer(self) -> Layer:

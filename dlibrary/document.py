@@ -2,8 +2,8 @@
 """
 from abc import ABCMeta, abstractmethod
 
-from dlibrary.object_base import ObjectRepository, AbstractObjectKey
-from dlibrary.utility import SingletonMeta, ObservableList, VSException
+from dlibrary.object_base import ObjectRepository, AbstractKeyedObject
+from dlibrary.utility import SingletonMeta, ObservableList, VSException, SingletonABCMeta
 import vs
 
 
@@ -21,7 +21,7 @@ class PatternFillEnum(object):
     FOREGROUND_COLOR = 2
 
 
-class AbstractVectorFill(AbstractObjectKey, metaclass=ABCMeta):
+class AbstractVectorFill(AbstractKeyedObject, metaclass=ABCMeta):
 
     def __init__(self, handle_or_name):
         super().__init__(handle_or_name)
@@ -88,7 +88,7 @@ class IClazzAttributes(IAttributes, metaclass=ABCMeta):
             raise VSException('SetClVectorFill(%s, %s)' % (self._clazz_name, value.name))
 
 
-class Clazz(object, IClazzAttributes):
+class Clazz(IClazzAttributes):
 
     def __init__(self, name: str):
         self.__name = name
@@ -174,7 +174,7 @@ class IDocumentAttributes(IAttributes, metaclass=ABCMeta):
             raise VSException('SetVectorFillDefault(%s)' % value.name)
 
 
-class Document(object, IDocumentAttributes, metaclass=SingletonMeta):
+class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
 
     @property
     def saved(self) -> bool:

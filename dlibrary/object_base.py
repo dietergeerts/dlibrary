@@ -21,9 +21,35 @@ class ObjectTypeEnum(object):
         In VW, both are keys, but name isn't always provided. Also, some vs calls work with handles, others with names.
 
         :type handle_or_name: handle|str
+        :returns: None if the handle or name doesn't references an actual object.
         """
         return vs.GetTypeN(vs.GetObject(handle_or_name) if isinstance(handle_or_name, str) else handle_or_name)
         # vs.GetObject will return None if not found, vs.GetTypeN will return 0 for None!
+
+
+class AbstractKeyedObject(object, metaclass=ABCMeta):
+    """Base class for all objects, which will hold the identifiers for a VW object: handle and/or name.
+    """
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle|str
+        """
+        self.__handle = handle_or_name if not isinstance(handle_or_name, str) else vs.GetObject(handle_or_name)
+        self.__name = handle_or_name if isinstance(handle_or_name, str) else self.__get_name_or_none(handle_or_name)
+
+    @staticmethod
+    def __get_name_or_none(handle) -> str:
+        name = vs.GetName(handle)
+        return None if name == 'none' or name == '' else name
+
+    @property
+    def handle(self):
+        return self.__handle
+
+    @property
+    def name(self) -> str:
+        return self.__name
 
 
 class ObjectRepository(object, metaclass=SingletonMeta):
@@ -40,30 +66,10 @@ class ObjectRepository(object, metaclass=SingletonMeta):
         """
         self.__constructors[object_type] = constructor
 
-    def get(self, handle_or_name) -> AbstractObjectKey:
+    def get(self, handle_or_name) -> AbstractKeyedObject:
         """Get a wrapper object, based on the handle or name, which identifies the object in VW.
         If no constructor for the type is present, or the type can't be retrieved, None is returned.
 
         :type handle_or_name: handle|str
         """
-        self.__constructors.get(ObjectTypeEnum.get(handle_or_name), lambda h_o_n: None)(handle_or_name)
-
-
-class AbstractObjectKey(object, metaclass=ABCMeta):
-    """Base class for all objects, which will hold the identifiers for a VW object: handle and/or name.
-    """
-
-    def __init__(self, handle_or_name):
-        """
-        :type handle_or_name: handle|str
-        """
-        self.__handle = handle_or_name if not isinstance(handle_or_name, str) else vs.GetObject(handle_or_name)
-        self.__name = handle_or_name if isinstance(handle_or_name, str) else vs.GetName(handle_or_name)
-
-    @property
-    def handle(self):
-        return self.__handle
-
-    @property
-    def name(self) -> str:
-        return self.__name
+        return self.__constructors.get(ObjectTypeEnum.get(handle_or_name), lambda h_o_n: None)(handle_or_name)
