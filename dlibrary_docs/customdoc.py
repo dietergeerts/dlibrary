@@ -12,165 +12,294 @@ import inspect
 import builtins
 
 
-class CustomDoc(pydoc.Doc, metaclass=ABCMeta):
+class AbstractCustomDoc(pydoc.Doc, metaclass=ABCMeta):
     """Formatter base class to enable customization of generated documentation.
     Based on pydoc.TextDoc. (Actually started from a copy of TextDoc.)
     """
 
-    def __init__(self):
-        self.__indent_sequence = self._get_indent_sequence('    ')
-        self.__newline_sequence = self._get_newline_sequence('\n')
+    @staticmethod
+    @abstractmethod
+    def _get_indent() -> str:
+        pass
 
-    # ------------------------------------------- text formatting utilities
+    @staticmethod
+    @abstractmethod
+    def _get_tree_indent() -> str:
+        pass
 
-    _repr_instance = pydoc.TextRepr()
-    repr = _repr_instance.repr
+    @staticmethod
+    @abstractmethod
+    def _get_newline() -> str:
+        pass
 
-    def bold(self, text):
-        """Format a string in bold by overstriking."""
-        return ''.join(ch + '\b' + ch for ch in text)
+    @staticmethod
+    @abstractmethod
+    def _get_rule() -> str:
+        pass
 
-    def indent(self, text, prefix='    '):
-        """Indent text by prepending a given prefix to each line."""
-        if not text: return ''
-        lines = [prefix + line for line in text.split('\n')]
-        if lines: lines[-1] = lines[-1].rstrip()
-        return '\n'.join(lines)
+    @staticmethod
+    @abstractmethod
+    def _escape(text: str) -> str:
+        pass
 
-    def section(self, title, contents):
-        """Format a section with a given heading."""
-        clean_contents = self.indent(contents).rstrip()
-        return self.bold(title) + '\n' + clean_contents + '\n\n'
+    @staticmethod
+    @abstractmethod
+    def _clean(text: str) -> str:
+        pass
 
-    # ---------------------------------------------- type-specific routines
+    @staticmethod
+    @abstractmethod
+    def _bold(text: str) -> str:
+        pass
 
-    def formattree(self, tree, module, modname, parent=None, prefix='', first_level=True):
-        """Render in text a class tree as returned by inspect.getclasstree()."""
+    @staticmethod
+    @abstractmethod
+    def _anchor_link(link: str, anchor: str) -> str:
+        pass
 
-        module_classes = [key for key, value
-                          in inspect.getmembers(module, inspect.isclass)
-                          if inspect.getmodule(value) is module]
-        result = ''
-        for entry in tree:
-            clazz = None
-            if type(entry) is type(()):
-                clazz, bases = entry
-                clazz_name = pydoc.classname(clazz, modname)
-                if clazz_name in module_classes:
-                    clazz_name = self._create_anchor_link(clazz_name, clazz_name)
-                result += prefix + clazz_name
-                if bases and bases != (parent,):
-                    parents = (pydoc.classname(c, modname) for c in bases)
-                    result += '(%s)' % ', '.join(parents)
-                result += self.__newline_sequence
-            elif type(entry) is type([]):
-                result += self.formattree(entry, module, modname, clazz, prefix + self.__indent_sequence, False)
-        return result
+    @abstractmethod
+    def _indent(self, text: str) -> str:
+        pass
 
-    def docmodule(self, module, *ignored):
-        """Produce text documentation for a given module object."""
+    @abstractmethod
+    def _heading(self, text: str, level: int=1) -> str:
+        pass
 
-        name = module.__name__
+    @abstractmethod
+    def _section(self, title: str, contents: str) -> str:
+        pass
+
+    @abstractmethod
+    def _formattree(self, tree, module, modname, clazz_names, parent=None, level=0):
+        """Render a class tree as returned by inspect.getclasstree().
+        """
+        pass
+
+    @abstractmethod
+    def _create_module_name_heading(self, module_name: str) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_name_content(self, module_name: str, synopsis: str) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_doc_loc_heading(self, doc_loc: str) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_doc_loc_content(self, doc_loc: str) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_description_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_description_content(self, description: str) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_packages_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_packages_content(self, packages: list) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_submodules_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_submodules_content(self, submodules: list) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_classes_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_classes_content(self, module, name: str, classes: list) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_functions_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_functions_content(self, name: str, functions: list) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_data_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_data_content(self, name: str, data: list) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_version_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_version_content(self, module) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_date_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_date_content(self, module) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_author_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_author_content(self, module) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_credits_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_credits_content(self, module) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_file_heading(self) -> str:
+        pass
+
+    @abstractmethod
+    def _create_module_file_content(self, module) -> str:
+        pass
+
+    # noinspection PyUnusedLocal
+    def docmodule(self, module, name=None, *args) -> str:
+        """Produce text documentation for a given module object.
+        """
+        name = name or module.__name__
         synopsis, description = pydoc.splitdoc(pydoc.getdoc(module))
-        docs = self.section(
-            self._create_name_section_header('NAME', name),
-            self._create_name_section_content(name + (synopsis and ' - %s' % synopsis), name, synopsis))
+        synopsis = self._clean(self._escape(synopsis))
+        description = self._clean(self._escape(description))
+        doc_loc = self.getdocloc(module)
+        packages, package_names = self.__get_module_packages(module)
+        submodules = self.__get_module_submodules(module, name, package_names)
+        classes = self.__get_module_classes(module)
+        functions = self.__get_module_functions(module)
+        data = self.__get_module_data(module)
 
-        all = getattr(module, '__all__', None)
-        docloc = self.getdocloc(module)
-        if docloc is not None:
-            docs += self.section('MODULE REFERENCE', docloc + """
+        return '%s%s%s%s%s%s%s%s%s%s%s%s%s' % (
+            self._section(
+                self._create_module_name_heading(name),
+                self._create_module_name_content(name, synopsis)),
+            self._section(
+                self._create_module_doc_loc_heading(doc_loc),
+                self._create_module_doc_loc_content(doc_loc)) if doc_loc is not None else '',
+            self._section(
+                self._create_module_description_heading(),
+                self._create_module_description_content(description)) if description else '',
+            self._section(
+                self._create_module_packages_heading(),
+                self._create_module_packages_content(packages)) if packages else '',
+            self._section(
+                self._create_module_submodules_heading(),
+                self._create_module_submodules_content(submodules)) if submodules else '',
+            self._section(
+                self._create_module_classes_heading(),
+                self._create_module_classes_content(module, name, classes)) if classes else '',
+            self._section(
+                self._create_module_functions_heading(),
+                self._create_module_functions_content(name, functions)) if functions else '',
+            self._section(
+                self._create_module_data_heading(),
+                self._create_module_data_content(name, data)) if data else '',
+            self._section(
+                self._create_module_version_heading(),
+                self._create_module_version_content(module)) if hasattr(module, '__version__') else '',
+            self._section(
+                self._create_module_date_heading(),
+                self._create_module_date_content(module)) if hasattr(module, '__date__') else '',
+            self._section(
+                self._create_module_author_heading(),
+                self._create_module_author_content(module)) if hasattr(module, '__author__') else '',
+            self._section(
+                self._create_module_credits_heading(),
+                self._create_module_credits_content(module)) if hasattr(module, '__credits__') else '',
+            self._section(
+                self._create_module_file_heading(),
+                self._create_module_file_content(module)))
 
-The following documentation is automatically generated from the Python
-source files.  It may be incomplete, incorrect or include features that
-are considered implementation detail and may vary between Python
-implementations.  When in doubt, consult the module reference at the
-location listed above.
-""")
+    @staticmethod
+    def __get_module_packages(module) -> (list, set):
+        """Returns both the packages and the package names.
+        """
+        packages = []
+        package_names = set()
+        if hasattr(module, '__path__'):
+            for importer, modname, is_package in pkgutil.iter_modules(module.__path__):
+                package_names.add(modname)
+                packages.append('%s (package)' % modname if is_package else modname)
+            packages.sort()
+        return packages, package_names
 
-        if description:
-            docs += self.section('DESCRIPTION', description)
+    @staticmethod
+    def __get_module_submodules(module, name, package_names) -> list:
+        """Detect submodules as sometimes created by C extensions!
+        """
+        submodules = []
+        for key, value in inspect.getmembers(module, inspect.ismodule):
+            if value.__name__.startswith(name + '.') and key not in package_names:
+                submodules.append(key)
+        submodules.sort()
+        return submodules
 
+    @staticmethod
+    def __get_module_classes(module) -> list:
+        all_things = getattr(module, '__all__', None)
         classes = []
         for key, value in inspect.getmembers(module, inspect.isclass):
             # if __all__ exists, believe it. Otherwise use old heuristic.
-            if (all is not None
-                or (inspect.getmodule(value) or module) is module):
-                if pydoc.visiblename(key, all, module):
+            if all_things is not None or (inspect.getmodule(value) or module) is module:
+                if pydoc.visiblename(key, all_things, module):
                     classes.append((key, value))
-        funcs = []
+        return classes
+
+    @staticmethod
+    def __get_module_functions(module) -> list:
+        all_things = getattr(module, '__all__', None)
+        functions = []
         for key, value in inspect.getmembers(module, inspect.isroutine):
             # if __all__ exists, believe it.  Otherwise use old heuristic.
-            if (all is not None or
-                    inspect.isbuiltin(value) or inspect.getmodule(value) is module):
-                if pydoc.visiblename(key, all, module):
-                    funcs.append((key, value))
+            if all_things is not None or inspect.isbuiltin(value) or inspect.getmodule(value) is module:
+                if pydoc.visiblename(key, all_things, module):
+                    functions.append((key, value))
+        return functions
+
+    @staticmethod
+    def __get_module_data(module) -> list:
+        all_things = getattr(module, '__all__', None)
         data = []
         for key, value in inspect.getmembers(module, pydoc.isdata):
-            if pydoc.visiblename(key, all, module):
+            if pydoc.visiblename(key, all_things, module):
                 data.append((key, value))
+        return data
 
-        modpkgs = []
-        modpkgs_names = set()
-        if hasattr(module, '__path__'):
-            for importer, modname, ispkg in pkgutil.iter_modules(module.__path__):
-                modpkgs_names.add(modname)
-                if ispkg:
-                    modpkgs.append(modname + ' (package)')
-                else:
-                    modpkgs.append(modname)
 
-            modpkgs.sort()
-            docs += self.section('PACKAGE CONTENTS', '\n'.join(modpkgs))
 
-        # Detect submodules as sometimes created by C extensions
-        submodules = []
-        for key, value in inspect.getmembers(module, inspect.ismodule):
-            if value.__name__.startswith(name + '.') and key not in modpkgs_names:
-                submodules.append(key)
-        if submodules:
-            submodules.sort()
-            docs += self.section('SUBMODULES', '\n'.join(submodules))
 
-        if classes:
-            contents = [self.formattree(inspect.getclasstree([value for key, value in classes], 1), module, name)]
-            for key, value in classes:
-                contents.append(self.document(value, key, name))
-            docs += self.section('CLASSES', '\n'.join(contents))
 
-        if funcs:
-            contents = []
-            for key, value in funcs:
-                contents.append(self.document(value, key, name))
-            docs += self.section('FUNCTIONS', '\n'.join(contents))
 
-        if data:
-            contents = []
-            for key, value in data:
-                contents.append(self.docother(value, key, name, maxlen=70))
-            docs += self.section('DATA', '\n'.join(contents))
 
-        if hasattr(module, '__version__'):
-            version = str(module.__version__)
-            if version[:11] == '$' + 'Revision: ' and version[-1:] == '$':
-                version = version[11:-1].strip()
-            docs += self.section('VERSION', version)
-        if hasattr(module, '__date__'):
-            docs += self.section('DATE', str(module.__date__))
-        if hasattr(module, '__author__'):
-            docs += self.section('AUTHOR', str(module.__author__))
-        if hasattr(module, '__credits__'):
-            docs += self.section('CREDITS', str(module.__credits__))
-        try:
-            file = inspect.getabsfile(module)
-        except TypeError:
-            file = '(built-in)'
-        docs += self.section('FILE', file)
-        return docs
 
     def docclass(self, clazz, name=None, mod=None, *ignored):
-        """Produce text documentation for a given class object."""
-
+        """Produce text documentation for a given class object.
+        """
         real_name = clazz.__name__
         name = name or real_name
         bases = clazz.__bases__
@@ -179,7 +308,7 @@ location listed above.
             return pydoc.classname(c, m)
 
         title = self._create_anchor(real_name)
-        title += ('class ' + self.bold(real_name)) if name == real_name else (self.bold(name) + ' = class ' + real_name)
+        title += ('class ' + self._bold(real_name)) if name == real_name else (self._bold(name) + ' = class ' + real_name)
         if bases:
             parents = map(makename, bases)
             title += '(%s)' % ', '.join(parents)
@@ -198,13 +327,17 @@ location listed above.
 
         # Cute little class to pump out a horizontal rule between sections.
         class HorizontalRule:
-            def __init__(self):
-                self.needone = 0
+
+            def __init__(self, horizontal_rule: str):
+                self.__need_one = 0
+                self._horizontal_rule = horizontal_rule
+
             def maybe(self):
-                if self.needone:
-                    push('-' * 70)
-                self.needone = 1
-        hr = HorizontalRule()
+                if self.__need_one:
+                    push(self._horizontal_rule)
+                self.__need_one = 1
+
+        hr = HorizontalRule(self._get_rule())
 
         def spill(msg, attrs, predicate):
             ok, attrs = pydoc._split_list(attrs, predicate)
@@ -264,7 +397,7 @@ location listed above.
                 tag = "defined here"
             else:
                 tag = "inherited from %s" % pydoc.classname(thisclass,
-                                                      clazz.__module__)
+                                                            clazz.__module__)
 
             # Sort attrs by name.
             attrs.sort()
@@ -286,7 +419,10 @@ location listed above.
         contents = '\n'.join(contents)
         if not contents:
             return title + '\n'
-        return title + '\n' + self.indent(contents.rstrip(), ' |  ') + '\n'
+        return title + '\n' + self._indent(contents.rstrip(), ' |  ') + '\n'
+
+
+    repr = pydoc.TextRepr().repr
 
     def formatvalue(self, object):
         """Format an argument default value as text."""
@@ -312,12 +448,12 @@ location listed above.
             object = object.__func__
 
         if name == realname:
-            title = self.bold(realname)
+            title = self._bold(realname)
         else:
             if (cl and realname in cl.__dict__ and
                         cl.__dict__[realname] is object):
                 skipdocs = 1
-            title = self.bold(name) + ' = ' + realname
+            title = self._bold(name) + ' = ' + realname
         if inspect.isfunction(object):
             args, varargs, varkw, defaults, kwonlyargs, kwdefaults, ann = \
                 inspect.getfullargspec(object)
@@ -326,7 +462,7 @@ location listed above.
                 formatvalue=self.formatvalue,
                 formatannotation=inspect.formatannotationrelativeto(object))
             if realname == '<lambda>':
-                title = self.bold(name) + ' lambda '
+                title = self._bold(name) + ' lambda '
                 # XXX lambda's won't usually have func_annotations['return']
                 # since the syntax doesn't support but it is possible.
                 # So removing parentheses isn't truly safe.
@@ -339,18 +475,18 @@ location listed above.
             return decl + '\n'
         else:
             doc = pydoc.getdoc(object) or ''
-            return decl + '\n' + (doc and self.indent(doc).rstrip() + '\n')
+            return decl + '\n' + (doc and self._indent(doc).rstrip() + '\n')
 
     def _docdescriptor(self, name, value, mod):
         results = []
         push = results.append
 
         if name:
-            push(self.bold(name))
+            push(self._bold(name))
             push('\n')
         doc = pydoc.getdoc(value) or ''
         if doc:
-            push(self.indent(doc))
+            push(self._indent(doc))
             push('\n')
         return ''.join(results)
 
@@ -369,53 +505,223 @@ location listed above.
             line = (name and name + ' = ' or '') + repr
             chop = maxlen - len(line)
             if chop < 0: repr = repr[:chop] + '...'
-        line = (name and self.bold(name) + ' = ' or '') + repr
+        line = (name and self._bold(name) + ' = ' or '') + repr
         if doc is not None:
-            line += '\n' + self.indent(str(doc))
+            line += '\n' + self._indent(str(doc))
         return line
 
-    @abstractmethod
-    def _get_indent_sequence(self, default_indent_sequence: str) -> str:
-        pass
-
-    @abstractmethod
-    def _get_newline_sequence(self, default_newline_sequence: str) -> str:
-        pass
-
-    @abstractmethod
     def _create_anchor(self, anchor: str) -> str:
-        pass
-
-    @abstractmethod
-    def _create_anchor_link(self, link: str, anchor: str) -> str:
-        pass
-
-    @abstractmethod
-    def _create_name_section_header(self, default_header: str, name: str) -> str:
-        pass
-
-    @abstractmethod
-    def _create_name_section_content(self, default_content: str, name: str, synopsis: str) -> str:
-        pass
+        return ''
 
 
-class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
-    """Formatter base class to produce markdown documentation.
+class TextDoc(AbstractCustomDoc):
+    """Formatter class to produce text documentation.
     """
 
-    underline = "*" * 40
+    @staticmethod
+    def _get_indent() -> str:
+        return '    '
 
-    def _get_indent_sequence(self, default_indent_sequence: str) -> str:
-        return '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+    @staticmethod
+    def _get_tree_indent() -> str:
+        return '    '
 
-    def _get_newline_sequence(self, default_newline_sequence: str) -> str:
-        return '  \n'
+    @staticmethod
+    def _get_newline() -> str:
+        return '\n'
+
+    @staticmethod
+    def _get_rule() -> str:
+        return '-' * 80 + '\n'
+
+    @staticmethod
+    def _escape(text: str) -> str:
+        return text
+
+    @staticmethod
+    def _clean(text: str) -> str:
+        return text.strip()
+
+    @staticmethod
+    def _bold(text: str) -> str:
+        return ''.join(ch + '\b' + ch for ch in text)  # Using over-striking.
+
+    @staticmethod
+    def _anchor_link(link: str, anchor: str) -> str:
+        return ''  # Plain text can't have anchor links!
+
+    def _indent(self, text: str) -> str:
+        # Indent text by prepending the indent sequence to each line.
+        return self._get_newline().join([self._get_indent() + line for line in (text or '').split(self._get_newline())])
+
+    def _heading(self, text: str, level: int=1) -> str:
+        return self._bold('%s %s' % ('-' * level, text.upper()))
+
+    def _section(self, title: str, contents: str) -> str:
+        return self._heading(title) + self._get_newline() + self._indent(contents) + self._get_newline() * 2
+
+    def _formattree(self, tree, module, modname, clazz_names: list, parent=None, level=0):
+        """Render in text a class tree as returned by inspect.getclasstree().
+        """
+        result = ''
+        for entry in tree:
+            clazz = None
+            if type(entry) is type(()):
+                clazz, bases = entry
+                clazz_name = pydoc.classname(clazz, modname)
+                if clazz_name in clazz_names:
+                    clazz_name = self._anchor_link(clazz_name, clazz_name)
+                result += self._get_tree_indent() * level + clazz_name
+                if bases and bases != (parent,):
+                    parents = (pydoc.classname(c, modname) for c in bases)
+                    result += '(%s)' % ', '.join(parents)
+                result += self._get_newline()
+            elif type(entry) is type([]):
+                result += self._formattree(entry, module, modname, clazz_names, clazz, level + 1)
+        return result
+
+    def _create_module_name_heading(self, module_name: str) -> str:
+        return 'NAME'
+
+    def _create_module_name_content(self, module_name: str, synopsis: str) -> str:
+        return module_name + (synopsis and ' - %s' % synopsis)
+
+    def _create_module_doc_loc_heading(self, doc_loc: str) -> str:
+        return 'MODULE REFERENCE'
+
+    def _create_module_doc_loc_content(self, doc_loc: str) -> str:
+        return doc_loc + """
+The following documentation is automatically generated from the Python
+source files. It may be incomplete, incorrect or include features that
+are considered implementation detail and may vary between Python
+implementations. When in doubt, consult the module reference at the
+location listed above.
+"""
+
+    def _create_module_description_heading(self) -> str:
+        return 'DESCRIPTION'
+
+    def _create_module_description_content(self, description: str) -> str:
+        return description
+
+    def _create_module_packages_heading(self) -> str:
+        return 'PACKAGE CONTENTS'
+
+    def _create_module_packages_content(self, packages: list) -> str:
+        return self._get_newline().join(packages)
+
+    def _create_module_submodules_heading(self) -> str:
+        return 'SUBMODULES'
+
+    def _create_module_submodules_content(self, submodules: list) -> str:
+        return self._get_newline().join(submodules)
+
+    def _create_module_classes_heading(self) -> str:
+        return 'CLASSES'
+
+    def _create_module_classes_content(self, module, name: str, classes: list) -> str:
+        contents = [self._formattree(inspect.getclasstree([value for key, value in classes], 1),
+                                     module, name, [item[0] for item in classes])]
+        for key, value in classes:
+            contents.append(self._get_rule())
+            contents.append(self.document(value, key, name))
+        return self._get_newline().join(contents)
+
+    def _create_module_functions_heading(self) -> str:
+        return 'FUNCTIONS'
+
+    def _create_module_functions_content(self, name: str, functions: list) -> str:
+        return self._get_newline().join([self.document(value, key, name) for key, value in functions])
+
+    def _create_module_data_heading(self) -> str:
+        return 'DATA'
+
+    def _create_module_data_content(self, name: str, data: list) -> str:
+        return self._get_newline().join([self.docother(value, key, name, maxlen=80) for key, value in data])
+
+    def _create_module_version_heading(self) -> str:
+        return 'VERSION'
+
+    def _create_module_version_content(self, module) -> str:
+        version = str(module.__version__)
+        if version[:11] == '$' + 'Revision: ' and version[-1:] == '$':
+            version = version[11:-1].strip()
+        return version
+
+    def _create_module_date_heading(self) -> str:
+        return 'DATE'
+
+    def _create_module_date_content(self, module) -> str:
+        return str(module.__date__)
+
+    def _create_module_author_heading(self) -> str:
+        return 'AUTHOR'
+
+    def _create_module_author_content(self, module) -> str:
+        return str(module.__author__)
+
+    def _create_module_credits_heading(self) -> str:
+        return 'CREDITS'
+
+    def _create_module_credits_content(self, module) -> str:
+        return str(module.__credits__)
+
+    def _create_module_file_heading(self) -> str:
+        return 'FILE'
+
+    def _create_module_file_content(self, module) -> str:
+        try:
+            file = inspect.getabsfile(module)
+        except TypeError:
+            file = '(built-in)'
+        return file
+
+
+class MarkdownDoc(TextDoc):
+    """Formatter class to produce markdown documentation.
+    """
+
+    @staticmethod
+    def _get_indent() -> str:
+        return ''  # We don'tuse indents in markdown.
+
+    @staticmethod
+    def _get_tree_indent() -> str:
+        return '&nbsp;' * 8  # Simulate indents so the tree displays correctly.
+
+    @staticmethod
+    def _get_newline() -> str:
+        return '  \n'  # Markdown needs two extra spaces to see it as an actual new line.
+
+    @staticmethod
+    def _escape(text: str) -> str:
+        return text.replace('*', '\*').replace('_', '\_') if text else ''
+
+    @staticmethod
+    def _bold(text: str) -> str:
+        return '**%s**' % text  # We use **, as __ has special meaning to Python in names!
+
+    @staticmethod
+    def _anchor_link(link: str, anchor: str) -> str:
+        return '[%s](#%s)' % (link, anchor)
+
+    def _heading(self, text: str, level: int=1) -> str:
+        """Format the text as heading.
+        """
+        return '%s %s' % ('#' * level, text)
+
+
+
+
+
+
+
+
+
 
     def _create_anchor(self, anchor: str) -> str:
         return '<a name="%s"></a>' % anchor
 
-    def _create_anchor_link(self, link: str, anchor: str) -> str:
-        return '[%s](#%s)' % (link, anchor)
 
     def process_docstring(self, obj):
         """Get the docstring and turn it into a list."""
@@ -426,7 +732,7 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
 
     def process_class_name(self, name, bases, module):
         """Format the class's name and bases."""
-        title = "## %s%s" % (self._create_anchor(name), self.bold(name))
+        title = "## %s%s" % (self._create_anchor(name), self._bold(name))
         if bases:
             # get the names of each of the bases
             base_titles = [pydoc.classname(base, module) for base in bases]
@@ -441,7 +747,8 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
         return "### " + name
 
     def docclass(self, clazz, name=None, mod=None, *ignored):
-        """Produce text documentation for the class object clazz."""
+        """Produce text documentation for a giveen class object.
+        """
 
         # the overall document, as a line-delimited list
         document = []
@@ -461,7 +768,6 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
         # get the object's classname, which should be printed
         classtitle = self.process_class_name(name, bases, mod)
         document.append(classtitle)
-        document.append(self.underline)
 
         # get the object's docstring, which should be printed
         docstring = self.process_docstring(clazz)
@@ -485,8 +791,7 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
 
         if data:
             # start the data section
-            document.append(self.process_subsection(self.bold("data")))
-            document.append(self.underline)
+            document.append(self.process_subsection(self._bold("data")))
 
             # process your attributes
             for name, kind, classname, value in data:
@@ -498,8 +803,7 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
 
         if descriptors:
             # start the descriptors section
-            document.append(self.process_subsection(self.bold("descriptors")))
-            document.append(self.underline)
+            document.append(self.process_subsection(self._bold("descriptors")))
 
             # process your descriptors
             for name, kind, classname, value in descriptors:
@@ -507,34 +811,13 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
 
         if methods:
             # start the methods section
-            document.append(self.process_subsection(self.bold("methods")))
-            document.append(self.underline)
+            document.append(self.process_subsection(self._bold("methods")))
 
             # process your methods
             for name, kind, classname, value in methods:
                 document.append(self.document(getattr(clazz, name), name, mod, clazz))
 
         return "\n".join(document)
-
-    def bold(self, text):
-        """ Formats text as bold in markdown. """
-        if text.startswith('_') and text.endswith('_'):
-            return "__\%s\__" % text
-        elif text.startswith('_'):
-            return "__\%s__" % text
-        elif text.endswith('_'):
-            return "__%s\__" % text
-        else:
-            return "__%s__" % text
-
-    def indent(self, text, prefix=''):
-        """Indent text by prepending a given prefix to each line."""
-        return text
-
-    def section(self, title, contents):
-        """Format a section with a given heading."""
-        clean_contents = self.indent(contents).rstrip()
-        return '# %s\n\n%s\n\n' % (self.bold(title), clean_contents)
 
     def docroutine(self, object, name=None, mod=None, cl=None):
         """Produce text documentation for a function or method object."""
@@ -545,11 +828,11 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
         if inspect.ismethod(object):
             object = object.__func__
         if name == realname:
-            title = self.bold(realname)
+            title = self._bold(realname)
         else:
             if (cl and realname in cl.__dict__ and cl.__dict__[realname] is object):
                 skipdocs = 1
-            title = self.bold(name) + ' = ' + realname
+            title = self._bold(name) + ' = ' + realname
         if inspect.isfunction(object):
             args, varargs, varkw, defaults, kwonlyargs, kwdefaults, ann = inspect.getfullargspec(object)
             argspec = inspect.formatargspec(
@@ -557,7 +840,7 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
                 formatvalue=self.formatvalue,
                 formatannotation=inspect.formatannotationrelativeto(object))
             if realname == '<lambda>':
-                title = self.bold(name) + ' lambda '
+                title = self._bold(name) + ' lambda '
                 # XXX lambda's won't usually have func_annotations['return']
                 # since the syntax doesn't support but it is possible.
                 # So removing parentheses isn't truly safe.
@@ -570,7 +853,7 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
             return decl + '\n'
         else:
             doc = pydoc.getdoc(object) or ''
-            return decl + '\n' + (doc and self.indent(doc).rstrip() + '\n')
+            return decl + '\n' + (doc and self._indent(doc).rstrip() + '\n')
 
     def docother(self, object, name=None, mod=None, parent=None, maxlen=None, doc=None):
         """Produce text documentation for a data object."""
@@ -580,7 +863,7 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
 
     def _docdescriptor(self, name, value, mod):
         results = ""
-        if name: results += "#### " + self.bold(name) + "\n"
+        if name: results += "#### " + self._bold(name) + "\n"
         doc = pydoc.getdoc(value) or ""
         if doc: results += doc + "\n"
         return results
@@ -588,11 +871,21 @@ class MarkdownDoc(CustomDoc, metaclass=ABCMeta):
 
 class BitbucketMarkdownDoc(MarkdownDoc):
 
-    def _get_indent_sequence(self, default_indent_sequence: str) -> str:
-        return '........'  # Using html space sequence doesn't work!
+    @staticmethod
+    def _get_tree_indent() -> str:
+        return '.' * 8  # Html spaces doesn't work for Bitbucket!
+
+    @staticmethod
+    def _anchor_link(link: str, anchor: str) -> str:
+        # Bitbucket markdown doesn't support normal html anchor links, so we'll use header links!
+        return MarkdownDoc._anchor_link(link, 'markdown-header-%s' % anchor.replace(' ', '-').lower())
+
+
+
+
+
+
 
     def _create_anchor(self, anchor: str):
         return ''  # The standard markdown html anchor doesn't work!
 
-    def _create_anchor_link(self, link: str, anchor: str):
-        return super()._create_anchor_link(link, 'markdown-header-%s' % anchor.replace(' ', '-').lower())

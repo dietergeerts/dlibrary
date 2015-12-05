@@ -4,8 +4,7 @@ import pydoc
 import shutil
 
 import dlibrary
-
-from dlibrary_docs.customdoc import MarkdownDoc, BitbucketMarkdownDoc
+from dlibrary_docs.customdoc import BitbucketMarkdownDoc
 
 
 # SETTINGS #############################################################################################################
@@ -19,10 +18,10 @@ api_docs_path = os.path.abspath(os.path.join('..', '..', 'DLibrary wiki', 'API',
 
 class DLibraryDoc(BitbucketMarkdownDoc):
 
-    def _create_name_section_header(self, default_header: str, name: str) -> str:
-        return 'MODULE %s' % name
+    def _create_module_name_heading(self, module_name: str) -> str:
+        return self._bold('MODULE %s' % module_name)
 
-    def _create_name_section_content(self, default_content: str, name: str, synopsis: str) -> str:
+    def _create_module_name_content(self, module_name: str, synopsis: str) -> str:
         return synopsis
 
 
