@@ -290,16 +290,10 @@ class AbstractCustomDoc(pydoc.Doc, metaclass=ABCMeta):
                 data.append((key, value))
         return data
 
-
-
-
-
-
-
-
-    def docclass(self, clazz, name=None, mod=None, *ignored):
+    def docclass(self, clazz, name=None, mod=None, *args):
         """Produce text documentation for a given class object.
         """
+
         real_name = clazz.__name__
         name = name or real_name
         bases = clazz.__bases__
@@ -419,7 +413,8 @@ class AbstractCustomDoc(pydoc.Doc, metaclass=ABCMeta):
         contents = '\n'.join(contents)
         if not contents:
             return title + '\n'
-        return title + '\n' + self._indent(contents.rstrip(), ' |  ') + '\n'
+        return title + '\n' + self._indent(contents.rstrip()) + '\n'
+        # return title + '\n' + self._indent(contents.rstrip(), ' |  ') + '\n'
 
 
     repr = pydoc.TextRepr().repr
@@ -746,78 +741,78 @@ class MarkdownDoc(TextDoc):
         """format the subsection as a header"""
         return "### " + name
 
-    def docclass(self, clazz, name=None, mod=None, *ignored):
-        """Produce text documentation for a giveen class object.
-        """
-
-        # the overall document, as a line-delimited list
-        document = []
-
-        # get the object's actual name, defaulting to the passed in name
-        name = name or clazz.__name__
-
-        # get the object's bases
-        bases = clazz.__bases__
-
-        # get the object's module
-        mod = clazz.__module__
-
-        # get the object's MRO
-        mro = [pydoc.classname(base, mod) for base in inspect.getmro(clazz)]
-
-        # get the object's classname, which should be printed
-        classtitle = self.process_class_name(name, bases, mod)
-        document.append(classtitle)
-
-        # get the object's docstring, which should be printed
-        docstring = self.process_docstring(clazz)
-        document.append(docstring)
-
-        # get all the attributes of the class
-        attrs = []
-        for name, kind, classname, value in pydoc.classify_class_attrs(clazz):
-            if pydoc.visiblename(name):
-                attrs.append((name, kind, classname, value))
-
-        # sort them into categories
-        data, descriptors, methods = [], [], []
-        for attr in attrs:
-            if attr[1] == "data" and not attr[0].startswith("_"):
-                data.append(attr)
-            elif attr[1] == "data descriptor" and not attr[0].startswith("_"):
-                descriptors.append(attr)
-            elif "method" in attr[1] and not attr[2] is builtins.object:
-                methods.append(attr)
-
-        if data:
-            # start the data section
-            document.append(self.process_subsection(self._bold("data")))
-
-            # process your attributes
-            for name, kind, classname, value in data:
-                if hasattr(value, '__call__') or inspect.isdatadescriptor(value):
-                    doc = pydoc.getdoc(value)
-                else:
-                    doc = None
-                document.append(self.docother(getattr(clazz, name), name, mod, maxlen=70, doc=doc) + '\n')
-
-        if descriptors:
-            # start the descriptors section
-            document.append(self.process_subsection(self._bold("descriptors")))
-
-            # process your descriptors
-            for name, kind, classname, value in descriptors:
-                document.append(self._docdescriptor(name, value, mod))
-
-        if methods:
-            # start the methods section
-            document.append(self.process_subsection(self._bold("methods")))
-
-            # process your methods
-            for name, kind, classname, value in methods:
-                document.append(self.document(getattr(clazz, name), name, mod, clazz))
-
-        return "\n".join(document)
+    # def docclass(self, clazz, name=None, mod=None, *ignored):
+    #     """Produce text documentation for a giveen class object.
+    #     """
+    #
+    #     # the overall document, as a line-delimited list
+    #     document = []
+    #
+    #     # get the object's actual name, defaulting to the passed in name
+    #     name = name or clazz.__name__
+    #
+    #     # get the object's bases
+    #     bases = clazz.__bases__
+    #
+    #     # get the object's module
+    #     mod = clazz.__module__
+    #
+    #     # get the object's MRO
+    #     mro = [pydoc.classname(base, mod) for base in inspect.getmro(clazz)]
+    #
+    #     # get the object's classname, which should be printed
+    #     classtitle = self.process_class_name(name, bases, mod)
+    #     document.append(classtitle)
+    #
+    #     # get the object's docstring, which should be printed
+    #     docstring = self.process_docstring(clazz)
+    #     document.append(docstring)
+    #
+    #     # get all the attributes of the class
+    #     attrs = []
+    #     for name, kind, classname, value in pydoc.classify_class_attrs(clazz):
+    #         if pydoc.visiblename(name):
+    #             attrs.append((name, kind, classname, value))
+    #
+    #     # sort them into categories
+    #     data, descriptors, methods = [], [], []
+    #     for attr in attrs:
+    #         if attr[1] == "data" and not attr[0].startswith("_"):
+    #             data.append(attr)
+    #         elif attr[1] == "data descriptor" and not attr[0].startswith("_"):
+    #             descriptors.append(attr)
+    #         elif "method" in attr[1] and not attr[2] is builtins.object:
+    #             methods.append(attr)
+    #
+    #     if data:
+    #         # start the data section
+    #         document.append(self.process_subsection(self._bold("data")))
+    #
+    #         # process your attributes
+    #         for name, kind, classname, value in data:
+    #             if hasattr(value, '__call__') or inspect.isdatadescriptor(value):
+    #                 doc = pydoc.getdoc(value)
+    #             else:
+    #                 doc = None
+    #             document.append(self.docother(getattr(clazz, name), name, mod, maxlen=70, doc=doc) + '\n')
+    #
+    #     if descriptors:
+    #         # start the descriptors section
+    #         document.append(self.process_subsection(self._bold("descriptors")))
+    #
+    #         # process your descriptors
+    #         for name, kind, classname, value in descriptors:
+    #             document.append(self._docdescriptor(name, value, mod))
+    #
+    #     if methods:
+    #         # start the methods section
+    #         document.append(self.process_subsection(self._bold("methods")))
+    #
+    #         # process your methods
+    #         for name, kind, classname, value in methods:
+    #             document.append(self.document(getattr(clazz, name), name, mod, clazz))
+    #
+    #     return "\n".join(document)
 
     def docroutine(self, object, name=None, mod=None, cl=None):
         """Produce text documentation for a function or method object."""
