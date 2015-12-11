@@ -78,8 +78,7 @@ class IClazzAttributes(IAttributes, metaclass=ABCMeta):
         return ObjectRepository().get(name) if has_vector_fill else None
 
     def _set_vector_fill(self, value: AbstractVectorFill):
-        if not vs.SetClVectorFill(self._clazz_name, value.name):
-            raise VSException('SetClVectorFill(%s, %s)' % (self._clazz_name, value.name))
+        vs.SetObjectVariableLongInt(vs.GetObject(self._clazz_name), 695, vs.Name2Index(value.name) * -1)
 
 
 class Clazz(IClazzAttributes):
@@ -155,12 +154,14 @@ class IDocumentAttributes(IAttributes, metaclass=ABCMeta):
         vs.FillPat(value)
 
     def _get_vector_fill(self) -> AbstractVectorFill:
-        has_vector_fill, name = vs.GetVectorFillDefault()
-        return ObjectRepository().get(name) if has_vector_fill else None
+        # We'll get the correct pref index through the currently set fill type.
+        pref_index = {4: 530, 5: 528, 6: 508, 7: 518}.get(vs.GetPrefInt(529), 0)
+        return None if pref_index == 0 else ObjectRepository().get(vs.Index2Name(vs.GetPrefLongInt(pref_index) * -1))
 
     def _set_vector_fill(self, value: AbstractVectorFill):
-        if not vs.SetVectorFillDefault(value.name):
-            raise VSException('SetVectorFillDefault(%s)' % value.name)
+        vs.SetPrefLongInt(
+            {HatchVectorFill: 530, TileVectorFill: 528, GradientVectorFill: 508, ImageVectorFill: 518}.get(type(value)),
+            vs.Name2Index(value.name) * -1)
 
 
 class Document(IDocumentAttributes, metaclass=SingletonABCMeta):

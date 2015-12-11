@@ -51,6 +51,15 @@ class AbstractKeyedObject(object, metaclass=ABCMeta):
     def name(self) -> str:
         return self.__name
 
+    def __eq__(self, other):
+        """Two objects are the same if they are from the same type and both have the same handle.
+        The handle is what Vectorworks sees as the primary key for an object (which is session based!)
+        """
+        return isinstance(other, self.__class__) and self.handle == other.handle
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
 
 class ObjectRepository(object, metaclass=SingletonMeta):
     """Singleton to get our objects (wrappers) based on the handle or name, which are identifiers for VW.

@@ -26,8 +26,7 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
         return ObjectRepository().get(name) if has_vector_fill else None
 
     def _set_vector_fill(self, value: AbstractVectorFill):
-        if not vs.SetVectorFill(self._object_handle, value.name):
-            raise VSException('SetVectorFill(%s, %s)' % (self._object_handle, value.name))
+        vs.SetObjectVariableLongInt(self._object_handle, 695, vs.Name2Index(value.name) * -1)
 
 
 class RecordField(AbstractKeyedObject):

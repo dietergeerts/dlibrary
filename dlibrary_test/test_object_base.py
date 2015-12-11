@@ -109,6 +109,13 @@ class AbstractKeyedObjectTest(TestCase):
         """
         self.assertIsNone(TestKeyedObject(self.__line_handle).name)
 
+    def test_equality(self):
+        """Two objects are the same if their handles are the same.
+        """
+        self.assertEqual(TestKeyedObject(self.__tile_name), TestKeyedObject(self.__tile_name))
+        self.assertEqual(TestKeyedObject(self.__tile_name), TestKeyedObject(self.__tile_handle))
+        self.assertNotEqual(TestKeyedObject(self.__tile_name), TestKeyedObject(self.__line_handle))
+
 
 class ObjectRepositoryTest(TestCase):
 
