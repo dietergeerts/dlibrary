@@ -8,7 +8,7 @@ import vs
 
 
 class PatternFillEnum(object):
-    """"Holds the most important pattern fill indices in a human readable name.
+    """Holds the most important pattern fill indices in a human readable name.
     These are No fill, background color fill and foreground color fill. It is recommended to not use any other fills
     anymore, as there are several issues with them, especially with printing.
     """
@@ -19,25 +19,25 @@ class PatternFillEnum(object):
 
 
 class AbstractVectorFill(AbstractKeyedObject, metaclass=ABCMeta):
+    """Abstract base class for vector fills = fill resources.
+    """
 
     def __init__(self, handle_or_name):
         super().__init__(handle_or_name)
 
 
 class IAttributes(object, metaclass=ABCMeta):
+    """Abstract interface for handling attributes.
+    """
 
     @property
     def fill(self):
-        """
-        :rtype: PatternFillEnum|AbstractVectorFill
-        """
+        """:rtype: PatternFillEnum | AbstractVectorFill"""
         return self._get_vector_fill() or self._get_pattern_fill()
 
     @fill.setter
     def fill(self, value):
-        """
-        :type value: PatternFillEnum|AbstractVectorFill
-        """
+        """:type value: PatternFillEnum | AbstractVectorFill"""
         self._set_pattern_fill(value) if isinstance(value, int) else None
         self._set_vector_fill(value) if isinstance(value, AbstractVectorFill) else None
 
@@ -61,6 +61,8 @@ class IAttributes(object, metaclass=ABCMeta):
 
 
 class IClazzAttributes(IAttributes, metaclass=ABCMeta):
+    """Interface for handling class attributes.
+    """
 
     @property
     @abstractmethod
@@ -146,6 +148,8 @@ class SheetLayer(Layer):
 
 
 class IDocumentAttributes(IAttributes, metaclass=ABCMeta):
+    """Interface for handling document attributes.
+    """
 
     def _get_pattern_fill(self) -> int:
         return vs.FFillPat()

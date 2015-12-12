@@ -4,7 +4,7 @@ import pydoc
 import shutil
 
 import dlibrary
-from dlibrary_docs.customdoc import BitbucketMarkdownDoc
+from dlibrary_docs.customdoc import DLibraryDoc
 
 
 # SETTINGS #############################################################################################################
@@ -12,17 +12,6 @@ from dlibrary_docs.customdoc import BitbucketMarkdownDoc
 # Best to check out the wiki next to this repo, so that the docs will be directly build there, ready for commit. #######
 
 api_docs_path = os.path.abspath(os.path.join('..', '..', 'DLibrary wiki', 'API', dlibrary.__version__.split('.')[0]))
-
-
-# DLIBRARY FORMATTER ###################################################################################################
-
-class DLibraryDoc(BitbucketMarkdownDoc):
-
-    def _create_module_name_heading(self, module_name: str) -> str:
-        return self._bold('MODULE %s' % module_name)
-
-    def _create_module_name_content(self, module_name: str, synopsis: str) -> str:
-        return synopsis
 
 
 # CLEAN API DOCS #######################################################################################################

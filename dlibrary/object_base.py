@@ -20,7 +20,7 @@ class ObjectTypeEnum(object):
         """Gets the object type based on the handle or name.
         In VW, both are keys, but name isn't always provided. Also, some vs calls work with handles, others with names.
 
-        :type handle_or_name: handle|str
+        :type handle_or_name: handle | str
         :returns: None if the handle or name doesn't references an actual object.
         """
         return vs.GetTypeN(vs.GetObject(handle_or_name) if isinstance(handle_or_name, str) else handle_or_name)
@@ -33,7 +33,7 @@ class AbstractKeyedObject(object, metaclass=ABCMeta):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle|str
+        :type handle_or_name: handle | str
         """
         self.__handle = handle_or_name if not isinstance(handle_or_name, str) else vs.GetObject(handle_or_name)
         self.__name = handle_or_name if isinstance(handle_or_name, str) else self.__get_name_or_none(handle_or_name)
@@ -45,10 +45,12 @@ class AbstractKeyedObject(object, metaclass=ABCMeta):
 
     @property
     def handle(self):
+        """:rtype: handle"""
         return self.__handle
 
     @property
     def name(self) -> str:
+        """:rtype: str"""
         return self.__name
 
     def __eq__(self, other):
@@ -70,8 +72,11 @@ class ObjectRepository(object, metaclass=SingletonMeta):
     def __init__(self):
         self.__constructors = dict()
 
-    def register(self, object_type: int, constructor: callable):
+    def register(self, object_type: int, constructor):
         """Register an object constructor method, so it can be created and returned in the get method.
+        This is done in the __init__ file of dlibrary, so all types are registered when loaded by VW.
+
+        :type constructor: (handle | str) -> AbstractKeyedObject
         """
         self.__constructors[object_type] = constructor
 
@@ -79,6 +84,6 @@ class ObjectRepository(object, metaclass=SingletonMeta):
         """Get a wrapper object, based on the handle or name, which identifies the object in VW.
         If no constructor for the type is present, or the type can't be retrieved, None is returned.
 
-        :type handle_or_name: handle|str
+        :type handle_or_name: handle | str
         """
         return self.__constructors.get(ObjectTypeEnum.get(handle_or_name), lambda h_o_n: None)(handle_or_name)

@@ -9,6 +9,8 @@ import vs
 
 
 class IObjectAttributes(IAttributes, metaclass=ABCMeta):
+    """Interface that handles object attributes.
+    """
 
     @property
     @abstractmethod
