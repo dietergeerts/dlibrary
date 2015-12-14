@@ -108,8 +108,13 @@ class Line(AbstractObject):
 
     @staticmethod
     def create(point1: tuple, point2: tuple):
-        vs.MoveTo(point1)
-        vs.LineTo(point2)
+        """
+        :type point1: (float | str, float | str)
+        :type point2: (float | str, float | str)
+        :rtype: Line
+        """
+        vs.MoveTo(Units.resolve_length_units(point1))
+        vs.LineTo(Units.resolve_length_units(point2))
         return Line(vs.LNewObj())
 
     def __init__(self, handle):

@@ -69,6 +69,23 @@ class Units(object, metaclass=SingletonMeta):
         return '%%.%sf%%s' % precision % (units, unit_mark if with_unit_mark else '')
 
     @staticmethod
+    def resolve_length_units(dimension):
+        """Will return the same, but length unit strings will be transformed to floats.
+        For a float or str dimension, this will return a float.
+        For a tuple, which would be a point, this will return a tuple of floats.
+
+        :type unit: float | str | tuple
+        :rtype: float | tuple
+        """
+        if isinstance(dimension, str):
+            return Units.__validate_length_str_to_length_units(dimension)
+        elif isinstance(dimension, tuple):
+            return tuple((Units.__validate_length_str_to_length_units(item) if isinstance(item, str) else item)
+                         for item in dimension)
+        else:
+            return dimension
+
+    @staticmethod
     def to_inches(length_in_length_units_or_str: float) -> float:
         """
         :type length_in_length_units_or_str: float || str
@@ -280,7 +297,7 @@ class SymbolDefinition(AbstractResource):
         super().__init__(handle, name)
 
     def place_symbol(self, insertion_point: tuple, rotation: float):
-        vs.Symbol(self.name, insertion_point, rotation)
+        vs.Symbol(self.name, Units.resolve_length_units(insertion_point), rotation)
 
 
 class SymbolDefinitionResourceList(AbstractResourceList):
