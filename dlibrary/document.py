@@ -23,6 +23,9 @@ class AbstractVectorFill(AbstractKeyedObject, metaclass=ABCMeta):
     """
 
     def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
         super().__init__(handle_or_name)
 
 
@@ -32,12 +35,12 @@ class IAttributes(object, metaclass=ABCMeta):
 
     @property
     def fill(self):
-        """:rtype: PatternFillEnum | AbstractVectorFill"""
+        """:rtype: PatternFillEnum | T <= AbstractVectorFill"""
         return self._get_vector_fill() or self._get_pattern_fill()
 
     @fill.setter
     def fill(self, value):
-        """:type value: PatternFillEnum | AbstractVectorFill"""
+        """:type value: PatternFillEnum | T <= AbstractVectorFill"""
         self._set_pattern_fill(value) if isinstance(value, int) else None
         self._set_vector_fill(value) if isinstance(value, AbstractVectorFill) else None
 
@@ -50,13 +53,17 @@ class IAttributes(object, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _get_vector_fill(self) -> AbstractVectorFill:
+    def _get_vector_fill(self):
         """Should return the vector fill, if any, otherwise None!
+        :rtype: T <= AbstractVectorFill
         """
         pass
 
     @abstractmethod
-    def _set_vector_fill(self, value: AbstractVectorFill):
+    def _set_vector_fill(self, value):
+        """
+        :type value: T <= AbstractVectorFill
+        """
         pass
 
 
@@ -75,11 +82,17 @@ class IClazzAttributes(IAttributes, metaclass=ABCMeta):
     def _set_pattern_fill(self, value: int):
         vs.SetClFPat(self._clazz_name, value)
 
-    def _get_vector_fill(self) -> AbstractVectorFill:
+    def _get_vector_fill(self):
+        """
+        :rtype: T <= AbstractVectorFill
+        """
         has_vector_fill, name = vs.GetClVectorFill(self._clazz_name)
         return ObjectRepository().get(name) if has_vector_fill else None
 
-    def _set_vector_fill(self, value: AbstractVectorFill):
+    def _set_vector_fill(self, value):
+        """
+        :type value: T <= AbstractVectorFill
+        """
         vs.SetObjectVariableLongInt(vs.GetObject(self._clazz_name), 695, vs.Name2Index(value.name) * -1)
 
 
@@ -157,12 +170,18 @@ class IDocumentAttributes(IAttributes, metaclass=ABCMeta):
     def _set_pattern_fill(self, value: int):
         vs.FillPat(value)
 
-    def _get_vector_fill(self) -> AbstractVectorFill:
+    def _get_vector_fill(self):
+        """
+        :rtype: T <= AbstractVectorFill
+        """
         # We'll get the correct pref index through the currently set fill type.
         pref_index = {4: 530, 5: 528, 6: 508, 7: 518}.get(vs.GetPrefInt(529), 0)
         return None if pref_index == 0 else ObjectRepository().get(vs.Index2Name(vs.GetPrefLongInt(pref_index) * -1))
 
-    def _set_vector_fill(self, value: AbstractVectorFill):
+    def _set_vector_fill(self, value):
+        """
+        :type value: T <= AbstractVectorFill
+        """
         vs.SetPrefLongInt(
             {HatchVectorFill: 530, TileVectorFill: 528, GradientVectorFill: 508, ImageVectorFill: 518}.get(type(value)),
             vs.Name2Index(value.name) * -1)
@@ -282,24 +301,36 @@ class Units(object, metaclass=SingletonMeta):
 class HatchVectorFill(AbstractVectorFill):
 
     def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
         super().__init__(handle_or_name)
 
 
 class TileVectorFill(AbstractVectorFill):
 
     def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
         super().__init__(handle_or_name)
 
 
 class GradientVectorFill(AbstractVectorFill):
 
     def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
         super().__init__(handle_or_name)
 
 
 class ImageVectorFill(AbstractVectorFill):
 
     def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
         super().__init__(handle_or_name)
 
 

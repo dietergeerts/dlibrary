@@ -4,7 +4,6 @@ from abc import ABCMeta, abstractmethod
 
 from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
-from dlibrary.utility import VSException
 import vs
 
 
@@ -23,11 +22,17 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
     def _set_pattern_fill(self, value: int):
         vs.SetFPat(self._object_handle, value)
 
-    def _get_vector_fill(self) -> AbstractVectorFill:
+    def _get_vector_fill(self):
+        """
+        :rtype: T <= AbstractVectorFill
+        """
         has_vector_fill, name = vs.GetVectorFill(self._object_handle)
         return ObjectRepository().get(name) if has_vector_fill else None
 
-    def _set_vector_fill(self, value: AbstractVectorFill):
+    def _set_vector_fill(self, value):
+        """
+        :type value: T <= AbstractVectorFill
+        """
         vs.SetObjectVariableLongInt(self._object_handle, 695, vs.Name2Index(value.name) * -1)
 
 

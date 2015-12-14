@@ -76,14 +76,15 @@ class ObjectRepository(object, metaclass=SingletonMeta):
         """Register an object constructor method, so it can be created and returned in the get method.
         This is done in the __init__ file of dlibrary, so all types are registered when loaded by VW.
 
-        :type constructor: (handle | str) -> AbstractKeyedObject
+        :type constructor: (handle | str) -> T <= AbstractKeyedObject
         """
         self.__constructors[object_type] = constructor
 
-    def get(self, handle_or_name) -> AbstractKeyedObject:
+    def get(self, handle_or_name):
         """Get a wrapper object, based on the handle or name, which identifies the object in VW.
         If no constructor for the type is present, or the type can't be retrieved, None is returned.
 
         :type handle_or_name: handle | str
+        :rtype: T <= AbstractKeyedObject
         """
         return self.__constructors.get(ObjectTypeEnum.get(handle_or_name), lambda h_o_n: None)(handle_or_name)
