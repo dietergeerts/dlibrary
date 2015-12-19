@@ -10,10 +10,11 @@ class ObjectTypeEnum(object):
     """
 
     NONE = 0
+    CLASS_DEFINITION = 94
     HATCH_FILL_DEFINITION = 66
     TILE_FILL_DEFINITION = 108
-    IMAGE_FILL_DEFINITION = 119
     GRADIENT_FILL_DEFINITION = 120
+    IMAGE_FILL_DEFINITION = 119
 
     @staticmethod
     def get(handle_or_name) -> int:

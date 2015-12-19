@@ -96,14 +96,13 @@ class IClazzAttributes(IAttributes, metaclass=ABCMeta):
         vs.SetObjectVariableLongInt(vs.GetObject(self._clazz_name), 695, vs.Name2Index(value.name) * -1)
 
 
-class Clazz(IClazzAttributes):
+class Clazz(AbstractKeyedObject, IClazzAttributes):
 
-    def __init__(self, name: str):
-        self.__name = name
-
-    @property
-    def name(self):
-        return self.__name
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
+        super().__init__(handle_or_name)
 
     @property
     def _clazz_name(self) -> str:

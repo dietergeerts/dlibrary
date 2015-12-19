@@ -1,11 +1,11 @@
-from dlibrary.document import HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill
+from dlibrary.document import HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill, Clazz
 from dlibrary.object_base import ObjectRepository, ObjectTypeEnum
 
 __author__ = 'Dieter Geerts <dieter@dworks.be>'
 __version__ = '2016.0.0'
 __license__ = 'MIT'
 
-
+ObjectRepository().register(ObjectTypeEnum.CLASS_DEFINITION, Clazz)
 ObjectRepository().register(ObjectTypeEnum.HATCH_FILL_DEFINITION, HatchVectorFill)
 ObjectRepository().register(ObjectTypeEnum.TILE_FILL_DEFINITION, TileVectorFill)
 ObjectRepository().register(ObjectTypeEnum.IMAGE_FILL_DEFINITION, ImageVectorFill)

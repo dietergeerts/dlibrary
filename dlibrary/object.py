@@ -127,6 +127,19 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, metaclass=ABCMeta):
         vs.HMove(self.handle, delta_x, delta_y)
 
 
+class DrawnObject(AbstractObject):
+    """You can use this wrapper for objects that aren't yet in this library.
+    As the object repository will not always know all possible object types, due to the fact that we are still working
+    on DLibrary, and that Vectorworks can introduce new types, this class can be used for it's general properties.
+    """
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
+        super().__init__(handle_or_name)
+
+
 class Line(AbstractObject):
 
     @staticmethod
