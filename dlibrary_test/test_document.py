@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from dlibrary.document import IAttributes, AbstractVectorFill, PatternFillEnum, TileVectorFill, IClazzAttributes, \
-    IDocumentAttributes, HatchVectorFill, ImageVectorFill, GradientVectorFill
+    IDocumentAttributes, HatchVectorFill, ImageVectorFill, GradientVectorFill, LineStyle
 from dlibrary.object import Line
 import vs
 
@@ -11,6 +11,8 @@ class TestAttributes(IAttributes):
     def __init__(self):
         self.__pattern_fill = PatternFillEnum.NONE
         self.__vector_fill = None
+        self.__pattern_line = PatternFillEnum.NONE
+        self.__vector_line = None
 
     def _get_pattern_fill(self) -> int:
         return self.__pattern_fill
@@ -25,6 +27,18 @@ class TestAttributes(IAttributes):
     def _set_vector_fill(self, value: AbstractVectorFill):
         self.__vector_fill = value
 
+    def _get_pattern_line(self) -> int:
+        return self.__pattern_line
+
+    def _set_pattern_line(self, value: int):
+        self.__pattern_line = value
+
+    def _get_vector_line(self):
+        return self.__vector_line
+
+    def _set_vector_line(self, value):
+        self.__vector_line = value
+
 
 class IAttributesTest(TestCase):
 
@@ -32,6 +46,7 @@ class IAttributesTest(TestCase):
     __tile_fill = None
     __image_fill = None
     __gradient_fill = None
+    __line_style = None
     __attributes = None
 
     @classmethod
@@ -47,6 +62,8 @@ class IAttributesTest(TestCase):
         # TODO: We'll investigate later, I'll add it to the doc for now.
         cls.__image_fill = ImageVectorFill('[AB] TEST')
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
+        # TODO: Can't find functions to create line styles, add later. Added to doc now.
+        cls.__line_style = LineStyle('[LS] test')
         cls.__attributes = TestAttributes()
 
     @classmethod
@@ -57,6 +74,7 @@ class IAttributesTest(TestCase):
         # TODO: Delete image fill once we can create it.
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
+        # TODO: Delete line style once we can create it.
 
     def test_set_pattern_fill_and_get(self):
         """Setting a pattern fill should give the same back.
@@ -79,6 +97,22 @@ class IAttributesTest(TestCase):
         self.assertEqual(self.__attributes.fill, self.__image_fill)
         self.__attributes.fill = self.__gradient_fill
         self.assertEqual(self.__attributes.fill, self.__gradient_fill)
+
+    def test_set_pattern_line_and_get(self):
+        """Setting a pattern line should give the same back.
+        """
+        self.__attributes.line = PatternFillEnum.BACKGROUND_COLOR
+        self.assertIs(self.__attributes.line, PatternFillEnum.BACKGROUND_COLOR)
+        self.__attributes.line = PatternFillEnum.FOREGROUND_COLOR
+        self.assertIs(self.__attributes.line, PatternFillEnum.FOREGROUND_COLOR)
+        self.__attributes.line = PatternFillEnum.NONE
+        self.assertIs(self.__attributes.line, PatternFillEnum.NONE)
+
+    def test_set_vector_line_and_get(self):
+        """Setting a vector line should give the same back.
+        """
+        self.__attributes.line = self.__line_style
+        self.assertEqual(self.__attributes.line, self.__line_style)
 
 
 class TestClazzAttributes(IClazzAttributes):
@@ -98,6 +132,7 @@ class IClazzAttributesTest(IAttributesTest):
     __tile_fill = None
     __image_fill = None
     __gradient_fill = None
+    __line_style = None
     __attributes = None
 
     @classmethod
@@ -114,6 +149,8 @@ class IClazzAttributesTest(IAttributesTest):
         # TODO: We'll investigate later, I'll add it to the doc for now.
         cls.__image_fill = ImageVectorFill('[AB] TEST')
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
+        # TODO: Can't find functions to create line styles, add later. Added to doc now.
+        cls.__line_style = LineStyle('[LS] test')
         cls.__attributes = TestClazzAttributes(cls.__clazz_name)
 
     @classmethod
@@ -125,6 +162,7 @@ class IClazzAttributesTest(IAttributesTest):
         # TODO: Delete image fill once we can create it.
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
+        # TODO: Delete line style once we can create it.
 
     def test_set_pattern_fill_and_get(self):
         """Setting a pattern fill should give the same back.
@@ -148,6 +186,22 @@ class IClazzAttributesTest(IAttributesTest):
         self.__attributes.fill = self.__gradient_fill
         self.assertEqual(self.__attributes.fill, self.__gradient_fill)
 
+    def test_set_pattern_line_and_get(self):
+        """Setting a pattern line should give the same back.
+        """
+        self.__attributes.line = PatternFillEnum.BACKGROUND_COLOR
+        self.assertIs(self.__attributes.line, PatternFillEnum.BACKGROUND_COLOR)
+        self.__attributes.line = PatternFillEnum.FOREGROUND_COLOR
+        self.assertIs(self.__attributes.line, PatternFillEnum.FOREGROUND_COLOR)
+        self.__attributes.line = PatternFillEnum.NONE
+        self.assertIs(self.__attributes.line, PatternFillEnum.NONE)
+
+    def test_set_vector_line_and_get(self):
+        """Setting a vector line should give the same back.
+        """
+        self.__attributes.line = self.__line_style
+        self.assertEqual(self.__attributes.line, self.__line_style)
+
 
 class TestDocumentAttributes(IDocumentAttributes):
     pass
@@ -159,6 +213,7 @@ class IDocumentAttributesTest(IAttributesTest):
     __tile_fill = None
     __image_fill = None
     __gradient_fill = None
+    __line_style = None
     __attributes = None
 
     @classmethod
@@ -174,6 +229,8 @@ class IDocumentAttributesTest(IAttributesTest):
         # TODO: We'll investigate later, I'll add it to the doc for now.
         cls.__image_fill = ImageVectorFill('[AB] TEST')
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
+        # TODO: Can't find functions to create line styles, add later. Added to doc now.
+        cls.__line_style = LineStyle('[LS] test')
         cls.__attributes = TestDocumentAttributes()
 
     @classmethod
@@ -184,6 +241,7 @@ class IDocumentAttributesTest(IAttributesTest):
         # TODO: Delete image fill once we can create it.
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
+        # TODO: Delete line style once we can create it.
 
     def test_set_pattern_fill_and_get(self):
         """Setting a pattern fill should give the same back.
@@ -206,3 +264,19 @@ class IDocumentAttributesTest(IAttributesTest):
         self.assertEqual(self.__attributes.fill, self.__image_fill)
         self.__attributes.fill = self.__gradient_fill
         self.assertEqual(self.__attributes.fill, self.__gradient_fill)
+
+    def test_set_pattern_line_and_get(self):
+        """Setting a pattern line should give the same back.
+        """
+        self.__attributes.line = PatternFillEnum.BACKGROUND_COLOR
+        self.assertIs(self.__attributes.line, PatternFillEnum.BACKGROUND_COLOR)
+        self.__attributes.line = PatternFillEnum.FOREGROUND_COLOR
+        self.assertIs(self.__attributes.line, PatternFillEnum.FOREGROUND_COLOR)
+        self.__attributes.line = PatternFillEnum.NONE
+        self.assertIs(self.__attributes.line, PatternFillEnum.NONE)
+
+    def test_set_vector_line_and_get(self):
+        """Setting a vector line should give the same back.
+        """
+        self.__attributes.line = self.__line_style
+        self.assertEqual(self.__attributes.line, self.__line_style)

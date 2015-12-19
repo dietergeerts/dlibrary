@@ -4,7 +4,6 @@ import pydoc
 import shutil
 
 import dlibrary
-import dlibrary_docs
 from dlibrary_docs.customdoc import DLibraryDoc
 
 

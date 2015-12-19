@@ -2,13 +2,14 @@
 """
 from dlibrary import ObjectRepository
 from dlibrary.document import Document, PatternFillEnum, ImageVectorFill, GradientVectorFill, TileVectorFill, \
-    HatchVectorFill
+    HatchVectorFill, LineStyle
 
 
 def run():
 
     # Get the document default fill attribute.
     document_fill = Document().fill
+    document_line = Document().line
 
     # Set the document default fill attribute to a pattern fill.
     # Pattern fills include no fill, background- and foreground color!
@@ -35,3 +36,14 @@ def run():
     image_fill = ObjectRepository().get('Image Resource Name')
     if image_fill is not None and isinstance(image_fill, ImageVectorFill):
         Document().fill = image_fill
+
+    # Set the document default line attribute to a pattern fill.
+    # Pattern fills include no fill, background- and foreground color!
+    Document().line = PatternFillEnum.NONE
+    Document().line = PatternFillEnum.BACKGROUND_COLOR
+    Document().line = PatternFillEnum.FOREGROUND_COLOR
+
+    # Set the document default line attribute to a line style.
+    line_style = ObjectRepository().get('Line Style Name')
+    if line_style is not None and isinstance(line_style, LineStyle):
+        Document().line = line_style

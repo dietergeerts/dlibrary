@@ -1,5 +1,5 @@
 from dlibrary import TileVectorFill
-from dlibrary.document import PatternFillEnum, HatchVectorFill, ImageVectorFill, GradientVectorFill
+from dlibrary.document import PatternFillEnum, HatchVectorFill, ImageVectorFill, GradientVectorFill, LineStyle
 from dlibrary.object import IObjectAttributes, Line
 from dlibrary_test.test_document import IAttributesTest
 import vs
@@ -22,6 +22,7 @@ class IObjectAttributesTest(IAttributesTest):
     __tile_fill = None
     __image_fill = None
     __gradient_fill = None
+    __line_style = None
     __attributes = None
 
     @classmethod
@@ -39,6 +40,8 @@ class IObjectAttributesTest(IAttributesTest):
         # TODO: We'll investigate later, I'll add it to the doc for now.
         cls.__image_fill = ImageVectorFill('[AB] TEST')
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
+        # TODO: Can't find functions to create line styles, add later. Added to doc now.
+        cls.__line_style = LineStyle('[LS] test')
         cls.__attributes = TestObjectAttributes(cls.__rectangle)
 
     @classmethod
@@ -50,6 +53,7 @@ class IObjectAttributesTest(IAttributesTest):
         # TODO: Delete image fill once we can create it.
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
+        # TODO: Delete line style once we can create it.
 
     def test_set_pattern_fill_and_get(self):
         """Setting a pattern fill should give the same back.
@@ -72,3 +76,19 @@ class IObjectAttributesTest(IAttributesTest):
         self.assertEqual(self.__attributes.fill, self.__image_fill)
         self.__attributes.fill = self.__gradient_fill
         self.assertEqual(self.__attributes.fill, self.__gradient_fill)
+
+    def test_set_pattern_line_and_get(self):
+        """Setting a pattern line should give the same back.
+        """
+        self.__attributes.line = PatternFillEnum.BACKGROUND_COLOR
+        self.assertIs(self.__attributes.line, PatternFillEnum.BACKGROUND_COLOR)
+        self.__attributes.line = PatternFillEnum.FOREGROUND_COLOR
+        self.assertIs(self.__attributes.line, PatternFillEnum.FOREGROUND_COLOR)
+        self.__attributes.line = PatternFillEnum.NONE
+        self.assertIs(self.__attributes.line, PatternFillEnum.NONE)
+
+    def test_set_vector_line_and_get(self):
+        """Setting a vector line should give the same back.
+        """
+        self.__attributes.line = self.__line_style
+        self.assertEqual(self.__attributes.line, self.__line_style)

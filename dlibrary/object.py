@@ -23,7 +23,7 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
         vs.SetFPat(self._object_handle, value)
 
     def _get_vector_fill(self):
-        """
+        """Should return the vector fill, if any, otherwise None!
         :rtype: T <= AbstractVectorFill
         """
         has_vector_fill, name = vs.GetVectorFill(self._object_handle)
@@ -34,6 +34,25 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
         :type value: T <= AbstractVectorFill
         """
         vs.SetObjectVariableLongInt(self._object_handle, 695, vs.Name2Index(value.name) * -1)
+
+    def _get_pattern_line(self) -> int:
+        return vs.GetLSN(self._object_handle)
+
+    def _set_pattern_line(self, value: int):
+        vs.SetLSN(self._object_handle, value)
+
+    def _get_vector_line(self):
+        """Should return the vector line, if any, otherwise None!
+        :rtype: T <= AbstractVectorLine
+        """
+        line_type = vs.GetLSN(self._object_handle)
+        return ObjectRepository().get(vs.Index2Name(line_type * -1)) if line_type < 0 else None
+
+    def _set_vector_line(self, value):
+        """
+        :type value: T <= AbstractVectorLine
+        """
+        vs.SetLSN(self._object_handle, vs.Name2Index(value.name) * -1)
 
 
 class RecordField(AbstractKeyedObject):
