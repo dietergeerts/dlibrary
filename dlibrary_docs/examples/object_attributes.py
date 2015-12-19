@@ -1,7 +1,8 @@
 """This is an example on how to work with object attributes.
 """
 from dlibrary import ObjectRepository
-from dlibrary.document import PatternFillEnum, HatchVectorFill, TileVectorFill, GradientVectorFill, ImageVectorFill
+from dlibrary.document import PatternFillEnum, HatchVectorFill, TileVectorFill, GradientVectorFill, ImageVectorFill, \
+    LineStyle
 from dlibrary.object import DrawnObject
 
 
@@ -13,6 +14,7 @@ def run():
 
     # Get the object fill attribute.
     obj_fill = obj.fill
+    obj_line = obj.line
 
     # Set the object fill attribute to a pattern fill.
     # Pattern fills include no fill, background- and foreground color!
@@ -39,3 +41,14 @@ def run():
     image_fill = ObjectRepository().get('Image Resource Name')
     if image_fill is not None and isinstance(image_fill, ImageVectorFill):
         obj.fill = image_fill
+
+    # Set the object line attribute to a pattern fill.
+    # Pattern fills include no fill, background- and foreground color!
+    obj.line = PatternFillEnum.NONE
+    obj.line = PatternFillEnum.BACKGROUND_COLOR
+    obj.line = PatternFillEnum.FOREGROUND_COLOR
+
+    # Set the object line attribute to a line style.
+    line_style = ObjectRepository().get('Line Style Name')
+    if line_style is not None and isinstance(line_style, LineStyle):
+        obj.line = line_style

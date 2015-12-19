@@ -2,7 +2,7 @@
 """
 from dlibrary import ObjectRepository
 from dlibrary.document import PatternFillEnum, HatchVectorFill, TileVectorFill, ImageVectorFill, \
-    GradientVectorFill, Clazz
+    GradientVectorFill, Clazz, LineStyle
 
 
 def run():
@@ -14,6 +14,7 @@ def run():
 
     # Get the class fill attribute.
     clazz_fill = clazz.fill
+    clazz_line = clazz.line
 
     # Set the class fill attribute to a pattern fill.
     # Pattern fills include no fill, background- and foreground color!
@@ -40,3 +41,14 @@ def run():
     image_fill = ObjectRepository().get('Image Resource Name')
     if image_fill is not None and isinstance(image_fill, ImageVectorFill):
         clazz.fill = image_fill
+
+    # Set the class line attribute to a pattern fill.
+    # Pattern fills include no fill, background- and foreground color!
+    clazz.line = PatternFillEnum.NONE
+    clazz.line = PatternFillEnum.BACKGROUND_COLOR
+    clazz.line = PatternFillEnum.FOREGROUND_COLOR
+
+    # Set the class line attribute to a line style.
+    line_style = ObjectRepository().get('Line Style Name')
+    if line_style is not None and isinstance(line_style, LineStyle):
+        clazz.line = line_style
