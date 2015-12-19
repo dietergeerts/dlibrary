@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from dlibrary import ObjectTypeEnum, HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill
+from dlibrary import ObjectTypeEnum, HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill, Clazz, \
+    LineStyle
 from dlibrary.object import Line
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 import vs
@@ -8,14 +9,18 @@ import vs
 
 class ObjectTypeEnumTest(TestCase):
 
+    __clazz = None
     __hatch_fill = None
     __tile_fill = None
     __image_fill = None
     __gradient_fill = None
+    __line_style = None
 
     @classmethod
     def setUpClass(cls):
         # TODO: Replace creation by our own when implemented.
+        vs.NameClass('TEST')
+        cls.__clazz = Clazz('TEST')
         vs.BeginVectorFillN('[LA] TEST', False, False, 0)
         vs.AddVectorFillLayer(0, 0, 1, 1, .25, -.25, .7, 3, 255)
         vs.EndVectorFill()
@@ -26,21 +31,29 @@ class ObjectTypeEnumTest(TestCase):
         # TODO: We'll investigate later, I'll add it to the doc for now.
         cls.__image_fill = ImageVectorFill('[AB] TEST')
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
+        # TODO: Can't find functions to create line styles, add later. Added to doc now.
+        cls.__line_style = LineStyle('[LS] test')
 
     @classmethod
     def tearDownClass(cls):
         # TODO: Replace deletion by our own when implemented.
+        vs.DelClass(cls.__clazz.name)
         vs.DelVectorFill(cls.__hatch_fill.name)
         vs.DelObject(cls.__tile_fill.handle)
         # TODO: Delete image fill once we can create it.
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
+        # TODO: Delete line style once we can create it.
 
     def test_none_object_type(self):
         """A non-existing handle or name should return NONE as object type.
         """
         self.assertIs(ObjectTypeEnum.get(None), ObjectTypeEnum.NONE)
         self.assertIs(ObjectTypeEnum.get(''), ObjectTypeEnum.NONE)
+
+    def test_clazz_definition_object_type(self):
+        self.assertIs(ObjectTypeEnum.get(self.__clazz.handle), ObjectTypeEnum.CLASS_DEFINITION)
+        self.assertIs(ObjectTypeEnum.get(self.__clazz.name), ObjectTypeEnum.CLASS_DEFINITION)
 
     def test_hatch_fill_definition_object_type(self):
         self.assertIs(ObjectTypeEnum.get(self.__hatch_fill.handle), ObjectTypeEnum.HATCH_FILL_DEFINITION)
@@ -57,6 +70,10 @@ class ObjectTypeEnumTest(TestCase):
     def test_gradient_fill_definition_object_type(self):
         self.assertIs(ObjectTypeEnum.get(self.__gradient_fill.handle), ObjectTypeEnum.GRADIENT_FILL_DEFINITION)
         self.assertIs(ObjectTypeEnum.get(self.__gradient_fill.name), ObjectTypeEnum.GRADIENT_FILL_DEFINITION)
+
+    def test_line_style_definition_object_type(self):
+        self.assertIs(ObjectTypeEnum.get(self.__line_style.handle), ObjectTypeEnum.LINE_STYLE_DEFINITION)
+        self.assertIs(ObjectTypeEnum.get(self.__line_style.name), ObjectTypeEnum.LINE_STYLE_DEFINITION)
 
 
 class TestKeyedObject(AbstractKeyedObject):
@@ -119,14 +136,18 @@ class AbstractKeyedObjectTest(TestCase):
 
 class ObjectRepositoryTest(TestCase):
 
+    __clazz = None
     __hatch_fill = None
     __tile_fill = None
     __image_fill = None
     __gradient_fill = None
+    __line_style = None
 
     @classmethod
     def setUpClass(cls):
         # TODO: Replace creation by our own when implemented.
+        vs.NameClass('TEST')
+        cls.__clazz = Clazz('TEST')
         vs.BeginVectorFillN('[LA] TEST', False, False, 0)
         vs.AddVectorFillLayer(0, 0, 1, 1, .25, -.25, .7, 3, 255)
         vs.EndVectorFill()
@@ -137,21 +158,29 @@ class ObjectRepositoryTest(TestCase):
         # TODO: We'll investigate later, I'll add it to the doc for now.
         cls.__image_fill = ImageVectorFill('[AB] TEST')
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
+        # TODO: Can't find functions to create line styles, add later. Added to doc now.
+        cls.__line_style = LineStyle('[LS] test')
 
     @classmethod
     def tearDownClass(cls):
         # TODO: Replace deletion by our own when implemented.
+        vs.DelClass(cls.__clazz.name)
         vs.DelVectorFill(cls.__hatch_fill.name)
         vs.DelObject(cls.__tile_fill.handle)
         # TODO: Delete image fill once we can create it.
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
+        # TODO: Delete line style once we can create it.
 
     def test_none_object(self):
         """A non-existing handle or name should return None.
         """
         self.assertIsNone(ObjectRepository().get(None))
         self.assertIsNone(ObjectRepository().get(''))
+
+    def test_clazz(self):
+        self.assertIsInstance(ObjectRepository().get(self.__clazz.handle), Clazz)
+        self.assertIsInstance(ObjectRepository().get(self.__clazz.name), Clazz)
 
     def test_hatch_vector_fill(self):
         self.assertIsInstance(ObjectRepository().get(self.__hatch_fill.handle), HatchVectorFill)
@@ -168,3 +197,7 @@ class ObjectRepositoryTest(TestCase):
     def test_gradient_vector_fill(self):
         self.assertIsInstance(ObjectRepository().get(self.__gradient_fill.handle), GradientVectorFill)
         self.assertIsInstance(ObjectRepository().get(self.__gradient_fill.name), GradientVectorFill)
+
+    def test_line_style(self):
+        self.assertIsInstance(ObjectRepository().get(self.__line_style.handle), LineStyle)
+        self.assertIsInstance(ObjectRepository().get(self.__line_style.name), LineStyle)

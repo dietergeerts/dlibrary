@@ -10,4 +10,4 @@ ObjectRepository().register(ObjectTypeEnum.HATCH_FILL_DEFINITION, HatchVectorFil
 ObjectRepository().register(ObjectTypeEnum.TILE_FILL_DEFINITION, TileVectorFill)
 ObjectRepository().register(ObjectTypeEnum.IMAGE_FILL_DEFINITION, ImageVectorFill)
 ObjectRepository().register(ObjectTypeEnum.GRADIENT_FILL_DEFINITION, GradientVectorFill)
-ObjectRepository().register(ObjectTypeEnum.LINE_STYLE, LineStyle)
+ObjectRepository().register(ObjectTypeEnum.LINE_STYLE_DEFINITION, LineStyle)
