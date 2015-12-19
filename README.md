@@ -6,8 +6,8 @@ Common library for VW plug-ins.
 ## USING THE LIBRARY ###################################################################################################
 
 See the [Wiki](https://bitbucket.org/dieterdworks/vw-dlibrary/wiki/Home) on how to use this library, especially the
-[API section](https://bitbucket.org/dieterdworks/vw-dlibrary/wiki/browse/API). Keep in mind that the wiki is still work
-in progress. You can contribute all things you can't find and want in it.
+[Examples section](https://bitbucket.org/dieterdworks/vw-dlibrary/wiki/browse/examples). Keep in mind that the wiki is
+still work in progress. You can contribute all things you can't find and want in it.
 
 ### EXAMPLE ############################################################################################################
 
