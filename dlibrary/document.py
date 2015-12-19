@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 
 from dlibrary.object_base import ObjectRepository, AbstractKeyedObject
-from dlibrary.utility import SingletonMeta, ObservableList, VSException, SingletonABCMeta
+from dlibrary.utility import SingletonMeta, ObservableList, SingletonABCMeta
 import vs
 
 
@@ -29,6 +29,17 @@ class AbstractVectorFill(AbstractKeyedObject, metaclass=ABCMeta):
         super().__init__(handle_or_name)
 
 
+class AbstractVectorLine(AbstractKeyedObject, metaclass=ABCMeta):
+    """Abstract base class for vector lines = line resources.
+    """
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
+        super().__init__(handle_or_name)
+
+
 class IAttributes(object, metaclass=ABCMeta):
     """Abstract interface for handling attributes.
     """
@@ -43,6 +54,17 @@ class IAttributes(object, metaclass=ABCMeta):
         """:type value: PatternFillEnum | T <= AbstractVectorFill"""
         self._set_pattern_fill(value) if isinstance(value, int) else None
         self._set_vector_fill(value) if isinstance(value, AbstractVectorFill) else None
+
+    @property
+    def line(self):
+        """":rtype: PatternFillEnum | T <= AbstractVectorLine"""
+        return self._get_vector_line() or self._get_pattern_line()
+
+    @line.setter
+    def line(self, value):
+        """:type value: PatternFillEnum | T <= AbstractVectorLine"""
+        self._set_pattern_line(value) if isinstance(value, int) else None
+        self._set_vector_line(value) if isinstance(value, AbstractVectorLine) else None
 
     @abstractmethod
     def _get_pattern_fill(self) -> int:
@@ -66,6 +88,28 @@ class IAttributes(object, metaclass=ABCMeta):
         """
         pass
 
+    @abstractmethod
+    def _get_pattern_line(self) -> int:
+        pass
+
+    @abstractmethod
+    def _set_pattern_line(self, value: int):
+        pass
+
+    @abstractmethod
+    def _get_vector_line(self):
+        """Should return the vector line, if any, otherwise None!
+        :rtype: T <= AbstractVectorLine
+        """
+        pass
+
+    @abstractmethod
+    def _set_vector_line(self, value):
+        """
+        :type value: T <= AbstractVectorLine
+        """
+        pass
+
 
 class IClazzAttributes(IAttributes, metaclass=ABCMeta):
     """Interface for handling class attributes.
@@ -83,7 +127,7 @@ class IClazzAttributes(IAttributes, metaclass=ABCMeta):
         vs.SetClFPat(self._clazz_name, value)
 
     def _get_vector_fill(self):
-        """
+        """Should return the vector fill, if any, otherwise None!
         :rtype: T <= AbstractVectorFill
         """
         has_vector_fill, name = vs.GetClVectorFill(self._clazz_name)
@@ -94,6 +138,25 @@ class IClazzAttributes(IAttributes, metaclass=ABCMeta):
         :type value: T <= AbstractVectorFill
         """
         vs.SetObjectVariableLongInt(vs.GetObject(self._clazz_name), 695, vs.Name2Index(value.name) * -1)
+
+    def _get_pattern_line(self) -> int:
+        return vs.GetClLSN(self._clazz_name)
+
+    def _set_pattern_line(self, value: int):
+        vs.SetClLSN(self._clazz_name, value)
+
+    def _get_vector_line(self):
+        """Should return the vector line, if any, otherwise None!
+        :rtype: T <= AbstractVectorLine
+        """
+        line_type = vs.GetClLSN(self._clazz_name)
+        return ObjectRepository().get(vs.Index2Name(line_type * -1)) if line_type < 0 else None
+
+    def _set_vector_line(self, value):
+        """
+        :type value: T <= AbstractVectorLine
+        """
+        vs.SetClLSN(self._clazz_name, vs.Name2Index(value.name) * -1)
 
 
 class Clazz(AbstractKeyedObject, IClazzAttributes):
@@ -170,7 +233,7 @@ class IDocumentAttributes(IAttributes, metaclass=ABCMeta):
         vs.FillPat(value)
 
     def _get_vector_fill(self):
-        """
+        """Should return the vector fill, if any, otherwise None!
         :rtype: T <= AbstractVectorFill
         """
         # We'll get the correct pref index through the currently set fill type.
@@ -184,6 +247,25 @@ class IDocumentAttributes(IAttributes, metaclass=ABCMeta):
         vs.SetPrefLongInt(
             {HatchVectorFill: 530, TileVectorFill: 528, GradientVectorFill: 508, ImageVectorFill: 518}.get(type(value)),
             vs.Name2Index(value.name) * -1)
+
+    def _get_pattern_line(self) -> int:
+        return vs.FPenPatN()
+
+    def _set_pattern_line(self, value: int):
+        vs.PenPatN(value)
+
+    def _get_vector_line(self):
+        """Should return the vector line, if any, otherwise None!
+        :rtype: T <= AbstractVectorLine
+        """
+        line_type = vs.FPenPatN()
+        return ObjectRepository().get(vs.Index2Name(line_type * -1)) if line_type < 0 else None
+
+    def _set_vector_line(self, value):
+        """
+        :type value: T <= AbstractVectorLine
+        """
+        vs.PenPatN(vs.Name2Index(value.name) * -1)
 
 
 class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
@@ -342,6 +424,15 @@ class GradientVectorFill(AbstractVectorFill):
 
 
 class ImageVectorFill(AbstractVectorFill):
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
+        super().__init__(handle_or_name)
+
+
+class LineStyle(AbstractVectorLine):
 
     def __init__(self, handle_or_name):
         """
