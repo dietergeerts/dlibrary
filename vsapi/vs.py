@@ -33895,5 +33895,3 @@ def ZCoordinate(
 	'''
 	pass
 	return 'REAL' # 
-
-

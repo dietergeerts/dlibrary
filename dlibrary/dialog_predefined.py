@@ -1,6 +1,5 @@
 """Used for predefined dialogs. Also for use by other modules.
 """
-
 import vs
 
 

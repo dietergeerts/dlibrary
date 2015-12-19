@@ -1,23 +1,42 @@
 """Used for all object related stuff, except for plug-in objects.
 """
+from abc import ABCMeta, abstractmethod
 
-from abc import ABCMeta
-
-from dlibrary.document import Layer, Units, Clazz
+from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill
+from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 import vs
 
 
-class AbstractHandle(object, metaclass=ABCMeta):
-
-    def __init__(self, handle):
-        self.__handle = handle
+class IObjectAttributes(IAttributes, metaclass=ABCMeta):
+    """Interface that handles object attributes.
+    """
 
     @property
-    def handle(self):
-        return self.__handle
+    @abstractmethod
+    def _object_handle(self):
+        pass
+
+    def _get_pattern_fill(self) -> int:
+        return vs.GetFPat(self._object_handle)
+
+    def _set_pattern_fill(self, value: int):
+        vs.SetFPat(self._object_handle, value)
+
+    def _get_vector_fill(self):
+        """
+        :rtype: T <= AbstractVectorFill
+        """
+        has_vector_fill, name = vs.GetVectorFill(self._object_handle)
+        return ObjectRepository().get(name) if has_vector_fill else None
+
+    def _set_vector_fill(self, value):
+        """
+        :type value: T <= AbstractVectorFill
+        """
+        vs.SetObjectVariableLongInt(self._object_handle, 695, vs.Name2Index(value.name) * -1)
 
 
-class RecordField(AbstractHandle):
+class RecordField(AbstractKeyedObject):
     """We will use the record handle to get the data out of the field.
     """
 
@@ -30,13 +49,13 @@ class RecordField(AbstractHandle):
         return vs.GetFldName(self.handle, self.__index)
 
 
-class Record(AbstractHandle):
+class Record(AbstractKeyedObject):
 
     def get_field(self, index: int) -> RecordField:
         return RecordField(self.handle, index)
 
 
-class Attributes(AbstractHandle):
+class Attributes(AbstractKeyedObject):
     """We will use the object handle to get/set the attributes for it.
     """
 
@@ -82,7 +101,7 @@ class Attributes(AbstractHandle):
         vs.SetObjEndMarker(self.handle, style, angle, size, width, thickness_basis, thickness, visibility)
 
 
-class AbstractObject(AbstractHandle, metaclass=ABCMeta):
+class AbstractObject(AbstractKeyedObject, IObjectAttributes, metaclass=ABCMeta):
 
     @property
     def layer(self) -> Layer:
@@ -100,8 +119,25 @@ class AbstractObject(AbstractHandle, metaclass=ABCMeta):
     def attributes(self):
         return Attributes(self.handle)
 
+    @property
+    def _object_handle(self):
+        return self.handle
+
     def move(self, delta_x: float, delta_y: float):
         vs.HMove(self.handle, delta_x, delta_y)
+
+
+class DrawnObject(AbstractObject):
+    """You can use this wrapper for objects that aren't yet in this library.
+    As the object repository will not always know all possible object types, due to the fact that we are still working
+    on DLibrary, and that Vectorworks can introduce new types, this class can be used for it's general properties.
+    """
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: handle | str
+        """
+        super().__init__(handle_or_name)
 
 
 class Line(AbstractObject):

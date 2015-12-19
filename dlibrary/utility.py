@@ -1,6 +1,5 @@
 """Used for all other, utility, stuff that can't be placed in one of the other modules.
 """
-
 from abc import ABCMeta, abstractmethod
 from collections import UserList
 from dlibrary.libs import xmltodict as xmltodict
@@ -13,6 +12,12 @@ class SingletonMeta(type):
         if cls not in cls._instances:
             cls._instances[cls] = super(SingletonMeta, cls).__call__(*args)
         return cls._instances[cls]
+
+
+class SingletonABCMeta(SingletonMeta, ABCMeta):
+    """For singletons that are derived from abstract classes.
+    """
+    pass
 
 
 class Event(object):
