@@ -7,11 +7,11 @@ import vs
 
 class TestObjectAttributes(IObjectAttributes):
 
-    def __init__(self, handle):
+    def __init__(self, handle: vs.Handle):
         self.__handle = handle
 
     @property
-    def _object_handle(self):
+    def _object_handle(self) -> vs.Handle:
         return self.__handle
 
 

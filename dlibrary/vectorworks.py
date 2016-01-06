@@ -82,7 +82,7 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
         return name
 
     @property
-    def handle(self):
+    def handle(self) -> vs.Handle:
         # Singletons will keep it's data throughout the entire Vectorworks session!
         # This result isn't the same during that session, it depends on the active plugin!
         succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
@@ -134,7 +134,7 @@ class CreationResetArgs(AbstractResetArgs):
 class ParameterChangedResetArgs(AbstractResetArgs):
 
     def __init__(self, index: int):
-        self.__name = ActivePlugIn().parameters.get_field(index).name
+        self.__name = [field_name for field_name in ActivePlugIn().parameters.fields.keys][index - 1]
 
     @property
     def name(self) -> str:

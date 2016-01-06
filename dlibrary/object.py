@@ -1,10 +1,61 @@
 """Used for all object related stuff, except for plug-in objects.
 """
 from abc import ABCMeta, abstractmethod
+from collections import OrderedDict
 
 from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 import vs
+
+
+class RecordField(object):
+    """Class to handle record instance fields.
+    """
+
+    def __init__(self, record_handle: vs.Handle, record_name: str, index: int):
+        self.__record_handle = record_handle
+        self.__record_name = record_name
+        self.__index = index
+
+    @property
+    def name(self) -> str:
+        """:rtype: str"""
+        return vs.GetFldName(self.__record_handle, self.__index)
+
+    @property
+    def value(self) -> str:
+        """:rtype: str"""
+        return vs.GetRField(self.__record_handle, self.__record_name, self.name)
+
+    @value.setter
+    def value(self, value: str):
+        """:type value: str"""
+        vs.SetRField(self.__record_handle, self.__record_name, self.name, value)
+
+
+class Record(AbstractKeyedObject):
+    """Class to represent a record instance, aka attached record.
+    """
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: vs.Handle | str
+        """
+        super().__init__(handle_or_name)
+
+    @property
+    def fields(self) -> OrderedDict:
+        """:rtype: OrderedDict[str, RecordField] (NOTE: VW counts 1-n)"""
+        fields = OrderedDict()
+        for index in range(1, vs.NumFields(self.handle) + 1):
+            field = RecordField(self.handle, self.name, index)
+            fields[field.name] = field
+        return fields
+
+    def get_field(self, index: int) -> RecordField:
+        """OBSOLETE, use fields instead! Get the field based on it's index."""
+        # TODO: Remove in version 2017.
+        return RecordField(self.handle, self.name, index)
 
 
 class IObjectAttributes(IAttributes, metaclass=ABCMeta):
@@ -13,7 +64,8 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def _object_handle(self):
+    def _object_handle(self) -> vs.Handle:
+        """:rtype: vs.Handle"""
         pass
 
     def _get_pattern_fill(self) -> int:
@@ -55,30 +107,30 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
         vs.SetLSN(self._object_handle, vs.Name2Index(value.name) * -1)
 
 
-class RecordField(AbstractKeyedObject):
-    """We will use the record handle to get the data out of the field.
+class IObjectRecords(object, metaclass=ABCMeta):
+    """Interface that handles attached records.
     """
 
-    def __init__(self, handle, index: int):
-        super().__init__(handle)
-        self.__index = index
+    @property
+    @abstractmethod
+    def _object_handle(self) -> vs.Handle:
+        """:rtype: vs.Handle"""
+        pass
 
     @property
-    def name(self) -> str:
-        return vs.GetFldName(self.handle, self.__index)
-
-
-class Record(AbstractKeyedObject):
-
-    def get_field(self, index: int) -> RecordField:
-        return RecordField(self.handle, index)
+    def records(self) -> dict:
+        """:rtype: dict[str, Record]"""
+        return {record.name: record for record in (
+            ObjectRepository().get(vs.GetRecord(self._object_handle, index))
+            for index in range(1, vs.NumRecords(self._object_handle) + 1)
+        ) if record is not None}
 
 
 class Attributes(AbstractKeyedObject):
     """We will use the object handle to get/set the attributes for it.
     """
 
-    def __init__(self, handle):
+    def __init__(self, handle: vs.Handle):
         super().__init__(handle)
 
     @property
@@ -120,7 +172,7 @@ class Attributes(AbstractKeyedObject):
         vs.SetObjEndMarker(self.handle, style, angle, size, width, thickness_basis, thickness, visibility)
 
 
-class AbstractObject(AbstractKeyedObject, IObjectAttributes, metaclass=ABCMeta):
+class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, metaclass=ABCMeta):
 
     @property
     def layer(self) -> Layer:
@@ -139,7 +191,7 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, metaclass=ABCMeta):
         return Attributes(self.handle)
 
     @property
-    def _object_handle(self):
+    def _object_handle(self) -> vs.Handle:
         return self.handle
 
     def move(self, delta_x: float, delta_y: float):
@@ -154,7 +206,7 @@ class DrawnObject(AbstractObject):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle | str
+        :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
 
@@ -172,7 +224,7 @@ class Line(AbstractObject):
         vs.LineTo(Units.resolve_length_units(point2))
         return Line(vs.LNewObj())
 
-    def __init__(self, handle):
+    def __init__(self, handle: vs.Handle):
         super().__init__(handle)
 
     @property
@@ -195,13 +247,13 @@ class Polygon(AbstractObject):
         vs.Poly(*[Units.to_length_units(c) if isinstance(c, str) else c for vertex in vertices for c in vertex])
         return Polygon(vs.LNewObj())
 
-    def __init__(self, handle):
+    def __init__(self, handle: vs.Handle):
         super().__init__(handle)
 
 
 class Viewport(AbstractObject):
 
-    def __init__(self, handle):
+    def __init__(self, handle: vs.Handle):
         super().__init__(handle)
 
     @property

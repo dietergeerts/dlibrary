@@ -48,3 +48,5 @@ after the initial release, we'll work with FEATURE branches, named like `feature
 ### CONTRIBUTION REMARKS ###############################################################################################
 
 - Never use `_` for a throwaway variable, as VW seems to give special meaning to it!
+- vs.py has been extended to add the things NNA didn't include like the Handle class. Make sure you leave this and check
+when update the file with a new version!
