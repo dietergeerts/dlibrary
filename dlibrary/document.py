@@ -24,7 +24,7 @@ class AbstractVectorFill(AbstractKeyedObject, metaclass=ABCMeta):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle | str
+        :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
 
@@ -35,7 +35,7 @@ class AbstractVectorLine(AbstractKeyedObject, metaclass=ABCMeta):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle | str
+        :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
 
@@ -163,7 +163,7 @@ class Clazz(AbstractKeyedObject, IClazzAttributes):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle | str
+        :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
 
@@ -178,7 +178,7 @@ class Layer(object):
     def get(layer_handle):
         return {1: DesignLayer, 2: SheetLayer}.get(vs.GetObjectVariableInt(layer_handle, 154))(layer_handle)
 
-    def __init__(self, handle):
+    def __init__(self, handle: vs.Handle):
         self.__handle = handle
 
     @property
@@ -204,7 +204,7 @@ class Layer(object):
 
 class DesignLayer(Layer):
 
-    def __init__(self, handle):
+    def __init__(self, handle: vs.Handle):
         super().__init__(handle)
 
     @property
@@ -214,7 +214,7 @@ class DesignLayer(Layer):
 
 class SheetLayer(Layer):
 
-    def __init__(self, handle):
+    def __init__(self, handle: vs.Handle):
         super().__init__(handle)
 
     @property
@@ -400,7 +400,7 @@ class HatchVectorFill(AbstractVectorFill):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle | str
+        :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
 
@@ -409,7 +409,7 @@ class TileVectorFill(AbstractVectorFill):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle | str
+        :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
 
@@ -418,7 +418,7 @@ class GradientVectorFill(AbstractVectorFill):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle | str
+        :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
 
@@ -427,7 +427,7 @@ class ImageVectorFill(AbstractVectorFill):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle | str
+        :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
 
@@ -436,7 +436,7 @@ class LineStyle(AbstractVectorLine):
 
     def __init__(self, handle_or_name):
         """
-        :type handle_or_name: handle | str
+        :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
 
@@ -448,7 +448,7 @@ class AbstractResource(object, metaclass=ABCMeta):
     def create_placeholder(name: str):
         pass
 
-    def __init__(self, handle, name: str):
+    def __init__(self, handle: vs.Handle, name: str):
         self.__handle = handle
         self.__name = name
 
@@ -540,7 +540,7 @@ class SymbolDefinition(AbstractResource):
         obj_handle = obj_handle if vs.GetTypeN(obj_handle) == 16 else None  # 16 = symbol definition.
         return SymbolDefinition(obj_handle, name) if obj_handle is not None else None
 
-    def __init__(self, handle, name: str):
+    def __init__(self, handle: vs.Handle, name: str):
         super().__init__(handle, name)
 
     def place_symbol(self, insertion_point: tuple, rotation: float):
@@ -562,7 +562,7 @@ class RecordDefinition(AbstractResource):
             vs.SetObjectVariableBoolean(vs.GetObject(name), 900, False)
         return RecordDefinition(vs.GetObject(name), name)
 
-    def __init__(self, handle, name: str):
+    def __init__(self, handle: vs.Handle, name: str):
         super().__init__(handle, name)
         self.__fields = ObservableList(vs.GetFldName(self._handle, index)
                                        for index in range(1, vs.NumFields(self._handle) + 1))

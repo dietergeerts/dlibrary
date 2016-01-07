@@ -82,7 +82,7 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
         return name
 
     @property
-    def handle(self):
+    def handle(self) -> vs.Handle:
         # Singletons will keep it's data throughout the entire Vectorworks session!
         # This result isn't the same during that session, it depends on the active plugin!
         succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
