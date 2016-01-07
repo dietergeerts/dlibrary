@@ -3,6 +3,11 @@ VW DLibrary
 
 Common library for VW plug-ins.
 
+## REMARK ##############################################################################################################
+
+Please prefer to use the automatic install, which is way easier, though because of a bug in VW, the script in the 
+install.vwx file needs te be ran first, which includes a pre-install step to prepare VW for the installation.
+
 ## MANUAL INSTALL ######################################################################################################
 
 Only install if you have no or an older version of this library and the plugin needs this version.

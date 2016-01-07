@@ -14,8 +14,8 @@ import vs
 
 # SETUP ################################################################################################################
 
-plugin_name = 'DLegend'
-dlibrary_version = '2015.0.7'
+plugin_name = 'DProjectInfo'
+dlibrary_version = '2016.4.0'
 include_choose_custom_install_folder = True
 include_update_or_install_dlibrary = True
 

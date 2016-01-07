@@ -2,7 +2,7 @@ from dlibrary.document import HatchVectorFill, TileVectorFill, ImageVectorFill, 
 from dlibrary.object_base import ObjectRepository, ObjectTypeEnum
 
 __author__ = 'Dieter Geerts <dieter@dworks.be>'
-__version__ = '2016.3.0'
+__version__ = '2016.4.0'
 __license__ = 'MIT'
 
 ObjectRepository().register(ObjectTypeEnum.CLASS_DEFINITION, Clazz)

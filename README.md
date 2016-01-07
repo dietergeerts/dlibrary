@@ -9,6 +9,15 @@ See the [Wiki](https://bitbucket.org/dieterdworks/vw-dlibrary/wiki/Home) on how 
 [Examples section](https://bitbucket.org/dieterdworks/vw-dlibrary/wiki/browse/examples). Keep in mind that the wiki is
 still work in progress. You can contribute all things you can't find and want in it.
 
+### INSTALLATION #######################################################################################################
+
+You'll find an `install.py` file with this library, to enable your uses to install your plugin more easily and also 
+install the min. version of dlibrary need for your plugin to work. You just add this file to the .zip folder of your 
+distribution for Vectorworks to pick it up.
+
+Due to a bug in Vectorworks, the PreInstall script in install.vwx, which is also included, has to be ran in order to 
+prepare Vectorworks for the installation, as the script uses drop-in functions, which aren't available at start-up.
+
 ### EXAMPLE ############################################################################################################
 
 You'll find a working example in the dlibrary_test folder. It's a VW menu command which will open up a dialog with all 
