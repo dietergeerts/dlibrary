@@ -1,8 +1,94 @@
+from unittest import TestCase
+
 from dlibrary import TileVectorFill
 from dlibrary.document import PatternFillEnum, HatchVectorFill, ImageVectorFill, GradientVectorFill, LineStyle
-from dlibrary.object import IObjectAttributes, Line
+from dlibrary.object import IObjectAttributes, Line, DrawnObject
 from dlibrary_test.test_document import IAttributesTest
 import vs
+
+
+class RecordFieldTest(TestCase):
+
+    __rectangle = None
+    __record_name = '[RD] TEST'
+    __record_handle = None
+    __field_name = 'First Field'
+    __field_value = 'Een'
+    __field = None
+
+    @classmethod
+    def setUpClass(cls):
+        # TODO: Replace creation by our own when implemented.
+        vs.Rect((0, 10), (10, 0))
+        cls.__rectangle = DrawnObject(vs.LNewObj())
+        vs.NewField(cls.__record_name, cls.__field_name, cls.__field_value, 4, 0)
+        cls.__record_handle = vs.GetObject(cls.__record_name)
+        # TODO: Replace attachment with our own when implemented.
+        vs.SetRecord(cls.__rectangle.handle, cls.__record_name)
+        cls.__field = cls.__rectangle.records[cls.__record_name].fields[cls.__field_name]
+
+    @classmethod
+    def tearDownClass(cls):
+        # TODO: Replace deletion by our own when implemented.
+        vs.DelObject(cls.__rectangle.handle)
+        vs.DelObject(cls.__record_handle)
+
+    def test_field_there_with_default_value(self):
+        """When a record is attached, all fields should have there default value.
+        """
+        self.assertEqual(self.__field.name, self.__field_name)
+        self.assertEqual(self.__field.value, self.__field_value)
+
+    def test_setting_field_value_should_give_it_back(self):
+        """Setting the value should properly store it, so it will give back the same.
+        """
+        self.__field.value = new_value = 'Some new field value'
+        self.assertEqual(self.__field.value, new_value)
+
+
+class RecordTest(TestCase):
+
+    __rectangle = None
+    __record_name = '[RD] TEST'
+    __record_handle = None
+    __record = None
+    __field_1_name = 'First Field'
+    __field_2_name = 'Second Field'
+    __field_3_name = 'Third Field'
+
+    @classmethod
+    def setUpClass(cls):
+        # TODO: Replace creation by our own when implemented.
+        vs.Rect((0, 10), (10, 0))
+        cls.__rectangle = DrawnObject(vs.LNewObj())
+        vs.NewField(cls.__record_name, cls.__field_1_name, '', 4, 0)
+        vs.NewField(cls.__record_name, cls.__field_2_name, '', 4, 0)
+        vs.NewField(cls.__record_name, cls.__field_3_name, '', 4, 0)
+        cls.__record_handle = vs.GetObject(cls.__record_name)
+        # TODO: Replace attachment with our own when implemented.
+        vs.SetRecord(cls.__rectangle.handle, cls.__record_name)
+        cls.__record = cls.__rectangle.records[cls.__record_name]
+
+    @classmethod
+    def tearDownClass(cls):
+        # TODO: Replace deletion by our own when implemented.
+        vs.DelObject(cls.__rectangle.handle)
+        vs.DelObject(cls.__record_handle)
+
+    def test_record_there_with_all_fields(self):
+        """When a record is attached, we should be able to get all fields.
+        """
+        self.assertEqual(len(self.__record.fields), 3)
+        self.assertEqual(self.__record.fields[self.__field_1_name].name, self.__field_1_name)
+        self.assertEqual(self.__record.fields[self.__field_2_name].name, self.__field_2_name)
+        self.assertEqual(self.__record.fields[self.__field_3_name].name, self.__field_3_name)
+
+    def test_get_field_by_index(self):
+        """The method get_field should give a field by it's index, which is 1-n based.
+        """
+        self.assertEqual(self.__record.get_field(1).name, self.__field_1_name)
+        self.assertEqual(self.__record.get_field(2).name, self.__field_2_name)
+        self.assertEqual(self.__record.get_field(3).name, self.__field_3_name)
 
 
 class TestObjectAttributes(IObjectAttributes):
@@ -18,6 +104,7 @@ class TestObjectAttributes(IObjectAttributes):
 class IObjectAttributesTest(IAttributesTest):
 
     __rectangle = None
+    """:type: vs.Handle"""
     __hatch_fill = None
     __tile_fill = None
     __image_fill = None
@@ -27,7 +114,7 @@ class IObjectAttributesTest(IAttributesTest):
 
     @classmethod
     def setUpClass(cls):
-        # TODO: Replace creation by our own when implemented.\
+        # TODO: Replace creation by our own when implemented.
         vs.Rect((0, 10), (10, 0))
         cls.__rectangle = vs.LNewObj()
         vs.BeginVectorFillN('[LA] TEST', False, False, 0)
@@ -92,3 +179,37 @@ class IObjectAttributesTest(IAttributesTest):
         """
         self.__attributes.line = self.__line_style
         self.assertEqual(self.__attributes.line, self.__line_style)
+
+
+class IObjectRecordsTest(TestCase):
+
+    __rectangle = None
+    __record_name = '[RD] TEST'
+    __record_handle = None
+
+    @classmethod
+    def setUpClass(cls):
+        # TODO: Replace creation by our own when implemented.
+        vs.Rect((0, 10), (10, 0))
+        cls.__rectangle = DrawnObject(vs.LNewObj())
+        vs.NewField(cls.__record_name, 'Field', '', 4, 0)
+        cls.__record_handle = vs.GetObject(cls.__record_name)
+
+    @classmethod
+    def tearDownClass(cls):
+        # TODO: Replace deletion by our own when implemented.
+        vs.DelObject(cls.__rectangle.handle)
+        vs.DelObject(cls.__record_handle)
+
+    def test_no_records_at_first(self):
+        """An object should have no records attached to it when first created.
+        """
+        self.assertEqual(len(self.__rectangle.records), 0)
+
+    def test_record_there_after_attached(self):
+        """After attaching a record, it should be there.
+        """
+        # TODO: Replace attachment with our own when implemented.
+        vs.SetRecord(self.__rectangle.handle, self.__record_name)
+        self.assertEqual(len(self.__rectangle.records), 1)
+        self.assertEqual(self.__rectangle.records[self.__record_name].name, self.__record_name)

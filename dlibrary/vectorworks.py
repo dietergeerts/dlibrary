@@ -134,7 +134,7 @@ class CreationResetArgs(AbstractResetArgs):
 class ParameterChangedResetArgs(AbstractResetArgs):
 
     def __init__(self, index: int):
-        self.__name = [field_name for field_name in ActivePlugIn().parameters.fields.keys][index - 1]
+        self.__name = ActivePlugIn().parameters.get_field(index).name
 
     @property
     def name(self) -> str:

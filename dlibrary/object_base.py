@@ -16,7 +16,6 @@ class ObjectTypeEnum(object):
     GRADIENT_FILL_DEFINITION = 120
     IMAGE_FILL_DEFINITION = 119
     LINE_STYLE_DEFINITION = 96
-    RECORD = 48
 
     @staticmethod
     def get(handle_or_name) -> int:

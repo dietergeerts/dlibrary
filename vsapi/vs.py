@@ -34272,7 +34272,4 @@ def ZCoordinate(
 
 
 class Handle(object):
-
-    @property
-    def parent(self):
-        return None
+    pass

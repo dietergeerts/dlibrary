@@ -5,17 +5,31 @@ from collections import OrderedDict
 
 from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
+from dlibrary.utility import VSException
 import vs
 
 
-class RecordField(object):
+class RecordField(AbstractKeyedObject):
     """Class to handle record instance fields.
     """
+    # TODO: Remove inheritance from AbstractKeyedObject! Inherit from object in version 2017!
 
-    def __init__(self, record_handle: vs.Handle, record_name: str, index: int):
+    @property
+    def handle(self) -> vs.Handle:
+        """:rtype: vs.Handle OBSOLETE!"""
+        # TODO: Remove in version 2017!
+        return self.__handle
+
+    def __init__(self, record_handle: vs.Handle, index: int, record_name: str=None, object_handle: vs.Handle=None):
+        """Use the record_name and object_handle, as they will become mandatory in future versions!
+        Not using them will render most things in this class useless!
+        """
+        # TODO: Make record_name and object_handle mandatory in version 2017!
+        super().__init__(record_handle)
         self.__record_handle = record_handle
-        self.__record_name = record_name
         self.__index = index
+        self.__record_name = record_name
+        self.__object_handle = object_handle
 
     @property
     def name(self) -> str:
@@ -25,37 +39,44 @@ class RecordField(object):
     @property
     def value(self) -> str:
         """:rtype: str"""
-        return vs.GetRField(self.__record_handle, self.__record_name, self.name)
+        if self.__record_name is None or self.__object_handle is None:
+            raise VSException('RecordField.value can\'t be used without record_name and object_handle!')
+        # TODO: Remove check in version 2017, as then they will be mandatory!
+        return vs.GetRField(self.__object_handle, self.__record_name, self.name)
 
     @value.setter
     def value(self, value: str):
         """:type value: str"""
-        vs.SetRField(self.__record_handle, self.__record_name, self.name, value)
+        if self.__record_name is None or self.__object_handle is None:
+            raise VSException('RecordField.value can\'t be used without record_name and object_handle!')
+        # TODO: Remove check in version 2017, as then they will be mandatory!
+        vs.SetRField(self.__object_handle, self.__record_name, self.name, value)
 
 
 class Record(AbstractKeyedObject):
     """Class to represent a record instance, aka attached record.
     """
 
-    def __init__(self, handle_or_name):
+    def __init__(self, handle: vs.Handle, object_handle: vs.Handle=None):
+        """Use the object_handle, as it will become mandatory in future versions!
+        Not using the object_handle will make working with the record instance very limited!
         """
-        :type handle_or_name: vs.Handle | str
-        """
-        super().__init__(handle_or_name)
+        # TODO: Make object_handle mandatory in version 2017!
+        super().__init__(handle)
+        self.__object_handle = object_handle
 
     @property
     def fields(self) -> OrderedDict:
-        """:rtype: OrderedDict[str, RecordField] (NOTE: VW counts 1-n)"""
+        """:rtype: OrderedDict[str, RecordField]"""
         fields = OrderedDict()
         for index in range(1, vs.NumFields(self.handle) + 1):
-            field = RecordField(self.handle, self.name, index)
+            field = self.get_field(index)
             fields[field.name] = field
         return fields
 
     def get_field(self, index: int) -> RecordField:
-        """OBSOLETE, use fields instead! Get the field based on it's index."""
-        # TODO: Remove in version 2017.
-        return RecordField(self.handle, self.name, index)
+        """Get the field based on it's index, 1-n based."""
+        return RecordField(self.handle, index, self.name, self.__object_handle)
 
 
 class IObjectAttributes(IAttributes, metaclass=ABCMeta):
@@ -121,9 +142,8 @@ class IObjectRecords(object, metaclass=ABCMeta):
     def records(self) -> dict:
         """:rtype: dict[str, Record]"""
         return {record.name: record for record in (
-            ObjectRepository().get(vs.GetRecord(self._object_handle, index))
-            for index in range(1, vs.NumRecords(self._object_handle) + 1)
-        ) if record is not None}
+            Record(vs.GetRecord(self._object_handle, index), self._object_handle)
+            for index in range(1, vs.NumRecords(self._object_handle) + 1))}
 
 
 class Attributes(AbstractKeyedObject):
