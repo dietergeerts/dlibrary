@@ -468,7 +468,7 @@ class ObservableMethod(AbstractObservableWithDependencies):
         return self.__method_changed_event
 
     def apply(self, *args):
-        self.__method(*args)
+        return self.__method(*args)
 
     # noinspection PyUnusedLocal
     def _on_dependencies_changed(self, *args, **kwargs):

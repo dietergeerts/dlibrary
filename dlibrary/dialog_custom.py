@@ -223,6 +223,11 @@ class AbstractControl(AbstractDataContext, metaclass=ABCMeta):
 
     def setup(self, register_event_handler: callable):
         register_event_handler(self.control_id, self._on_control_event)
+
+        # Setting the initial enable state doesn't work in the init phase, as the dialog and controls must exist!
+        # So we'll need to add an extra check here in order to set the initial enable state.
+        self.__on_data_disabled_method_changed() if self.__data_disabled else None
+
         self._setup()
         self._update()
 
