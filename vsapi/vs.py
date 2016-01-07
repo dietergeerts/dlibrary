@@ -21702,7 +21702,7 @@ def ProgressDlgStart(
     pass
 
 
-def ProgressDlgYeld(
+def ProgressDlgYield(
         count  # LONGINT -  
 ):
     '''

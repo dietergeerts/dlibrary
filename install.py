@@ -91,7 +91,7 @@ def update_or_install_dlibrary(required_version: str):
 
         def report(self, block_nr, read_size, total_size):
             vs.ProgressDlgStart(98, total_size/read_size) if block_nr == 0 else None
-            vs.ProgressDlgYeld(1) if block_nr > 0 else None
+            vs.ProgressDlgYield(1) if block_nr > 0 else None
 
         def end(self):
             vs.ProgressDlgClose()
