@@ -336,7 +336,7 @@ class Units(object, metaclass=SingletonMeta):
         For a float or str dimension, this will return a float.
         For a tuple, which would be a point, this will return a tuple of floats.
 
-        :type unit: float | str | tuple
+        :type dimension: float | str | tuple
         :rtype: float | tuple
         """
         if isinstance(dimension, str):

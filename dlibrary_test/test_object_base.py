@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from dlibrary import ObjectTypeEnum, HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill, Clazz, \
     LineStyle
-from dlibrary.object import Line
+from dlibrary.object import Line, Rectangle
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 import vs
 
@@ -15,6 +15,7 @@ class ObjectTypeEnumTest(TestCase):
     __image_fill = None
     __gradient_fill = None
     __line_style = None
+    __rectangle = None
 
     @classmethod
     def setUpClass(cls):
@@ -33,6 +34,9 @@ class ObjectTypeEnumTest(TestCase):
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
         # TODO: Can't find functions to create line styles, add later. Added to doc now.
         cls.__line_style = LineStyle('[LS] test')
+        cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
+        # TODO: Set the name through the prop, once implemented.
+        vs.SetName(cls.__rectangle.handle, 'RECTANGLE TEST')
 
     @classmethod
     def tearDownClass(cls):
@@ -44,10 +48,12 @@ class ObjectTypeEnumTest(TestCase):
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
         # TODO: Delete line style once we can create it.
+        vs.DelObject(cls.__rectangle.handle)
 
     def test_none_object_type(self):
         """A non-existing handle or name should return NONE as object type.
         """
+        # noinspection PyTypeChecker
         self.assertIs(ObjectTypeEnum.get(None), ObjectTypeEnum.NONE)
         self.assertIs(ObjectTypeEnum.get(''), ObjectTypeEnum.NONE)
 
@@ -75,10 +81,17 @@ class ObjectTypeEnumTest(TestCase):
         self.assertIs(ObjectTypeEnum.get(self.__line_style.handle), ObjectTypeEnum.LINE_STYLE_DEFINITION)
         self.assertIs(ObjectTypeEnum.get(self.__line_style.name), ObjectTypeEnum.LINE_STYLE_DEFINITION)
 
+    def test_rectangle_object_type(self):
+        self.assertIs(ObjectTypeEnum.get(self.__rectangle.handle), ObjectTypeEnum.RECTANGLE)
+        self.assertIs(ObjectTypeEnum.get(self.__rectangle.name), ObjectTypeEnum.RECTANGLE)
+
 
 class TestKeyedObject(AbstractKeyedObject):
 
     def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: vs.Handle | str
+        """
         super().__init__(handle_or_name)
 
 
@@ -142,6 +155,7 @@ class ObjectRepositoryTest(TestCase):
     __image_fill = None
     __gradient_fill = None
     __line_style = None
+    __rectangle = None
 
     @classmethod
     def setUpClass(cls):
@@ -160,6 +174,9 @@ class ObjectRepositoryTest(TestCase):
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
         # TODO: Can't find functions to create line styles, add later. Added to doc now.
         cls.__line_style = LineStyle('[LS] test')
+        cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
+        # TODO: Set name through property, once implemented.
+        vs.SetName(cls.__rectangle.handle, 'RECTANGLE TEST')
 
     @classmethod
     def tearDownClass(cls):
@@ -171,10 +188,12 @@ class ObjectRepositoryTest(TestCase):
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
         # TODO: Delete line style once we can create it.
+        vs.DelObject(cls.__rectangle.handle)
 
     def test_none_object(self):
         """A non-existing handle or name should return None.
         """
+        # noinspection PyTypeChecker
         self.assertIsNone(ObjectRepository().get(None))
         self.assertIsNone(ObjectRepository().get(''))
 
@@ -201,3 +220,7 @@ class ObjectRepositoryTest(TestCase):
     def test_line_style(self):
         self.assertIsInstance(ObjectRepository().get(self.__line_style.handle), LineStyle)
         self.assertIsInstance(ObjectRepository().get(self.__line_style.name), LineStyle)
+
+    def test_rectangle(self):
+        self.assertIsInstance(ObjectRepository().get(self.__rectangle.handle), Rectangle)
+        self.assertIsInstance(ObjectRepository().get(self.__rectangle.name), Rectangle)

@@ -256,6 +256,55 @@ class Line(AbstractObject):
         return vs.GetSegPt2(self.handle)
 
 
+class Rectangle(AbstractObject):
+    """Class that represents a rectangle object.
+    """
+
+    @staticmethod
+    def create(origin: tuple, direction: tuple, width, height):
+        """
+        :type origin: (float | str, float | str)
+        :type direction: (float | str, float | str)
+        :type width: float | str
+        :type height: float | str
+        :rtype: Rectangle
+        """
+        vs.RectangleN(Units.resolve_length_units(origin), Units.resolve_length_units(direction),
+                      Units.resolve_length_units(width), Units.resolve_length_units(height))
+        return Rectangle(vs.LNewObj())
+
+    @staticmethod
+    def create_by_diagonal(top_left: tuple, bottom_right: tuple):
+        """
+        :type top_left: (float | str, float | str)
+        :type bottom_right: (float | str, float | str)
+        :rtype: Rectangle
+        """
+        vs.Rect(Units.resolve_length_units(top_left), Units.resolve_length_units(bottom_right))
+        return Rectangle(vs.LNewObj())
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: vs.Handle | str
+        """
+        super().__init__(handle_or_name)
+
+    @property
+    def width(self) -> float:
+        """:rtype: float"""
+        return vs.HWidth(self.handle)
+
+    @property
+    def height(self) -> float:
+        """:rtype: float"""
+        return vs.HHeight(self.handle)
+
+    @property
+    def center(self) -> tuple:
+        """:rtype: (float, float)"""
+        return vs.Get2DPt(self.handle, 5)  # 5 is the actual center of the rectangle, 1-4 are the corners!
+
+
 class Polygon(AbstractObject):
 
     @staticmethod

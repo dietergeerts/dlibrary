@@ -1,8 +1,8 @@
 import os
 from unittest import TextTestRunner, TestLoader
 
-# import pydevd
-# pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True, suspend=False)
+import pydevd
+pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True, suspend=False)
 
 
 def run():

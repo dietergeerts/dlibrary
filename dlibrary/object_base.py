@@ -16,6 +16,7 @@ class ObjectTypeEnum(object):
     GRADIENT_FILL_DEFINITION = 120
     IMAGE_FILL_DEFINITION = 119
     LINE_STYLE_DEFINITION = 96
+    RECTANGLE = 3
 
     @staticmethod
     def get(handle_or_name) -> int:
@@ -37,13 +38,9 @@ class AbstractKeyedObject(object, metaclass=ABCMeta):
         """
         :type handle_or_name: vs.Handle | str
         """
+        # The name can be changed during script execution, the handle can't!
+        # So we only save the handle, gotten by the parameter, or found by it's name!
         self.__handle = handle_or_name if not isinstance(handle_or_name, str) else vs.GetObject(handle_or_name)
-        self.__name = handle_or_name if isinstance(handle_or_name, str) else self.__get_name_or_none(handle_or_name)
-
-    @staticmethod
-    def __get_name_or_none(handle: vs.Handle) -> str:
-        name = vs.GetName(handle)
-        return None if name == 'none' or name == '' else name
 
     @property
     def handle(self) -> vs.Handle:
@@ -53,7 +50,8 @@ class AbstractKeyedObject(object, metaclass=ABCMeta):
     @property
     def name(self) -> str:
         """:rtype: str"""
-        return self.__name
+        name = vs.GetName(self.handle)
+        return None if name == 'none' or name == '' else name
 
     def __hash__(self):
         """We need to override this, as we have custom object equality implemented!

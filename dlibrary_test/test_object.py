@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from dlibrary import TileVectorFill
 from dlibrary.document import PatternFillEnum, HatchVectorFill, ImageVectorFill, GradientVectorFill, LineStyle
-from dlibrary.object import IObjectAttributes, Line, DrawnObject
+from dlibrary.object import IObjectAttributes, Line, DrawnObject, Rectangle
 from dlibrary_test.test_document import IAttributesTest
 import vs
 
@@ -18,9 +18,8 @@ class RecordFieldTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
         # TODO: Replace creation by our own when implemented.
-        vs.Rect((0, 10), (10, 0))
-        cls.__rectangle = DrawnObject(vs.LNewObj())
         vs.NewField(cls.__record_name, cls.__field_name, cls.__field_value, 4, 0)
         cls.__record_handle = vs.GetObject(cls.__record_name)
         # TODO: Replace attachment with our own when implemented.
@@ -58,9 +57,8 @@ class RecordTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
         # TODO: Replace creation by our own when implemented.
-        vs.Rect((0, 10), (10, 0))
-        cls.__rectangle = DrawnObject(vs.LNewObj())
         vs.NewField(cls.__record_name, cls.__field_1_name, '', 4, 0)
         vs.NewField(cls.__record_name, cls.__field_2_name, '', 4, 0)
         vs.NewField(cls.__record_name, cls.__field_3_name, '', 4, 0)
@@ -104,7 +102,6 @@ class TestObjectAttributes(IObjectAttributes):
 class IObjectAttributesTest(IAttributesTest):
 
     __rectangle = None
-    """:type: vs.Handle"""
     __hatch_fill = None
     __tile_fill = None
     __image_fill = None
@@ -114,9 +111,8 @@ class IObjectAttributesTest(IAttributesTest):
 
     @classmethod
     def setUpClass(cls):
+        cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
         # TODO: Replace creation by our own when implemented.
-        vs.Rect((0, 10), (10, 0))
-        cls.__rectangle = vs.LNewObj()
         vs.BeginVectorFillN('[LA] TEST', False, False, 0)
         vs.AddVectorFillLayer(0, 0, 1, 1, .25, -.25, .7, 3, 255)
         vs.EndVectorFill()
@@ -129,12 +125,12 @@ class IObjectAttributesTest(IAttributesTest):
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
         # TODO: Can't find functions to create line styles, add later. Added to doc now.
         cls.__line_style = LineStyle('[LS] test')
-        cls.__attributes = TestObjectAttributes(cls.__rectangle)
+        cls.__attributes = TestObjectAttributes(cls.__rectangle.handle)
 
     @classmethod
     def tearDownClass(cls):
         # TODO: Replace deletion by our own when implemented.
-        vs.DelObject(cls.__rectangle)
+        vs.DelObject(cls.__rectangle.handle)
         vs.DelObject(cls.__hatch_fill.handle)
         vs.DelObject(cls.__tile_fill.handle)
         # TODO: Delete image fill once we can create it.
@@ -189,9 +185,8 @@ class IObjectRecordsTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
         # TODO: Replace creation by our own when implemented.
-        vs.Rect((0, 10), (10, 0))
-        cls.__rectangle = DrawnObject(vs.LNewObj())
         vs.NewField(cls.__record_name, 'Field', '', 4, 0)
         cls.__record_handle = vs.GetObject(cls.__record_name)
 
@@ -213,3 +208,26 @@ class IObjectRecordsTest(TestCase):
         vs.SetRecord(self.__rectangle.handle, self.__record_name)
         self.assertEqual(len(self.__rectangle.records), 1)
         self.assertEqual(self.__rectangle.records[self.__record_name].name, self.__record_name)
+
+
+class RectangleTest(TestCase):
+
+    def setUp(self):
+        self.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 2)
+
+    def tearDown(self):
+        vs.DelObject(self.__rectangle.handle)
+
+    def test_create_method(self):
+        vs.DelObject(self.__rectangle.handle)
+        self.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 2)
+        self.assertEqual(self.__rectangle.width, 1)
+        self.assertEqual(self.__rectangle.height, 2)
+        self.assertEqual(self.__rectangle.center, (0.5, 1))
+
+    def test_create_by_diagonal_method(self):
+        vs.DelObject(self.__rectangle.handle)
+        self.__rectangle = Rectangle.create_by_diagonal((0, 2), (1, 0))
+        self.assertEqual(self.__rectangle.width, 1)
+        self.assertEqual(self.__rectangle.height, 2)
+        self.assertEqual(self.__rectangle.center, (0.5, 1))
