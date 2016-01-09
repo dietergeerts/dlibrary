@@ -231,3 +231,13 @@ class RectangleTest(TestCase):
         self.assertEqual(self.__rectangle.width, 1)
         self.assertEqual(self.__rectangle.height, 2)
         self.assertEqual(self.__rectangle.center, (0.5, 1))
+
+    def test_width_property(self):
+        self.__rectangle.width = 100
+        self.assertEqual(self.__rectangle.width, 100)
+        self.assertEqual(self.__rectangle.center, (50, 1))
+
+    def test_height_property(self):
+        self.__rectangle.height = 100
+        self.assertEqual(self.__rectangle.height, 100)
+        self.assertEqual(self.__rectangle.center, (0.5, 50))

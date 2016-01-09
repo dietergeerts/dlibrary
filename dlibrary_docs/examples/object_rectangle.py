@@ -34,5 +34,9 @@ def run():
     # For example, if you use (0, 1) as direction, VW will display the height as width,
     # while in code, the height and width stay the same as you entered them at creation.
 
+    # You can set the width and height through it's properties, with a float or a length string.
+    rectangle.width = 100
+    rectangle.height = '200cm'
+
     # You can even get the center of the rectangle by it's property.
     center_x, center_y = center = rectangle.center

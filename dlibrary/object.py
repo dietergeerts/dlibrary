@@ -294,10 +294,22 @@ class Rectangle(AbstractObject):
         """:rtype: float"""
         return vs.HWidth(self.handle)
 
+    @width.setter
+    def width(self, value):
+        """:type value: float | str"""
+        vs.SetWidth(self.handle, Units.resolve_length_units(value))
+        vs.ResetBBox(self.handle)  # Needed, or the object doesn't reflect the change!
+
     @property
     def height(self) -> float:
         """:rtype: float"""
         return vs.HHeight(self.handle)
+
+    @height.setter
+    def height(self, value):
+        """:type value: float | str"""
+        vs.SetHeight(self.handle, Units.resolve_length_units(value))
+        vs.ResetBBox(self.handle)  # Needed, or the object doesn't reflect the change!
 
     @property
     def center(self) -> tuple:
