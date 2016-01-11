@@ -17,6 +17,7 @@ class ObjectTypeEnum(object):
     LINE_STYLE_DEFINITION = 96
     CLASS_DEFINITION = 94
     SYMBOL_DEFINITION = 16
+    LOCUS = 17
     RECTANGLE = 3
 
     @staticmethod

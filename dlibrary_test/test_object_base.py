@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from dlibrary import ObjectTypeEnum, HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill, Clazz, \
     LineStyle, SymbolDefinition
-from dlibrary.object import Line, Rectangle
+from dlibrary.object import Line, Rectangle, Locus
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 import vs
 
@@ -16,6 +16,7 @@ class ObjectTypeEnumTest(TestCase):
     __line_style = None
     __clazz = None
     __symbol_definition = None
+    __locus = None
     __rectangle = None
 
     @classmethod
@@ -39,6 +40,9 @@ class ObjectTypeEnumTest(TestCase):
         Line.create((0, 0), (1, 1))
         vs.EndSym()
         cls.__symbol_definition = SymbolDefinition('TEST SYMBOL')
+        cls.__locus = Locus.create((0, 0))
+        # TODO: Set name through property, once implemented.
+        vs.SetName(cls.__locus.handle, 'LOCUS TEST')
         cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
         # TODO: Set the name through the prop, once implemented.
         vs.SetName(cls.__rectangle.handle, 'RECTANGLE TEST')
@@ -54,6 +58,7 @@ class ObjectTypeEnumTest(TestCase):
         # TODO: Delete line style once we can create it.
         vs.DelClass(cls.__clazz.name)
         vs.DelObject(cls.__symbol_definition.handle)
+        vs.DelObject(cls.__locus.handle)
         vs.DelObject(cls.__rectangle.handle)
 
     def test_none_object_type(self):
@@ -90,6 +95,10 @@ class ObjectTypeEnumTest(TestCase):
     def test_symbol_definition_object_type(self):
         self.assertIs(ObjectTypeEnum.get(self.__symbol_definition.handle), ObjectTypeEnum.SYMBOL_DEFINITION)
         self.assertIs(ObjectTypeEnum.get(self.__symbol_definition.name), ObjectTypeEnum.SYMBOL_DEFINITION)
+
+    def test_locus_object_type(self):
+        self.assertIs(ObjectTypeEnum.get(self.__locus.handle), ObjectTypeEnum.LOCUS)
+        self.assertIs(ObjectTypeEnum.get(self.__locus.name), ObjectTypeEnum.LOCUS)
 
     def test_rectangle_object_type(self):
         self.assertIs(ObjectTypeEnum.get(self.__rectangle.handle), ObjectTypeEnum.RECTANGLE)
@@ -166,6 +175,7 @@ class ObjectRepositoryTest(TestCase):
     __line_style = None
     __clazz = None
     __symbol_definition = None
+    __locus = None
     __rectangle = None
 
     @classmethod
@@ -189,6 +199,9 @@ class ObjectRepositoryTest(TestCase):
         Line.create((0, 0), (1, 1))
         vs.EndSym()
         cls.__symbol_definition = SymbolDefinition('TEST SYMBOL')
+        cls.__locus = Locus.create((0, 0))
+        # TODO: Set name through property, once implemented.
+        vs.SetName(cls.__locus.handle, 'LOCUS TEST')
         cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
         # TODO: Set name through property, once implemented.
         vs.SetName(cls.__rectangle.handle, 'RECTANGLE TEST')
@@ -204,6 +217,7 @@ class ObjectRepositoryTest(TestCase):
         # TODO: Delete line style once we can create it.
         vs.DelClass(cls.__clazz.name)
         vs.DelObject(cls.__symbol_definition.handle)
+        vs.DelObject(cls.__locus.handle)
         vs.DelObject(cls.__rectangle.handle)
 
     def test_none_object(self):
@@ -240,6 +254,10 @@ class ObjectRepositoryTest(TestCase):
     def test_symbol_definition(self):
         self.assertIsInstance(ObjectRepository().get(self.__symbol_definition.handle), SymbolDefinition)
         self.assertIsInstance(ObjectRepository().get(self.__symbol_definition.name), SymbolDefinition)
+
+    def test_locus(self):
+        self.assertIsInstance(ObjectRepository().get(self.__locus.handle), Locus)
+        self.assertIsInstance(ObjectRepository().get(self.__locus.name), Locus)
 
     def test_rectangle(self):
         self.assertIsInstance(ObjectRepository().get(self.__rectangle.handle), Rectangle)

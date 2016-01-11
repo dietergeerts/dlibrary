@@ -231,6 +231,24 @@ class DrawnObject(AbstractObject):
         super().__init__(handle_or_name)
 
 
+class Locus(AbstractObject):
+
+    @staticmethod
+    def create(origin: tuple):
+        """
+        :type origin: (float | str, float | str)
+        :rtype: Locus
+        """
+        vs.Locus(Units.resolve_length_units(origin))
+        return Locus(vs.LNewObj())
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: vs.Handle | str
+        """
+        super().__init__(handle_or_name)
+
+
 class Line(AbstractObject):
 
     @staticmethod
