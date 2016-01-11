@@ -160,6 +160,18 @@ class IClazzAttributes(IAttributes, metaclass=ABCMeta):
 
 
 class Clazz(AbstractKeyedObject, IClazzAttributes):
+    """Class for working with class definitions.
+    """
+
+    @staticmethod
+    def create(name: str):
+        """Creates a new class with the given name.
+        :rtype: Clazz
+        """
+        active_clazz = vs.ActiveClass()
+        vs.NameClass(name)
+        vs.NameClass(active_clazz)
+        return ObjectRepository().get(name)
 
     def __init__(self, handle_or_name):
         """
@@ -169,6 +181,7 @@ class Clazz(AbstractKeyedObject, IClazzAttributes):
 
     @property
     def _clazz_name(self) -> str:
+        """:rtype: str"""
         return self.name
 
 
@@ -187,8 +200,7 @@ class Layer(object):
 
     @property
     def name(self) -> str:
-        """
-        For a sheet layer, VW calls this the number!
+        """For a sheet layer, VW calls this the number!
         """
         return vs.GetLName(self._handle)
 
@@ -269,6 +281,9 @@ class IDocumentAttributes(IAttributes, metaclass=ABCMeta):
 
 
 class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
+    """Class to represent the active document.
+    Python scripts are always executed in context of the currently active document, that's why this is a singleton.
+    """
 
     @property
     def saved(self) -> bool:

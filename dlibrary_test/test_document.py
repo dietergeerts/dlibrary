@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from dlibrary.document import IAttributes, AbstractVectorFill, PatternFillEnum, TileVectorFill, IClazzAttributes, \
-    IDocumentAttributes, HatchVectorFill, ImageVectorFill, GradientVectorFill, LineStyle
+    IDocumentAttributes, HatchVectorFill, ImageVectorFill, GradientVectorFill, LineStyle, Clazz
 from dlibrary.object import Line
 import vs
 
@@ -201,6 +201,20 @@ class IClazzAttributesTest(IAttributesTest):
         """
         self.__attributes.line = self.__line_style
         self.assertEqual(self.__attributes.line, self.__line_style)
+
+
+class ClazzTest(TestCase):
+
+    __clazz_name = 'CLAZZ TEST'
+
+    def test_create_method(self):
+        """A class can be created by it's name.
+        """
+        clazz = Clazz.create(self.__clazz_name)
+        self.assertIsNotNone(clazz)
+        self.assertIsInstance(clazz, Clazz)
+        self.assertEqual(clazz.name, self.__clazz_name)
+        vs.DelClass(self.__clazz_name)
 
 
 class TestDocumentAttributes(IDocumentAttributes):
