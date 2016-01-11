@@ -2,7 +2,7 @@
 """
 from abc import ABCMeta, abstractmethod
 
-from dlibrary.object_base import ObjectRepository, AbstractKeyedObject
+from dlibrary.object_base import ObjectRepository, AbstractKeyedObject, ObjectTypeEnum
 from dlibrary.utility import SingletonMeta, ObservableList, SingletonABCMeta
 import vs
 
@@ -16,6 +16,29 @@ class PatternFillEnum(object):
     NONE = 0
     BACKGROUND_COLOR = 1
     FOREGROUND_COLOR = 2
+
+
+class AbstractResource(AbstractKeyedObject, metaclass=ABCMeta):
+    """Class to represent a document resource.
+    """
+
+    @staticmethod
+    @abstractmethod
+    def create_placeholder(name: str):
+        pass
+
+    def __init__(self, handle_or_name, name: str=''):
+        """OBSOLETE name parameter. Will be removed and is now optional.
+        :type handle_or_name: vs.Handle | str
+        """
+        # TODO: Remove name parameter in version 2017!
+        super().__init__(handle_or_name)
+
+    @property
+    def _handle(self) -> str:
+        """:rtype: str - OBSOLETE, use handle property instead."""
+        # TODO: Remove this property in version 2017!
+        return self.handle
 
 
 class AbstractVectorFill(AbstractKeyedObject, metaclass=ABCMeta):
@@ -456,26 +479,6 @@ class LineStyle(AbstractVectorLine):
         super().__init__(handle_or_name)
 
 
-class AbstractResource(object, metaclass=ABCMeta):
-
-    @staticmethod
-    @abstractmethod
-    def create_placeholder(name: str):
-        pass
-
-    def __init__(self, handle: vs.Handle, name: str):
-        self.__handle = handle
-        self.__name = name
-
-    @property
-    def _handle(self) -> str:
-        return self.__handle
-
-    @property
-    def name(self) -> str:
-        return self.__name
-
-
 class AbstractResourceList(object, metaclass=ABCMeta):
 
     def __init__(self, resource_type: int, abstract_resource: callable):
@@ -535,11 +538,15 @@ class AbstractResourceList(object, metaclass=ABCMeta):
 
 
 class DefinitionTypeEnum(object):
-    SYMBOL_DEFINITION = 16
+    """SYMBOL_DEFINITION is OBSOLETE. Use ObjectTypeEnum from object_base!
+    """
+    SYMBOL_DEFINITION = 16  # TODO: Remove in v2017!
     RECORD_DEFINITION = 47
 
 
 class SymbolDefinition(AbstractResource):
+    """Class to represent a symbol definition.
+    """
 
     @staticmethod
     def create_placeholder(name: str):
@@ -551,12 +558,18 @@ class SymbolDefinition(AbstractResource):
 
     @staticmethod
     def get_by_name(name: str):
+        """OBSOLETE. Use ObjectRepository().get(handle_or_name) from object_base instead.
+        """
         obj_handle = vs.GetObject(name)
         obj_handle = obj_handle if vs.GetTypeN(obj_handle) == 16 else None  # 16 = symbol definition.
         return SymbolDefinition(obj_handle, name) if obj_handle is not None else None
 
-    def __init__(self, handle: vs.Handle, name: str):
-        super().__init__(handle, name)
+    def __init__(self, handle_or_name, name: str=''):
+        """OBSOLETE name parameter. This will be removed and is now optional.
+        :type handle: vs.Handle | str
+        """
+        # TODO: Remove name parameter in version 2017!
+        super().__init__(handle_or_name)
 
     def place_symbol(self, insertion_point: tuple, rotation: float):
         vs.Symbol(self.name, Units.resolve_length_units(insertion_point), rotation)
@@ -565,10 +578,12 @@ class SymbolDefinition(AbstractResource):
 class SymbolDefinitionResourceList(AbstractResourceList):
 
     def __init__(self):
-        super().__init__(DefinitionTypeEnum.SYMBOL_DEFINITION, SymbolDefinition)
+        super().__init__(ObjectTypeEnum.SYMBOL_DEFINITION, SymbolDefinition)
 
 
 class RecordDefinition(AbstractResource):
+    """Class to represent a record definition.
+    """
 
     @staticmethod
     def create_placeholder(name: str):
@@ -577,10 +592,14 @@ class RecordDefinition(AbstractResource):
             vs.SetObjectVariableBoolean(vs.GetObject(name), 900, False)
         return RecordDefinition(vs.GetObject(name), name)
 
-    def __init__(self, handle: vs.Handle, name: str):
-        super().__init__(handle, name)
-        self.__fields = ObservableList(vs.GetFldName(self._handle, index)
-                                       for index in range(1, vs.NumFields(self._handle) + 1))
+    def __init__(self, handle_or_name, name: str=''):
+        """OBSOLETE name parameter. Will be removed and is now made optional.
+        :type handle_or_name: vs.Handle | str
+        """
+        # TODO: Remove name parameter in version 2017!
+        super().__init__(handle_or_name)
+        self.__fields = ObservableList(vs.GetFldName(self.handle, index)
+                                       for index in range(1, vs.NumFields(self.handle) + 1))
 
     @property
     def fields(self) -> ObservableList:

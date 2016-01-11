@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from dlibrary import ObjectTypeEnum, HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill, Clazz, \
-    LineStyle
+    LineStyle, SymbolDefinition
 from dlibrary.object import Line, Rectangle
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 import vs
@@ -9,19 +9,18 @@ import vs
 
 class ObjectTypeEnumTest(TestCase):
 
-    __clazz = None
     __hatch_fill = None
     __tile_fill = None
     __image_fill = None
     __gradient_fill = None
     __line_style = None
+    __clazz = None
+    __symbol_definition = None
     __rectangle = None
 
     @classmethod
     def setUpClass(cls):
         # TODO: Replace creation by our own when implemented.
-        vs.NameClass('TEST')
-        cls.__clazz = Clazz('TEST')
         vs.BeginVectorFillN('[LA] TEST', False, False, 0)
         vs.AddVectorFillLayer(0, 0, 1, 1, .25, -.25, .7, 3, 255)
         vs.EndVectorFill()
@@ -34,6 +33,12 @@ class ObjectTypeEnumTest(TestCase):
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
         # TODO: Can't find functions to create line styles, add later. Added to doc now.
         cls.__line_style = LineStyle('[LS] test')
+        vs.NameClass('TEST')
+        cls.__clazz = Clazz('TEST')
+        vs.BeginSym('TEST SYMBOL')
+        Line.create((0, 0), (1, 1))
+        vs.EndSym()
+        cls.__symbol_definition = SymbolDefinition('TEST SYMBOL')
         cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
         # TODO: Set the name through the prop, once implemented.
         vs.SetName(cls.__rectangle.handle, 'RECTANGLE TEST')
@@ -41,13 +46,14 @@ class ObjectTypeEnumTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         # TODO: Replace deletion by our own when implemented.
-        vs.DelClass(cls.__clazz.name)
         vs.DelVectorFill(cls.__hatch_fill.name)
         vs.DelObject(cls.__tile_fill.handle)
         # TODO: Delete image fill once we can create it.
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
         # TODO: Delete line style once we can create it.
+        vs.DelClass(cls.__clazz.name)
+        vs.DelObject(cls.__symbol_definition.handle)
         vs.DelObject(cls.__rectangle.handle)
 
     def test_none_object_type(self):
@@ -56,10 +62,6 @@ class ObjectTypeEnumTest(TestCase):
         # noinspection PyTypeChecker
         self.assertIs(ObjectTypeEnum.get(None), ObjectTypeEnum.NONE)
         self.assertIs(ObjectTypeEnum.get(''), ObjectTypeEnum.NONE)
-
-    def test_clazz_definition_object_type(self):
-        self.assertIs(ObjectTypeEnum.get(self.__clazz.handle), ObjectTypeEnum.CLASS_DEFINITION)
-        self.assertIs(ObjectTypeEnum.get(self.__clazz.name), ObjectTypeEnum.CLASS_DEFINITION)
 
     def test_hatch_fill_definition_object_type(self):
         self.assertIs(ObjectTypeEnum.get(self.__hatch_fill.handle), ObjectTypeEnum.HATCH_FILL_DEFINITION)
@@ -80,6 +82,14 @@ class ObjectTypeEnumTest(TestCase):
     def test_line_style_definition_object_type(self):
         self.assertIs(ObjectTypeEnum.get(self.__line_style.handle), ObjectTypeEnum.LINE_STYLE_DEFINITION)
         self.assertIs(ObjectTypeEnum.get(self.__line_style.name), ObjectTypeEnum.LINE_STYLE_DEFINITION)
+
+    def test_clazz_definition_object_type(self):
+        self.assertIs(ObjectTypeEnum.get(self.__clazz.handle), ObjectTypeEnum.CLASS_DEFINITION)
+        self.assertIs(ObjectTypeEnum.get(self.__clazz.name), ObjectTypeEnum.CLASS_DEFINITION)
+
+    def test_symbol_definition_object_type(self):
+        self.assertIs(ObjectTypeEnum.get(self.__symbol_definition.handle), ObjectTypeEnum.SYMBOL_DEFINITION)
+        self.assertIs(ObjectTypeEnum.get(self.__symbol_definition.name), ObjectTypeEnum.SYMBOL_DEFINITION)
 
     def test_rectangle_object_type(self):
         self.assertIs(ObjectTypeEnum.get(self.__rectangle.handle), ObjectTypeEnum.RECTANGLE)
@@ -149,19 +159,18 @@ class AbstractKeyedObjectTest(TestCase):
 
 class ObjectRepositoryTest(TestCase):
 
-    __clazz = None
     __hatch_fill = None
     __tile_fill = None
     __image_fill = None
     __gradient_fill = None
     __line_style = None
+    __clazz = None
+    __symbol_definition = None
     __rectangle = None
 
     @classmethod
     def setUpClass(cls):
         # TODO: Replace creation by our own when implemented.
-        vs.NameClass('TEST')
-        cls.__clazz = Clazz('TEST')
         vs.BeginVectorFillN('[LA] TEST', False, False, 0)
         vs.AddVectorFillLayer(0, 0, 1, 1, .25, -.25, .7, 3, 255)
         vs.EndVectorFill()
@@ -174,6 +183,12 @@ class ObjectRepositoryTest(TestCase):
         cls.__gradient_fill = GradientVectorFill(vs.CreateGradient('[VL] TEST'))
         # TODO: Can't find functions to create line styles, add later. Added to doc now.
         cls.__line_style = LineStyle('[LS] test')
+        vs.NameClass('TEST')
+        cls.__clazz = Clazz('TEST')
+        vs.BeginSym('TEST SYMBOL')
+        Line.create((0, 0), (1, 1))
+        vs.EndSym()
+        cls.__symbol_definition = SymbolDefinition('TEST SYMBOL')
         cls.__rectangle = Rectangle.create((0, 0), (1, 0), 1, 1)
         # TODO: Set name through property, once implemented.
         vs.SetName(cls.__rectangle.handle, 'RECTANGLE TEST')
@@ -181,13 +196,14 @@ class ObjectRepositoryTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         # TODO: Replace deletion by our own when implemented.
-        vs.DelClass(cls.__clazz.name)
         vs.DelVectorFill(cls.__hatch_fill.name)
         vs.DelObject(cls.__tile_fill.handle)
         # TODO: Delete image fill once we can create it.
         # TODO: vs.DelObject(cls.__image_fill_definition.handle)
         vs.DelObject(cls.__gradient_fill.handle)
         # TODO: Delete line style once we can create it.
+        vs.DelClass(cls.__clazz.name)
+        vs.DelObject(cls.__symbol_definition.handle)
         vs.DelObject(cls.__rectangle.handle)
 
     def test_none_object(self):
@@ -196,10 +212,6 @@ class ObjectRepositoryTest(TestCase):
         # noinspection PyTypeChecker
         self.assertIsNone(ObjectRepository().get(None))
         self.assertIsNone(ObjectRepository().get(''))
-
-    def test_clazz(self):
-        self.assertIsInstance(ObjectRepository().get(self.__clazz.handle), Clazz)
-        self.assertIsInstance(ObjectRepository().get(self.__clazz.name), Clazz)
 
     def test_hatch_vector_fill(self):
         self.assertIsInstance(ObjectRepository().get(self.__hatch_fill.handle), HatchVectorFill)
@@ -220,6 +232,14 @@ class ObjectRepositoryTest(TestCase):
     def test_line_style(self):
         self.assertIsInstance(ObjectRepository().get(self.__line_style.handle), LineStyle)
         self.assertIsInstance(ObjectRepository().get(self.__line_style.name), LineStyle)
+
+    def test_clazz(self):
+        self.assertIsInstance(ObjectRepository().get(self.__clazz.handle), Clazz)
+        self.assertIsInstance(ObjectRepository().get(self.__clazz.name), Clazz)
+
+    def test_symbol_definition(self):
+        self.assertIsInstance(ObjectRepository().get(self.__symbol_definition.handle), SymbolDefinition)
+        self.assertIsInstance(ObjectRepository().get(self.__symbol_definition.name), SymbolDefinition)
 
     def test_rectangle(self):
         self.assertIsInstance(ObjectRepository().get(self.__rectangle.handle), Rectangle)
