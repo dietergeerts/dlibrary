@@ -211,6 +211,38 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, met
         return Attributes(self.handle)
 
     @property
+    def bb_top(self) -> float:
+        """:rtype: float"""
+        return vs.GetBBox(self.handle)[0][1]
+
+    @property
+    def bb_left(self) -> float:
+        """:rtype: float"""
+        return vs.GetBBox(self.handle)[0][0]
+
+    @property
+    def bb_right(self) -> float:
+        """:rtype: float"""
+        return vs.GetBBox(self.handle)[1][0]
+
+    @property
+    def bb_bottom(self) -> float:
+        """:rtype: float"""
+        return vs.GetBBox(self.handle)[1][1]
+
+    @property
+    def bb_width(self) -> float:
+        """:rtype: float"""
+        top_left, bottom_right = vs.GetBBox(self.handle)
+        return bottom_right[0] - top_left[0]
+
+    @property
+    def bb_height(self) -> float:
+        """:rtype: float"""
+        top_left, bottom_right = vs.GetBBox(self.handle)
+        return top_left[1] - bottom_right[1]
+
+    @property
     def _object_handle(self) -> vs.Handle:
         return self.handle
 
