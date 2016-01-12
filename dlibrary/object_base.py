@@ -19,6 +19,7 @@ class ObjectTypeEnum(object):
     SYMBOL_DEFINITION = 16
     LOCUS = 17
     RECTANGLE = 3
+    GROUP = 11
     SYMBOL = 15
 
     @staticmethod

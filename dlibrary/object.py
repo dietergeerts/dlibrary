@@ -446,6 +446,26 @@ class Polygon(AbstractObject):
         super().__init__(handle)
 
 
+class Group(AbstractObject):
+
+    @staticmethod
+    def create(content_creator: callable):
+        """
+        :type content_creator: () -> None
+        :rtype: Group
+        """
+        vs.BeginGroup()
+        content_creator()
+        vs.EndGroup()
+        return Group(vs.LNewObj())
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: vs.Handle | str
+        """
+        super().__init__(handle_or_name)
+
+
 class Symbol(AbstractObject):
 
     @staticmethod
