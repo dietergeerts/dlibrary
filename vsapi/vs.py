@@ -34273,3 +34273,7 @@ def ZCoordinate(
 
 class Handle(object):
     pass
+
+
+def GetFldFlag(handle: Handle, index: int) -> int:
+    pass

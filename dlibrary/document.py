@@ -18,6 +18,42 @@ class PatternFillEnum(object):
     FOREGROUND_COLOR = 2
 
 
+class DataFieldTypeEnum(object):
+    """Holds all data field type constants. There are for data records and worksheets, not for PIO field types.
+    """
+
+    INTEGER = 1
+    BOOLEAN = 2
+    TEXT = 4
+    NUMBER_GENERAL = 3
+    NUMBER_DECIMAL = 5
+    NUMBER_PERCENTAGE = 6
+    NUMBER_SCIENTIFIC = 7
+    NUMBER_FRACTIONAL = 8
+    NUMBER_DIMENSION = 9
+    NUMBER_DIMENSION_AREA = 14
+    NUMBER_DIMENSION_VOLUME = 15
+    NUMBER_ANGLE = 10
+    NUMBER_DATETIME = 11
+
+
+class PioFieldTypeEnum(object):
+    """Holds all data field type constants for PIO fields.
+    """
+
+    INTEGER = 1
+    BOOLEAN = 2
+    TEXT = 4
+    TEXT_POPUP = 8
+    TEXT_RADIO_BUTTON = 9
+    TEXT_STATIC = 14
+    TEXT_CLASS_POPUP = 18
+    REAL = 3
+    REAL_DIMENSION = 7
+    REAL_X_COORDINATE = 10
+    REAL_Y_COORDINATE = 11
+
+
 class AbstractResource(AbstractKeyedObject, metaclass=ABCMeta):
     """Class to represent a document resource.
     """
