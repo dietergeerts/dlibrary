@@ -19,6 +19,7 @@ class ObjectTypeEnum(object):
     SYMBOL_DEFINITION = 16
     LOCUS = 17
     RECTANGLE = 3
+    SYMBOL = 15
 
     @staticmethod
     def get(handle_or_name) -> int:

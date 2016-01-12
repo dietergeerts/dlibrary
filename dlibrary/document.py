@@ -572,6 +572,9 @@ class SymbolDefinition(AbstractResource):
         super().__init__(handle_or_name)
 
     def place_symbol(self, insertion_point: tuple, rotation: float):
+        """OBSOLETE, use Symbol.create instead!
+        """
+        # TODO: Remove in version 2017!
         vs.Symbol(self.name, Units.resolve_length_units(insertion_point), rotation)
 
 

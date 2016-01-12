@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
-from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill
+from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill, SymbolDefinition
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 from dlibrary.utility import VSException
 import vs
@@ -348,6 +348,24 @@ class Polygon(AbstractObject):
 
     def __init__(self, handle: vs.Handle):
         super().__init__(handle)
+
+
+class Symbol(AbstractObject):
+
+    @staticmethod
+    def create(definition: SymbolDefinition, insertion_point: tuple, rotation: float):
+        """
+        :type insertion_point: (float | str, float | str)
+        :rtype: Symbol
+        """
+        vs.Symbol(definition.name, Units.resolve_length_units(insertion_point), rotation)
+        return Symbol(vs.LNewObj())
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: vs.Handle | str
+        """
+        super().__init__(handle_or_name)
 
 
 class Viewport(AbstractObject):

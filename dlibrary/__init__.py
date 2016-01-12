@@ -1,6 +1,6 @@
 from dlibrary.document import HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill, Clazz, LineStyle, \
     SymbolDefinition
-from dlibrary.object import Rectangle, Locus
+from dlibrary.object import Rectangle, Locus, Symbol
 from dlibrary.object_base import ObjectRepository, ObjectTypeEnum
 
 __author__ = 'Dieter Geerts <dieter@dworks.be>'
@@ -16,3 +16,4 @@ ObjectRepository().register(ObjectTypeEnum.CLASS_DEFINITION, Clazz)
 ObjectRepository().register(ObjectTypeEnum.SYMBOL_DEFINITION, SymbolDefinition)
 ObjectRepository().register(ObjectTypeEnum.LOCUS, Locus)
 ObjectRepository().register(ObjectTypeEnum.RECTANGLE, Rectangle)
+ObjectRepository().register(ObjectTypeEnum.SYMBOL, Symbol)
