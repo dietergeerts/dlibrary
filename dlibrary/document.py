@@ -1,21 +1,11 @@
 """Used for all document related stuff, like units, layers, resources, ....
 """
 from abc import ABCMeta, abstractmethod
+from collections import OrderedDict
 
 from dlibrary.object_base import ObjectRepository, AbstractKeyedObject, ObjectTypeEnum
-from dlibrary.utility import SingletonMeta, ObservableList, SingletonABCMeta
+from dlibrary.utility import SingletonMeta, ObservableList, SingletonABCMeta, Convert
 import vs
-
-
-class PatternFillEnum(object):
-    """Holds the most important pattern fill indices in a human readable name.
-    These are No fill, background color fill and foreground color fill. It is recommended to not use any other fills
-    anymore, as there are several issues with them, especially with printing.
-    """
-
-    NONE = 0
-    BACKGROUND_COLOR = 1
-    FOREGROUND_COLOR = 2
 
 
 class DataFieldTypeEnum(object):
@@ -52,6 +42,146 @@ class PioFieldTypeEnum(object):
     REAL_DIMENSION = 7
     REAL_X_COORDINATE = 10
     REAL_Y_COORDINATE = 11
+
+
+class RecordField(object):
+    """Class to handle record instance fields.
+    """
+
+    def __init__(self, record_handle: vs.Handle, index: int, record_name: str, object_handle: vs.Handle,
+                 parametric: bool):
+        self.__record_handle = record_handle
+        self.__index = index
+        self.__record_name = record_name
+        self.__object_handle = object_handle
+        self.__parametric = parametric
+
+    @property
+    def name(self) -> str:
+        """:rtype: str"""
+        return vs.GetFldName(self.__record_handle, self.__index)
+
+    @property
+    def type(self) -> int:
+        """:rtype: DataFieldTypeEnum | PioFieldTypeEnum"""
+        return vs.GetFldType(self.__record_handle, self.__index)
+
+    @property
+    def value(self):
+        """:rtype: str | int | bool | float"""
+        return {
+            True: {
+                PioFieldTypeEnum.INTEGER: self.__to_int,
+                PioFieldTypeEnum.BOOLEAN: self.__to_bool,
+                PioFieldTypeEnum.REAL: self.__to_float,
+                PioFieldTypeEnum.REAL_DIMENSION: self.__to_float,
+                PioFieldTypeEnum.REAL_X_COORDINATE: self.__to_float,
+                PioFieldTypeEnum.REAL_Y_COORDINATE: self.__to_float
+            },
+            False: {
+                DataFieldTypeEnum.INTEGER: self.__to_int,
+                DataFieldTypeEnum.BOOLEAN: self.__to_bool,
+                DataFieldTypeEnum.NUMBER_GENERAL: self.__to_float,
+                DataFieldTypeEnum.NUMBER_DECIMAL: self.__to_float,
+                DataFieldTypeEnum.NUMBER_PERCENTAGE: self.__to_float,
+                DataFieldTypeEnum.NUMBER_SCIENTIFIC: self.__to_float,
+                DataFieldTypeEnum.NUMBER_FRACTIONAL: self.__to_float,
+                DataFieldTypeEnum.NUMBER_DIMENSION: self.__to_float,
+                DataFieldTypeEnum.NUMBER_DIMENSION_AREA: self.__to_float_from_area,
+                DataFieldTypeEnum.NUMBER_DIMENSION_VOLUME: self.__to_float_from_volume,
+                DataFieldTypeEnum.NUMBER_ANGLE: self.__to_float_from_angle
+            }
+        }.get(self.__parametric).get(self.type, self.__to_str)(
+            vs.GetRField(self.__object_handle, self.__record_name, self.name))
+
+    @value.setter
+    def value(self, value: str):
+        """:type value: str"""
+        vs.SetRField(self.__object_handle, self.__record_name, self.name, value)
+
+    @staticmethod
+    def __to_str(value: str) -> str:
+        return value
+
+    @staticmethod
+    def __to_int(value: str) -> int:
+        return int(vs.Str2Num(value))
+
+    @staticmethod
+    def __to_bool(value: str) -> bool:
+        return Convert.str2bool(value)
+
+    @staticmethod
+    def __to_float(value: str) -> float:
+        return Units.resolve_length_units(value)
+
+    @staticmethod
+    def __to_float_from_area(value: str) -> float:
+        return vs.Str2Area(value)
+
+    @staticmethod
+    def __to_float_from_volume(value: str) -> float:
+        return vs.Str2Volume(value)
+
+    @staticmethod
+    def __to_float_from_angle(value: str) -> float:
+        return vs.Str2Angle(value)
+
+
+class Record(AbstractKeyedObject):
+    """Class to represent a record instance, aka attached record.
+    """
+
+    def __init__(self, handle: vs.Handle, object_handle: vs.Handle):
+        super().__init__(handle)
+        self.__object_handle = object_handle
+
+    @property
+    def parametric(self) -> bool:
+        """:rtype: bool"""
+        return vs.GetParametricRecord(self.__object_handle) == self.handle
+
+    @property
+    def fields(self) -> OrderedDict:
+        """:rtype: OrderedDict[str, RecordField]"""
+        fields = OrderedDict()
+        for index in range(1, vs.NumFields(self.handle) + 1):
+            field = self.get_field(index)
+            fields[field.name] = field
+        return fields
+
+    def get_field(self, index: int) -> RecordField:
+        """Get the field based on it's index, 1-n based."""
+        return RecordField(self.handle, index, self.name, self.__object_handle, self.parametric)
+
+
+class IRecords(object, metaclass=ABCMeta):
+    """Interface that handles attached records.
+    """
+
+    @property
+    @abstractmethod
+    def _handle(self) -> vs.Handle:
+        """:rtype: vs.Handle"""
+        pass
+
+    @property
+    def records(self) -> dict:
+        """:rtype: dict[str, Record]"""
+        return {record.name: record for record in (
+            Record(vs.GetRecord(self._handle, index), self._handle)
+            for index in range(1, vs.NumRecords(self._handle) + 1))}
+
+
+class PatternFillEnum(object):
+    """Holds the most important pattern fill indices in a human readable name.
+    These are No fill, background color fill and foreground color fill. It is recommended to not use any other fills
+    anymore, as there are several issues with them, especially with printing.
+    """
+
+    NONE = 0
+    BACKGROUND_COLOR = 1
+    FOREGROUND_COLOR = 2
 
 
 class AbstractResource(AbstractKeyedObject, metaclass=ABCMeta):
@@ -580,7 +710,7 @@ class DefinitionTypeEnum(object):
     RECORD_DEFINITION = 47
 
 
-class SymbolDefinition(AbstractResource):
+class SymbolDefinition(AbstractResource, IRecords):
     """Class to represent a symbol definition.
     """
 
@@ -606,6 +736,11 @@ class SymbolDefinition(AbstractResource):
         """
         # TODO: Remove name parameter in version 2017!
         super().__init__(handle_or_name)
+
+    @property
+    def _handle(self) -> vs.Handle:
+        """:rtype: vs.Handle"""
+        return self.handle
 
     def place_symbol(self, insertion_point: tuple, rotation: float):
         """OBSOLETE, use Symbol.create instead!

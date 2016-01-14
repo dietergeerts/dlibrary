@@ -11,7 +11,7 @@ import vs
 
 
 class RecordField(AbstractKeyedObject):
-    """Class to handle record instance fields.
+    """OBSOLETE, use dlibrary.document.RecordField instead.
     """
     # TODO: Remove inheritance from AbstractKeyedObject! Inherit from object in version 2017!
 
@@ -113,7 +113,7 @@ class RecordField(AbstractKeyedObject):
 
 
 class Record(AbstractKeyedObject):
-    """Class to represent a record instance, aka attached record.
+    """OBSOLETE, use dlibrary.document.Record instead.
     """
 
     def __init__(self, handle: vs.Handle, object_handle: vs.Handle=None):
@@ -193,8 +193,9 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
 
 
 class IObjectRecords(object, metaclass=ABCMeta):
-    """Interface that handles attached records.
+    """OBSOLETE, use dlibrary.document.IRecords instead.
     """
+    # TODO: Remove in version 2017.
 
     @property
     @abstractmethod
