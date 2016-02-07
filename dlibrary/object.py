@@ -143,8 +143,8 @@ class Record(AbstractKeyedObject):
         return RecordField(self.handle, index, self.name, self.__object_handle, self.parametric)
 
 
-class IObjectAttributes(IAttributes, metaclass=ABCMeta):
-    """Interface that handles object attributes.
+class IObjectHandle(object, metaclass=ABCMeta):
+    """Abstract interface to define the object handle field that all object interfaces need.
     """
 
     @property
@@ -152,6 +152,11 @@ class IObjectAttributes(IAttributes, metaclass=ABCMeta):
     def _object_handle(self) -> vs.Handle:
         """:rtype: vs.Handle"""
         pass
+
+
+class IObjectAttributes(IObjectHandle, IAttributes, metaclass=ABCMeta):
+    """Interface that handles object attributes.
+    """
 
     def _get_pattern_fill(self) -> int:
         return vs.GetFPat(self._object_handle)
@@ -211,6 +216,31 @@ class IObjectRecords(object, metaclass=ABCMeta):
             for index in range(1, vs.NumRecords(self._object_handle) + 1))}
 
 
+class IObjectOrder(IObjectHandle, metaclass=ABCMeta):
+    """Interface that handles object stacking order.
+    """
+
+    def move_forward(self, count: int=1):
+        self.__move_forward(False, count)
+
+    def move_to_front(self):
+        self.__move_forward(True)
+
+    def move_backward(self, count: int=1):
+        self.__move_backward(False, count)
+
+    def move_to_back(self):
+        self.__move_backward(True)
+
+    def __move_forward(self, to_front: bool, count: int=1):
+        for i in range(0, count):
+            vs.HMoveForward(self._object_handle, to_front)
+
+    def __move_backward(self, to_back: bool, count: int=1):
+        for i in range(0, count):
+            vs.HMoveBackward(self._object_handle, to_back)
+
+
 class Attributes(AbstractKeyedObject):
     """We will use the object handle to get/set the attributes for it.
     """
@@ -257,7 +287,7 @@ class Attributes(AbstractKeyedObject):
         vs.SetObjEndMarker(self.handle, style, angle, size, width, thickness_basis, thickness, visibility)
 
 
-class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, metaclass=ABCMeta):
+class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, IObjectOrder, metaclass=ABCMeta):
 
     @property
     def layer(self) -> Layer:

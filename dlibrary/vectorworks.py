@@ -388,7 +388,8 @@ class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
         return self.__parameters[name] if name in self.__parameters else self.__store_and_get_parameter(name)
 
     def __store_and_get_parameter(self, name: str):
-        value = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the vs module!
+        value = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the v
+        # s module!
         # For a boolean value, VW return 1 or 0, while we actually want a bool, so we'll convert if needed.
         record = vs.GetParametricRecord(ActivePlugIn().handle)
         fields = [vs.GetFldName(record, index) for index in range(1, vs.NumFields(record) + 1)]
