@@ -290,6 +290,20 @@ class ButtonWidget(AbstractWidget):
         vs.ResetObject(ActivePlugIn().handle)
 
 
+class StaticTextWidget(AbstractWidget):
+
+    def __init__(self, text: str='', visible: callable=None):
+        """
+        :type visible: () -> bool
+        """
+        super().__init__(visible)
+        self.__text = text
+
+    def add(self, widget_id: int):
+        if not vs.vsoInsertWidget(widget_id, 13, widget_id, self.__text, 0):  # 13 = Static text.
+            raise VSException('vsoInsertWidget(%s, 13, %s, %s, 0)' % (widget_id, widget_id, self.__text))
+
+
 class SeparatorWidget(AbstractWidget):
 
     def __init__(self, text: str='', visible: callable=None):
@@ -300,8 +314,8 @@ class SeparatorWidget(AbstractWidget):
         self.__text = text
 
     def add(self, widget_id: int):
-        if not vs.vsoInsertWidget(widget_id, 100, widget_id, self.__text, 0):  # 100 = Separator.
-            raise VSException('vsoInsertWidget(%s, 100, %s, %s, 0)' % (widget_id, widget_id, self.__text))
+        if not vs.vsoInsertWidget(widget_id, 100, widget_id, self.__text.upper() + ' ', 0):  # 100 = Separator.
+            raise VSException('vsoInsertWidget(%s, 100, %s, %s + \' \', 0)' % (widget_id, widget_id, self.__text))
 
 
 class DoubleClickBehaviour(object):
