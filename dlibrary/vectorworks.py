@@ -44,6 +44,10 @@ class Vectorworks(object, metaclass=SingletonMeta):
     def show_message(message: str):
         vs.Message(message)
 
+    @staticmethod
+    def clear_message():
+        vs.ClrMessage()
+
     def __get_os_independent_file_path(self, file_path: str) -> str:
         """
         Patrick Stanford <patstanford@coviana.com> on the VectorScript Discussion List:
