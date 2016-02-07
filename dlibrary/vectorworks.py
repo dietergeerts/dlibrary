@@ -146,6 +146,7 @@ class ActivePlugInEvent(object):
     VSO_ON_INITIALIZATION = 5  # Args: -
     VSO_ON_DOUBLE_CLICK = 7    # Args: -; Will only happen when double click behaviour is set to custom dialog!
     VSO_ON_WIDGET_CLICK = 35   # Args: widget_id
+    VSO_ON_WIDGET_PREP = 41    # Args: -
     VSO_ON_ADD_STATE = 44      # Args: widget_id
 
 
@@ -164,6 +165,7 @@ class ActivePlugInEvents(object):
             event, widget_id = vs.vsoGetEventInfo()
             event_args = None  # We only fill this when this feature is enabled!
 
+            # Doing extra setup for using reset args, and get them.
             if self.__with_reset_args:
                 if event == ActivePlugInEvent.VSO_ON_INITIALIZATION:
                     self.__with_reset_args_on_initialization()
@@ -172,9 +174,15 @@ class ActivePlugInEvents(object):
                 if event == ActivePlugInEvent.VSO_ON_RESET:
                     event_args = self.__with_reset_args_on_reset()
 
+            # Get the event handler and execute if found.
             event_handler = self.__events.get(event, None)
             if event_handler is not None:
                 self.__execute_event_handler(event_handler, event, widget_id, event_args)
+
+            # After the widget prep event, we need to finish with the following! VW requires this.
+            if event == ActivePlugInEvent.VSO_ON_WIDGET_PREP:
+                vs.vsoSetEventResult(-8)  # -8 = event handled!
+
         return delegate_event_function
 
     @staticmethod
@@ -213,15 +221,43 @@ class ActivePlugInEvents(object):
 
 
 class AbstractWidget(object, metaclass=ABCMeta):
+    """Abstract base class for object info pallet widgets.
+    """
+
+    def __init__(self, visible: callable=None):
+        """
+        :type visible: () -> bool
+        """
+        self.__visible = visible
+
+    @property
+    def custom_visibility(self) -> bool:
+        """:rtype: bool"""
+        return self.__visible is not None
 
     @abstractmethod
     def add(self, widget_id: int):
+        """Adds the widget to the object info pallet, giving it an id.
+        """
         pass
+
+    def update(self, widget_id: int):
+        """Will be called internally to update the visibility status of the widget, if it has custom visibility.
+        The widget_id is given, as I couldn't find a solution to save it here, for some reason it didn't work. -Dieter.
+        """
+        if self.__visible is not None:
+            vis = self.__visible()
+            if vis != vs.vsoWidgetGetVisible(widget_id):
+                vs.vsoWidgetSetVisible(widget_id, vis)
 
 
 class ParameterWidget(AbstractWidget):
 
-    def __init__(self, parameter: str):
+    def __init__(self, parameter: str, visible: callable=None):
+        """
+        :type visible: () -> bool
+        """
+        super().__init__(visible)
         self.__parameter = parameter
 
     def add(self, widget_id: int):
@@ -231,10 +267,12 @@ class ParameterWidget(AbstractWidget):
 
 class ButtonWidget(AbstractWidget):
 
-    def __init__(self, text: str, on_click: callable, reset: bool=False):
+    def __init__(self, text: str, on_click: callable, reset: bool=False, visible: callable=None):
         """
         :param reset: If true, the pio instance will be reset after the on_click def.
+        :type visible: () -> bool
         """
+        super().__init__(visible)
         self.__text = text
         self.__on_click = on_click if not reset else lambda : self.__on_click_and_reset(on_click)
 
@@ -274,6 +312,7 @@ class ActivePlugInSetup(object):
     def __call__(self, function: callable) -> callable:
         @ActivePlugInEvents(events={
             ActivePlugInEvent.VSO_ON_INITIALIZATION: self.__on_initialization,
+            ActivePlugInEvent.VSO_ON_WIDGET_PREP: self.__on_widget_prep,
             ActivePlugInEvent.VSO_ON_WIDGET_CLICK: self.__on_widget_click})
         def setup_active_plugin_function(*args, **kwargs):
             function(*args, **kwargs)
@@ -286,12 +325,21 @@ class ActivePlugInSetup(object):
     def __init_info_pallet(self):
         if not vs.SetObjPropVS(8, True):  # 8 = Custom Info Palette property!
             raise VSException('SetObjPropVS(8, True)')
+        custom_visibility = False
         for index, widget in enumerate(self.__info_pallet, 1):
+            custom_visibility = custom_visibility or widget.custom_visibility
             widget.add(index)
+        if custom_visibility and not vs.SetObjPropVS(12, True):  # 12 = Custom widget visibility!
+            raise VSException('SetObjPropVS(12, True)')
 
     def __init_double_click(self):
         if not vs.SetObjPropCharVS(3, self.__double_click_behaviour):  # 3 = Double click behavior!
             raise VSException('SetObjPropCharVS(3, %s)' % self.__double_click_behaviour)
+
+    def __on_widget_prep(self):
+        if self.__info_pallet is not None:
+            for index, widget in enumerate(self.__info_pallet, 1):
+                widget.update(index)
 
     def __on_widget_click(self, widget_id):
         if self.__info_pallet is not None:
@@ -312,7 +360,12 @@ class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
         return self.__parameters[name] if name in self.__parameters else self.__store_and_get_parameter(name)
 
     def __store_and_get_parameter(self, name: str):
-        self.__parameters[name] = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the vs module!
+        value = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the vs module!
+        # For a boolean value, VW return 1 or 0, while we actually want a bool, so we'll convert if needed.
+        record = vs.GetParametricRecord(ActivePlugIn().handle)
+        fields = [vs.GetFldName(record, index) for index in range(1, vs.NumFields(record) + 1)]
+        is_bool = vs.GetFldType(record, fields.index(name) + 1) == 2
+        self.__parameters[name] = value if not is_bool else value == 1
         return self.__parameters[name]
 
     def _set_parameter(self, name: str, value):
