@@ -40,6 +40,10 @@ class Vectorworks(object, metaclass=SingletonMeta):
     def get_file_path_of_active_document(self) -> str:
         return self.__get_os_independent_file_path(vs.GetFPathName())
 
+    @staticmethod
+    def show_message(message: str):
+        vs.Message(message)
+
     def __get_os_independent_file_path(self, file_path: str) -> str:
         """
         Patrick Stanford <patstanford@coviana.com> on the VectorScript Discussion List:

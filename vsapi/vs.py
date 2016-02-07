@@ -34277,3 +34277,7 @@ class Handle(object):
 
 def GetFldFlag(handle: Handle, index: int) -> int:
     pass
+
+
+def Message(message: str):
+    pass
