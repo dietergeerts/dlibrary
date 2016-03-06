@@ -344,6 +344,9 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, IOb
     def move(self, delta_x: float, delta_y: float):
         vs.HMove(self.handle, delta_x, delta_y)
 
+    def reset(self):
+        vs.ResetObject(self.handle)
+
 
 class DrawnObject(AbstractObject):
     """You can use this wrapper for objects that aren't yet in this library.
@@ -374,6 +377,66 @@ class Locus(AbstractObject):
         :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
+
+
+class TextHorizontalAlignmentEnum(object):
+
+    LEFT = 1
+    CENTER = 2
+    RIGHT = 3
+    JUSTIFY = 4
+
+
+class TextVerticalAlignmentEnum(object):
+
+    TOP = 1
+    TOP_BASELINE = 2
+    CENTER = 3
+    BOTTOM_BASELINE = 4
+    BOTTOM = 5
+
+
+class Text(AbstractObject):
+
+    @staticmethod
+    def create(text: str, origin: tuple, horizontal_alignment: int=None, vertical_alignment: int=None):
+        """
+        :type origin: (float | str, float | str)
+        :type horizontal_alignment: TextHorizontalAlignmentEnum
+        :type vertical_alignment: TextVerticalAlignmentEnum
+        :rtype: Text
+        """
+        vs.TextOrigin(Units.resolve_length_units(origin))
+        vs.TextJust(horizontal_alignment) if horizontal_alignment else None
+        vs.TextVerticalAlign(vertical_alignment) if vertical_alignment else None
+        vs.CreateText(text)
+        return Text(vs.LNewObj())
+
+    def __init__(self, handle_or_name):
+        """
+        :type handle_or_name: vs.Handle | str
+        """
+        super().__init__(handle_or_name)
+
+    @property
+    def horizontal_alignment(self) -> int:
+        """:rtype: TextHorizontalAlignmentEnum"""
+        return vs.GetTextJust(self.handle)
+
+    @horizontal_alignment.setter
+    def horizontal_alignment(self, value: int):
+        """:type value: TextHorizontalAlignmentEnum"""
+        vs.SetTextJustN(self.handle, value)
+
+    @property
+    def vertical_alignment(self) -> int:
+        """:rtype: TextVerticalAlignmentEnum"""
+        return vs.GetTextVerticalAlign(self.handle)
+
+    @vertical_alignment.setter
+    def vertical_alignment(self, value: int):
+        """:type value: TextVerticalAlignmentEnum"""
+        vs.SetTextVertAlignN(self.handle, value)
 
 
 class Line(AbstractObject):
@@ -497,6 +560,15 @@ class Group(AbstractObject):
         super().__init__(handle_or_name)
 
 
+class SymbolScalingEnum(object):
+    """Holds all possible scaling options for symbol instances.
+    """
+
+    NONE = 1
+    SYMMETRIC = 2
+    ASYMMETRIC = 3
+
+
 class Symbol(AbstractObject):
 
     @staticmethod
@@ -513,6 +585,59 @@ class Symbol(AbstractObject):
         :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
+
+    @property
+    def scaling(self) -> int:
+        """:rtype: SymbolScalingEnum"""
+        return vs.GetObjectVariableInt(self.handle, 101)
+
+    @scaling.setter
+    def scaling(self, value: int):
+        """:type value: SymbolScalingEnum"""
+        vs.SetObjectVariableInt(self.handle, 101, value)
+
+    @property
+    def __asymmetric_scaling(self) -> bool:
+        return self.scaling == SymbolScalingEnum.ASYMMETRIC
+
+    @property
+    def scale_x(self) -> float:
+        """:rtype: float"""
+        return vs.GetObjectVariableReal(self.handle, 102)
+
+    @scale_x.setter
+    def scale_x(self, value: float):
+        """:type value: float"""
+        vs.SetObjectVariableReal(self.handle, 102, value)
+        vs.ResetObject(self.handle)
+
+    @property
+    def scale_y(self) -> float:
+        """:rtype: float"""
+        return vs.GetObjectVariableReal(self.handle, 103) if self.__asymmetric_scaling else self.scale_x
+
+    @scale_y.setter
+    def scale_y(self, value: float):
+        """:type value: float"""
+        if self.__asymmetric_scaling:
+            vs.SetObjectVariableReal(self.handle, 103, value)
+            vs.ResetObject(self.handle)
+        else:
+            self.scale_x = value
+
+    @property
+    def scale_z(self) -> float:
+        """:rtype: float"""
+        return vs.GetObjectVariableReal(self.handle, 104) if self.__asymmetric_scaling else self.scale_x
+
+    @scale_z.setter
+    def scale_z(self, value: float):
+        """:type value: float"""
+        if self.__asymmetric_scaling:
+            vs.SetObjectVariableReal(self.handle, 104, value)
+            vs.ResetObject(self.handle)
+        else:
+            self.scale_x = value
 
 
 class Viewport(AbstractObject):

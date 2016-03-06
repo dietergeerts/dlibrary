@@ -117,12 +117,14 @@ class ActivePlugInInfo(object):
     Decorator to initialize the active plugin. This should be used on the main run method of the plugin!
     """
 
-    def __init__(self, version: str):
+    def __init__(self, version: str, font_style_enabled: bool=False):
         self.__version = version
+        self.__font_style_enabled = font_style_enabled
 
     def __call__(self, function: callable) -> callable:
         def initialize_active_plugin_function(*args, **kwargs):
             ActivePlugIn().version = self.__version
+            vs.SetObjectVariableBoolean(ActivePlugIn().handle, 800, self.__font_style_enabled)
             function(*args, **kwargs)
         return initialize_active_plugin_function
 
@@ -411,14 +413,23 @@ class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
                      value if isinstance(value, str) else vs.Num2Str(-2, value))
 
 
-class AbstractActivePlugInPrefsXmlFile(AbstractXmlFile, metaclass=ABCMeta):
+class AbstractActivePlugInXmlFile(AbstractXmlFile, metaclass=ABCMeta):
+
+    def __init__(self, active_plugin_type: str, suffix: str):
+        """
+        :type active_plugin_type: ActivePlugInType(Enum)
+        """
+        file_path = Vectorworks().get_folder_path_of_plugin_file(ActivePlugIn().name + active_plugin_type)
+        super().__init__(os.path.join(file_path, ActivePlugIn().name + suffix + '.xml'))
+
+
+class AbstractActivePlugInPrefsXmlFile(AbstractActivePlugInXmlFile, metaclass=ABCMeta):
 
     def __init__(self, active_plugin_type: str):
         """
         :type active_plugin_type: ActivePlugInType(Enum)
         """
-        file_path = Vectorworks().get_folder_path_of_plugin_file(ActivePlugIn().name + active_plugin_type)
-        super().__init__(os.path.join(file_path, ActivePlugIn().name + 'Prefs.xml'))
+        super().__init__(active_plugin_type, 'Prefs')
 
 
 class AbstractActivePlugInDrawingXmlFile(AbstractXmlFile, metaclass=ABCMeta):
