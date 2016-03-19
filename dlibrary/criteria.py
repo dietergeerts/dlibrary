@@ -10,16 +10,24 @@ class Criteria(object):
         self.__criteria = []
         self.__objects = set()
 
-    def on_layer(self, layer: Layer):
-        self.__criteria.append('L=\'' + layer.name + '\'')
-        return self
-
     def is_viewport(self):
         self.__criteria.append('T=VIEWPORT')
         return self
 
     def has_record(self, record_name: str):
         self.__criteria.append('R in [\'' + record_name + '\']')
+        return self
+
+    def on_layer(self, layer: Layer):
+        self.__criteria.append('L=\'' + layer.name + '\'')
+        return self
+
+    def in_objects(self):
+        self.__criteria.append('INOBJECT')
+        return self
+
+    def in_symbols(self):
+        self.__criteria.append('INSYMBOL')
         return self
 
     def get(self) -> set:
