@@ -124,7 +124,8 @@ class ActivePlugInInfo(object):
     def __call__(self, function: callable) -> callable:
         def initialize_active_plugin_function(*args, **kwargs):
             ActivePlugIn().version = self.__version
-            vs.SetObjectVariableBoolean(ActivePlugIn().handle, 800, self.__font_style_enabled)
+            if self.__font_style_enabled:  # It's not enabled by default!
+                vs.SetObjectVariableBoolean(ActivePlugIn().handle, 800, True)
             function(*args, **kwargs)
         return initialize_active_plugin_function
 

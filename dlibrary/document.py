@@ -528,7 +528,9 @@ class Units(object, metaclass=SingletonMeta):
     @staticmethod
     def __validate_length_str_to_length_units(length: str) -> float:
         ok, num = vs.ValidNumStr(length)
-        return num
+        # VW has rounding errors: vs.ValidNumStr('4605mm') gives 460.5000000000001!
+        # So we'll round the length off by the document unit length precision, which is set by the user.
+        return round(num, Units().length_precision)
 
     @staticmethod
     def __to_str(units: float, precision: int, with_unit_mark: bool, unit_mark: str) -> str:
@@ -598,6 +600,11 @@ class Units(object, metaclass=SingletonMeta):
     @staticmethod
     def to_volume_string(volume_in_volume_units: float, with_unit_mark: bool=False) -> str:
         return Units.__to_str(volume_in_volume_units, vs.GetPrefLongInt(183), with_unit_mark, vs.GetPrefString(182))
+
+    @property
+    def length_precision(self) -> int:
+        """:rtype: int"""
+        return vs.GetPrefLongInt(162)
 
 
 class HatchVectorFill(AbstractVectorFill):
