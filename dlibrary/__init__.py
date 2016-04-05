@@ -4,7 +4,7 @@ from dlibrary.object import Rectangle, Locus, Symbol, Group
 from dlibrary.object_base import ObjectRepository, ObjectTypeEnum
 
 __author__ = 'Dieter Geerts <dieter@dworks.be>'
-__version__ = '2016.8.0'
+__version__ = '2016.8.1'
 __license__ = 'MIT'
 
 ObjectRepository().register(ObjectTypeEnum.HATCH_FILL_DEFINITION, HatchVectorFill)
