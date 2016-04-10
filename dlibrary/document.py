@@ -652,13 +652,32 @@ class LineStyle(AbstractVectorLine):
         super().__init__(handle_or_name)
 
 
+class ResourceLocation(object):
+    """"Constants that reflect where to get the asked resources from."""
+
+    DOC = 0      # Get resources from current document.
+    DOC_APP = 1  # Get resources from current document and application folders.
+    APP = -1     # Get resources from application folders.
+
+
+class ResourceFolder(object):
+    """"Constants for all possible application resource folders."""
+
+    NONE = 0
+    DEFAULTS = 14
+
+
 class AbstractResourceList(object, metaclass=ABCMeta):
 
-    def __init__(self, resource_type: int, abstract_resource: callable):
+    def __init__(self, resource_type: int, abstract_resource: callable, location: int=0, folder: int=0, path: str= ''):
+        """
+        :type location: ResourceLocation
+        :type folder: ResourceFolder
+        """
         self.__resource_type = resource_type
         self.__abstract_resource = abstract_resource
         self.__resource_names = ObservableList()
-        self.__resource_list_id, count = vs.BuildResourceList(resource_type, 0, '')
+        self.__resource_list_id, count = vs.BuildResourceList(resource_type, folder * location, path)
         resources_to_delete = list()
         for index in range(count):
             handle = self.__get_resource(index)
@@ -692,13 +711,14 @@ class AbstractResourceList(object, metaclass=ABCMeta):
             name = self.__resource_names[index]  # Name could be changed due to import!
             return self.__abstract_resource(handle, name)
 
-    def __get_resource(self, index) -> object:
-        return vs.GetResourceFromList(self.__resource_list_id, index + 1)
+    def __get_resource(self, index) -> vs.Handle:
+        resource_handle = vs.GetResourceFromList(self.__resource_list_id, index + 1)
+        return resource_handle if resource_handle != 0 else None  # VW returns 0 instead of None!
 
     def __get_resource_name(self, index) -> str:
         return vs.GetNameFromResourceList(self.__resource_list_id, index + 1)
 
-    def __import_resource(self, index) -> object:
+    def __import_resource(self, index) -> vs.Handle:
         handle = vs.ImportResToCurFileN(self.__resource_list_id, index + 1, lambda s: 1)  # 1 >> Replace if needed!
         self.__resource_names[index] = vs.GetActualNameFromResourceList(self.__resource_list_id, index + 1)
         return handle
@@ -758,8 +778,12 @@ class SymbolDefinition(AbstractResource, IRecords):
 
 class SymbolDefinitionResourceList(AbstractResourceList):
 
-    def __init__(self):
-        super().__init__(ObjectTypeEnum.SYMBOL_DEFINITION, SymbolDefinition)
+    def __init__(self, location: int=0, folder: int=0, path: str=''):
+        """
+        :type location: ResourceLocation
+        :type folder: ResourceFolder
+        """
+        super().__init__(ObjectTypeEnum.SYMBOL_DEFINITION, SymbolDefinition, location, folder, path)
 
 
 class RecordDefinition(AbstractResource):
@@ -789,5 +813,9 @@ class RecordDefinition(AbstractResource):
 
 class RecordDefinitionResourceList(AbstractResourceList):
 
-    def __init__(self):
-        super().__init__(DefinitionTypeEnum.RECORD_DEFINITION, RecordDefinition)
+    def __init__(self, location: int=0, folder: int=0, path: str=''):
+        """
+        :type location: ResourceLocation
+        :type folder: ResourceFolder
+        """
+        super().__init__(DefinitionTypeEnum.RECORD_DEFINITION, RecordDefinition, location, folder, path)

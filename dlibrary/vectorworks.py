@@ -71,6 +71,7 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
 
     def __init__(self):
         self.__version = ''
+        self.__font_style_enabled = False
 
     @property
     def version(self) -> str:
@@ -79,6 +80,16 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
     @version.setter
     def version(self, value: str):
         self.__version = value
+
+    @property
+    def font_style_enabled(self) -> bool:
+        """:rtype: bool"""
+        return self.__font_style_enabled
+
+    @font_style_enabled.setter
+    def font_style_enabled(self, value: bool):
+        """:type value: bool"""
+        self.__font_style_enabled = value
 
     @property
     def name(self) -> str:
@@ -124,8 +135,7 @@ class ActivePlugInInfo(object):
     def __call__(self, function: callable) -> callable:
         def initialize_active_plugin_function(*args, **kwargs):
             ActivePlugIn().version = self.__version
-            if self.__font_style_enabled:  # It's not enabled by default!
-                vs.SetObjectVariableBoolean(ActivePlugIn().handle, 800, True)
+            ActivePlugIn().font_style_enabled = self.__font_style_enabled
             function(*args, **kwargs)
         return initialize_active_plugin_function
 
@@ -193,6 +203,11 @@ class ActivePlugInEvents(object):
             # After the widget prep event, we need to finish with the following! VW requires this.
             if event == ActivePlugInEvent.VSO_ON_WIDGET_PREP:
                 vs.vsoSetEventResult(-8)  # -8 = event handled!
+
+            # Because of a returning bug, font style enabling has to happen in the reset event!
+            if event == ActivePlugInEvent.VSO_ON_RESET:
+                if ActivePlugIn().font_style_enabled:  # It's disabled by default!
+                    vs.SetObjectVariableBoolean(ActivePlugIn().handle, 800, True)
 
         return delegate_event_function
 
