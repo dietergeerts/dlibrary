@@ -68,7 +68,7 @@ class AbstractXmlFile(object, metaclass=ABCMeta):
 
     def load(self, create_if_not_found: bool=False) -> dict:
         try:
-            with open(self.path) as file:
+            with open(self.path, encoding='UTF-8') as file:
                 return self.__correct(xmltodict.parse(file.read()))
         except FileNotFoundError:
             if create_if_not_found:

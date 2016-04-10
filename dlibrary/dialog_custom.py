@@ -639,6 +639,24 @@ class Button(AbstractControl):
         self.__data_command_observable.execute()
 
 
+class CheckBox(AbstractFieldControl):
+
+    def __init__(self, dialog_id: int, control_id: int, help_text: str, data_parent: AbstractDataContext,
+                 data_context: str, data_disabled: str, data_value: str, data_items: str, label: str):
+        super().__init__(dialog_id, control_id, help_text, data_parent, data_context, data_disabled, data_value,
+                         data_items)
+        vs.CreateCheckBox(dialog_id, control_id, label)
+
+    def _set_control_value(self, value):
+        vs.SetBooleanItem(self._dialog_id, self.control_id, value)
+
+    def _get_control_value(self):
+        return vs.GetBooleanItem(self._dialog_id, self.control_id)
+
+    def _on_control_event(self, data: int):
+        self._value = self._get_control_value()
+
+
 @Align(mode={Layout.VERTICAL: AlignMode.RESIZE})
 class EditText(AbstractFieldControl):
 
@@ -1382,6 +1400,21 @@ class ControlFactory(object, metaclass=SingletonMeta):
         """
         return Button(dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''),
                       data['@data-command'], data['#text'])
+
+    @staticmethod
+    def _create_check_box(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDataContext) -> CheckBox:
+        """
+        <edit-text
+            optional: @help          -> str
+            optional: @data-context  -> str (property up data-context tree)            -> ObservableField
+            optional: @data-disabled -> str (property up data-context tree)            -> ObservableMethod() -> bool
+            required: @data-value    -> str (property up data-context tree or of item) -> ObservableField
+            optional: @data-items    -> str (property up data-context tree)            -> ObservableList
+            required: @label         -> str/>
+        """
+        return CheckBox(dialog_id, control_id, data.get('@help', ''), data_parent, data.get('@data-context', ''),
+                        data.get('@data-disabled', ''), data['@data-value'], data.get('@data-items', ''),
+                        data['@label'])
 
     @staticmethod
     def _create_edit_text(dialog_id: int, control_id: int, data: dict, data_parent: AbstractDataContext) -> EditText:
