@@ -711,6 +711,11 @@ class AbstractResourceList(object, metaclass=ABCMeta):
             name = self.__resource_names[index]  # Name could be changed due to import!
             return self.__abstract_resource(handle, name)
 
+    def remove_resource(self, name: str):
+        if name in self.names:
+            self.__remove_resource(self.names.index(name))
+            self.names.remove(name)
+
     def __get_resource(self, index) -> vs.Handle:
         resource_handle = vs.GetResourceFromList(self.__resource_list_id, index + 1)
         return resource_handle if resource_handle != 0 else None  # VW returns 0 instead of None!
