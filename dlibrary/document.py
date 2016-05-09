@@ -702,6 +702,10 @@ class AbstractResourceList(object, metaclass=ABCMeta):
     def names(self) -> ObservableList:
         return self.__resource_names
 
+    def is_resource_in_document(self, name: str) -> bool:
+        index = self.__resource_names.index(name)
+        return index != -1 and self.__get_resource(index)
+
     def get_resource(self, name: str) -> AbstractResource:
         index = self.__resource_names.index(name)
         if index == -1:
