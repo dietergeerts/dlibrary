@@ -1185,9 +1185,10 @@ class AbstractChoiceControl(AbstractFieldControl, metaclass=ABCMeta):
 
     def _on_control_event(self, data: int):
         # It can be that the resource needs to be imported, thus changing names and possibly changing the list.
+        # It's bad to import the resource now! It should only be imported at the end if needed! So let the user decide!
         if self.__available_items_resources_list is not None:
-            resource = self.__available_items_resources_list.get_resource(self._get_control_value())
-            value = resource.name if resource is not None else None  # Because of the special items!
+            resource_name = self._get_control_value()  # Because of the special items!
+            value = resource_name if self.__available_items_resources_list.is_resource_in_list(resource_name) else None
         else:
             value = self._get_control_value()
         self.__try_remove_special_items(value)
