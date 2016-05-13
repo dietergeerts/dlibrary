@@ -122,6 +122,16 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
             raise VSException('GetCustomObjectInfo')
         return Record(record_handle)
 
+    @property
+    def origin(self) -> tuple:
+        """:rtype: (float, float)"""
+        return vs.GetSymLoc(self.handle)
+
+    @property
+    def rotation(self) -> float:
+        """:rtype: float"""
+        return vs.GetSymRot(self.handle)
+
 
 class ActivePlugInInfo(object):
     """

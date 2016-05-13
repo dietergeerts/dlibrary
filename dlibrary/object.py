@@ -344,6 +344,12 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, IOb
     def move(self, delta_x: float, delta_y: float):
         vs.HMove(self.handle, delta_x, delta_y)
 
+    def rotate(self, angle: float, origin: tuple=None):
+        """Will rotate the object around it's own center point, relative to the drawing, not the plug-in!
+        :type origin: (float, float)
+        """
+        vs.HRotate(self.handle, origin or vs.Get2DPt(self.handle, 0), angle)
+
     def reset(self):
         vs.ResetObject(self.handle)
 
