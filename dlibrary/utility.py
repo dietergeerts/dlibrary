@@ -611,3 +611,15 @@ class Math(object):
     @staticmethod
     def point_equal(point_a: tuple, point_b: tuple) -> bool:
         return Math.float_equal(point_a[0], point_b[0]) and Math.float_equal(point_a[1], point_b[1])
+
+
+class If(object):
+    """Decorator for conditionally apply the given decorator.
+    """
+
+    def __init__(self, condition: bool, decorator: callable):
+        self.__condition = condition
+        self.__decorator = decorator
+
+    def __call__(self, function: callable) -> callable:
+        return self.__decorator(function) if self.__condition else function

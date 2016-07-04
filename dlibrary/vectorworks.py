@@ -5,7 +5,7 @@ import os
 
 from dlibrary.dialog_predefined import AlertType, Alert
 from dlibrary.object import Record
-from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException
+from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException, If
 import vs
 
 
@@ -71,7 +71,6 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
 
     def __init__(self):
         self.__version = ''
-        self.__font_style_enabled = False
 
     @property
     def version(self) -> str:
@@ -80,16 +79,6 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
     @version.setter
     def version(self, value: str):
         self.__version = value
-
-    @property
-    def font_style_enabled(self) -> bool:
-        """:rtype: bool"""
-        return self.__font_style_enabled
-
-    @font_style_enabled.setter
-    def font_style_enabled(self, value: bool):
-        """:type value: bool"""
-        self.__font_style_enabled = value
 
     @property
     def name(self) -> str:
@@ -138,16 +127,45 @@ class ActivePlugInInfo(object):
     Decorator to initialize the active plugin. This should be used on the main run method of the plugin!
     """
 
-    def __init__(self, version: str, font_style_enabled: bool=False):
+    def __init__(self, version: str):
         self.__version = version
-        self.__font_style_enabled = font_style_enabled
 
     def __call__(self, function: callable) -> callable:
         def initialize_active_plugin_function(*args, **kwargs):
             ActivePlugIn().version = self.__version
-            ActivePlugIn().font_style_enabled = self.__font_style_enabled
             function(*args, **kwargs)
         return initialize_active_plugin_function
+
+
+class ActivePlugInEvent(object):
+    VSO_ON_RESET = 3           # data: -
+    VSO_ON_INITIALIZATION = 5  # data: -
+    VSO_ON_DOUBLE_CLICK = 7    # data: -; Will only happen when double click behaviour is set to custom dialog!
+    VSO_ON_WIDGET_CLICK = 35   # data: widget_id
+    VSO_ON_WIDGET_PREP = 41    # data: -
+    VSO_ON_ADD_STATE = 44      # data: widget_id
+
+
+class ActivePlugInOnEvent(object):
+    """Decorator for setting an event callback for an event-enabled plug-in.
+    """
+
+    def __init__(self, event: int, callback: callable):
+        """
+        :type callback: (self, int) -> None || (int) -> None
+        """
+        self.__event = event
+        self.__callback = callback
+
+    def __call__(self, function: callable) -> callable:
+
+        def decorator(*args, **kwargs):
+            function (*args, **kwargs)  # Execute main function first, to enable extra initialization.
+
+            event, data = vs.vsoGetEventInfo()
+            self.__callback(data) if event == self.__event else None
+
+        return decorator
 
 
 class AbstractResetArgs(object, metaclass=ABCMeta):
@@ -172,70 +190,47 @@ class ParameterChangedResetArgs(AbstractResetArgs):
         return self.__name
 
 
-class ActivePlugInEvent(object):
-    VSO_ON_RESET = 3           # Args: ResetArgs, if functionality is turned on!
-    VSO_ON_INITIALIZATION = 5  # Args: -
-    VSO_ON_DOUBLE_CLICK = 7    # Args: -; Will only happen when double click behaviour is set to custom dialog!
-    VSO_ON_WIDGET_CLICK = 35   # Args: widget_id
-    VSO_ON_WIDGET_PREP = 41    # Args: -
-    VSO_ON_ADD_STATE = 44      # Args: widget_id
-
-
-class ActivePlugInEvents(object):
-    """
-    Decorator to initialize eventing. Basically it's just telling which def has to be called for which event.
+class ActivePlugInOnReset(object):
+    """Decorator for setting a reset callback for an event-enabled plug-in.
     """
 
-    def __init__(self, events: dict, with_reset_args: bool=False):
-        self.__events = events
-        self.__with_reset_args = with_reset_args
+    def __init__(self, callback: callable, with_args: bool=False):
+        """
+        :type callback: (self, AbstractResetArgs) -> None || (AbstractResetArgs) -> None
+        """
+        self.__callback = callback
+        self.__with_args = with_args
+        self.__reset_args = None
 
     def __call__(self, function: callable) -> callable:
-        def delegate_event_function(*args, **kwargs):
-            function(*args, **kwargs)  # Function is executed first to enable extra initialization.
-            event, widget_id = vs.vsoGetEventInfo()
-            event_args = None  # We only fill this when this feature is enabled!
 
-            # Doing extra setup for using reset args, and get them.
-            if self.__with_reset_args:
-                if event == ActivePlugInEvent.VSO_ON_INITIALIZATION:
-                    self.__with_reset_args_on_initialization()
-                if event == ActivePlugInEvent.VSO_ON_ADD_STATE:
-                    self.__with_reset_args_on_add_state(widget_id)
-                if event == ActivePlugInEvent.VSO_ON_RESET:
-                    event_args = self.__with_reset_args_on_reset()
+        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_RESET, self.__execute_callback)
+        @If(self.__with_args, ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_RESET, self.__resolve_reset_args))
+        @If(self.__with_args, ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_ADD_STATE, self.__add_reset_args_state))
+        @If(self.__with_args, ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_INITIALIZATION, self.__init_reset_args))
+        def decorator(*args, **kwargs):
+            function(*args, **kwargs)  # Execute main function first, to enable extra initialization.
 
-            # Get the event handler and execute if found.
-            event_handler = self.__events.get(event, None)
-            if event_handler is not None:
-                self.__execute_event_handler(event_handler, event, widget_id, event_args)
+        return decorator
 
-            # After the widget prep event, we need to finish with the following! VW requires this.
-            if event == ActivePlugInEvent.VSO_ON_WIDGET_PREP:
-                vs.vsoSetEventResult(-8)  # -8 = event handled!
-
-            # Because of a returning bug, font style enabling has to happen in the reset event!
-            if event == ActivePlugInEvent.VSO_ON_RESET:
-                if ActivePlugIn().font_style_enabled:  # It's disabled by default!
-                    vs.SetObjectVariableBoolean(ActivePlugIn().handle, 800, True)
-
-        return delegate_event_function
+    def __execute_callback(self, data: int):
+        self.__callback(self.__reset_args)
 
     @staticmethod
-    def __with_reset_args_on_initialization():
-        vs.SetPrefInt(590, 1)  # 590 = enable state eventing, 1 = reset state events.
-        if not vs.SetObjPropVS(18, True):  # 18 = accept states.
-            raise VSException('SetObjPropVS')
+    def __init_reset_args(data: int):
+        vs.SetPrefInt(590, 1)      # 590 = enable state eventing, 1 = reset state events.
+        vs.SetObjPropVS(18, True)  # 18 = accept states.
 
     @staticmethod
-    def __with_reset_args_on_add_state(widget_id: int):
-        vs.vsoStateAddCurrent(ActivePlugIn().handle, widget_id)  # Only this MUST be called, nothing else!
+    def __add_reset_args_state(data: int):
+        vs.vsoStateAddCurrent(ActivePlugIn().handle, data)  # Only this MUST be called, nothing else!
 
-    def __with_reset_args_on_reset(self) -> AbstractResetArgs:
-        event_args = self.__try_get_creation_reset_args()
-        event_args = self.__try_get_parameter_change_reset_args() if event_args is None else event_args
+    def __resolve_reset_args(self, data: int):
+        self.__reset_args = (
+            self.__try_get_creation_reset_args() or
+            self.__try_get_parameter_change_reset_args() or
+            EmptyResetArgs())
         vs.vsoStateClear(ActivePlugIn().handle)  # EXTREMELY IMPORTANT to have this!
-        return event_args if event_args is not None else EmptyResetArgs()
 
     @staticmethod
     def __try_get_creation_reset_args() -> CreationResetArgs:
@@ -246,14 +241,6 @@ class ActivePlugInEvents(object):
     def __try_get_parameter_change_reset_args() -> ParameterChangedResetArgs:
         trigger, widget_id, parameter_index, old_value = vs.vsoStateGetParamChng(ActivePlugIn().handle)
         return ParameterChangedResetArgs(parameter_index) if trigger else None
-
-    def __execute_event_handler(self, event_handler: callable, event: int, widget_id: int, args: AbstractResetArgs):
-        if self.__with_reset_args and event == ActivePlugInEvent.VSO_ON_RESET:
-            event_handler(args)
-        elif event == ActivePlugInEvent.VSO_ON_ADD_STATE or event == ActivePlugInEvent.VSO_ON_WIDGET_CLICK:
-            event_handler(widget_id)
-        else:
-            event_handler()
 
 
 class AbstractWidget(object, metaclass=ABCMeta):
@@ -272,7 +259,7 @@ class AbstractWidget(object, metaclass=ABCMeta):
         return self.__visible is not None
 
     @abstractmethod
-    def add(self, widget_id: int):
+    def add_to_info_pallet(self, widget_id: int):
         """Adds the widget to the object info pallet, giving it an id.
         """
         pass
@@ -296,7 +283,7 @@ class ParameterWidget(AbstractWidget):
         super().__init__(visible)
         self.__parameter = parameter
 
-    def add(self, widget_id: int):
+    def add_to_info_pallet(self, widget_id: int):
         if not vs.vsoAddParamWidget(widget_id, self.__parameter, ''):  # '' for using parameter alternate name.
             raise VSException('vsoAddParamWidget(%s, %s, '')' % (widget_id, self.__parameter))
 
@@ -316,7 +303,7 @@ class ButtonWidget(AbstractWidget):
     def on_click(self) -> callable:
         return self.__on_click
 
-    def add(self, widget_id: int):
+    def add_to_info_pallet(self, widget_id: int):
         if not vs.vsoInsertWidget(widget_id, 12, widget_id, self.__text, 0):  # 12 = Button.
             raise VSException('vsoInsertWidget(%s, 12, %s, %s, 0)' % (widget_id, widget_id, self.__text))
 
@@ -335,7 +322,7 @@ class StaticTextWidget(AbstractWidget):
         super().__init__(visible)
         self.__text = text
 
-    def add(self, widget_id: int):
+    def add_to_info_pallet(self, widget_id: int):
         if not vs.vsoInsertWidget(widget_id, 13, widget_id, self.__text, 0):  # 13 = Static text.
             raise VSException('vsoInsertWidget(%s, 13, %s, %s, 0)' % (widget_id, widget_id, self.__text))
 
@@ -349,9 +336,43 @@ class SeparatorWidget(AbstractWidget):
         super().__init__(visible)
         self.__text = text
 
-    def add(self, widget_id: int):
+    def add_to_info_pallet(self, widget_id: int):
         if not vs.vsoInsertWidget(widget_id, 100, widget_id, self.__text.upper() + ' ', 0):  # 100 = Separator.
             raise VSException('vsoInsertWidget(%s, 100, %s, %s + \' \', 0)' % (widget_id, widget_id, self.__text))
+
+
+class ActivePlugInInfoPallet(object):
+    """Decorator for setting the info pallet for an event-enabled plug-in.
+    """
+
+    def __init__(self, widgets: list):
+        """
+        :type widgets: list[AbstractWidget]
+        """
+        self.__widgets = widgets
+
+    def __call__(self, function: callable) -> callable:
+
+        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_INITIALIZATION, self.__init_info_pallet)
+        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_WIDGET_PREP, self.__prepare_widgets)
+        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_WIDGET_CLICK, self.__on_widget_click)
+        def decorator(*args, **kwargs):
+            function (*args, **kwargs)  # Execute main function first, to enable extra initialization.
+
+        return decorator
+
+    def __init_info_pallet(self, data: int):
+        vs.SetObjPropVS(8, True)  # 8 = Custom Info Palette property; 12 = Custom widget visibility!
+        vs.SetObjPropVS(12, True) if any(widget.custom_visibility for widget in self.__widgets) else None
+        [widget.add_to_info_pallet(index) for index, widget in enumerate(self.__widgets)]
+
+    def __prepare_widgets(self, data: int):
+        [widget.update(index) for index, widget in enumerate(self.__widgets)]
+        vs.vsoSetEventResult(-8)  # -8 = event handled! REQUIRED cleanup!
+
+    def __on_widget_click(self, data: int):
+        widget = self.__widgets[data]  # data will be the widget index.
+        widget.on_click() if isinstance(widget, ButtonWidget) else None
 
 
 class DoubleClickBehaviour(object):
@@ -361,54 +382,51 @@ class DoubleClickBehaviour(object):
     RESHAPE_MODE = 3       # Go into reshape mode, practical for path shaped objects.
 
 
-class ActivePlugInSetup(object):
-    """
-    Decorator to setup the active plugin with event-enabled setup things like custom info pallet.
+class ActivePlugInDoubleClickBehaviour(object):
+    """Decorator to set the double click behaviour for an event-enabled plug-in.
     """
 
-    def __init__(self, info_pallet: list=None, double_click_behaviour: int=DoubleClickBehaviour.DEFAULT):
+    def __init__(self, behaviour: int=DoubleClickBehaviour.DEFAULT, callback: callable=None):
         """
-        :type info_pallet: list[AbstractWidget]
+        :type behaviour: DoubleClickBehaviour
+        :type callback: (self) -> None || () -> None
         """
-        self.__info_pallet = info_pallet
-        self.__double_click_behaviour = double_click_behaviour
+        self.__behaviour = behaviour
+        self.__callback = callback
 
     def __call__(self, function: callable) -> callable:
-        @ActivePlugInEvents(events={
-            ActivePlugInEvent.VSO_ON_INITIALIZATION: self.__on_initialization,
-            ActivePlugInEvent.VSO_ON_WIDGET_PREP: self.__on_widget_prep,
-            ActivePlugInEvent.VSO_ON_WIDGET_CLICK: self.__on_widget_click})
-        def setup_active_plugin_function(*args, **kwargs):
-            function(*args, **kwargs)
-        return setup_active_plugin_function
 
-    def __on_initialization(self):
-        self.__init_info_pallet() if self.__info_pallet is not None else None
-        self.__init_double_click() if self.__double_click_behaviour is not DoubleClickBehaviour.DEFAULT else None
+        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_INITIALIZATION, self.__init_double_click_behaviour)
+        @If(self.__callback, ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_DOUBLE_CLICK, self.__on_double_click))
+        def decorator(*args, **kwargs):
+            function(*args, **kwargs)  # Execute main function first, to enable extra initialization.
 
-    def __init_info_pallet(self):
-        if not vs.SetObjPropVS(8, True):  # 8 = Custom Info Palette property!
-            raise VSException('SetObjPropVS(8, True)')
-        custom_visibility = False
-        for index, widget in enumerate(self.__info_pallet, 1):
-            custom_visibility = custom_visibility or widget.custom_visibility
-            widget.add(index)
-        if custom_visibility and not vs.SetObjPropVS(12, True):  # 12 = Custom widget visibility!
-            raise VSException('SetObjPropVS(12, True)')
+        return decorator
 
-    def __init_double_click(self):
-        if not vs.SetObjPropCharVS(3, self.__double_click_behaviour):  # 3 = Double click behavior!
-            raise VSException('SetObjPropCharVS(3, %s)' % self.__double_click_behaviour)
+    def __init_double_click_behaviour(self):
+        vs.SetObjPropCharVS(3, self.__behaviour)  # 3 = Double click behavior!
 
-    def __on_widget_prep(self):
-        if self.__info_pallet is not None:
-            for index, widget in enumerate(self.__info_pallet, 1):
-                widget.update(index)
+    def __on_double_click(self, data: int):
+        self.__callback()
 
-    def __on_widget_click(self, widget_id):
-        if self.__info_pallet is not None:
-            widget = self.__info_pallet[widget_id - 1]  # We enumerated from 1 at initialization of widgets!
-            widget.on_click() if isinstance(widget, ButtonWidget) else None
+
+class ActivePlugInFontStyleEnabled(object):
+    """Decorator for setting the plug-in font style enabled.
+    """
+
+    def __call__(self, function: callable) -> callable:
+
+        # Because of a VW bug, font style enabling has to happen in the reset event for event-enabled plug-ins!
+        # TODO: Check to see how we can work with not-event-enabled plug-ins. @If, or making @OnEvent execute always?
+        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_RESET, self.__set_font_style_enabled)
+        def decorator(*args, **kwargs):
+            function (*args, **kwargs)  # Execute main function first, to enable extra initialization.
+
+        return decorator
+
+    @staticmethod
+    def __set_font_style_enabled(data: int):
+        vs.SetObjectVariableBoolean(ActivePlugIn().handle, 800, True)
 
 
 class AbstractActivePlugInParameters(object, metaclass=ABCMeta):

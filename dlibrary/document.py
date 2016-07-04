@@ -362,6 +362,14 @@ class Clazz(AbstractKeyedObject, IClazzAttributes):
         vs.NameClass(active_clazz)
         return ObjectRepository().get(name)
 
+    @staticmethod
+    def get_or_create(name: str):
+        """Gets the class, creates if not found.
+        :rtype: Clazz
+        """
+        clazz = ObjectRepository().get(name)
+        return clazz if clazz is not None and isinstance(clazz, Clazz) else Clazz.create(name)
+
     def __init__(self, handle_or_name):
         """
         :type handle_or_name: vs.Handle | str
@@ -505,6 +513,17 @@ class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
         :rtype: set(SheetLayer)
         """
         return {layer for layer in self.layers if isinstance(layer, SheetLayer)}
+
+    @property
+    def text_size(self) -> float:
+        """Text size in points
+        :rtype: float
+        """
+        return vs.GetPrefReal(57) / 42.42424
+
+    @text_size.setter
+    def text_size(self, value: float):
+        vs.SetPrefReal(57, value * 42.42424)
 
 
 class Units(object, metaclass=SingletonMeta):
