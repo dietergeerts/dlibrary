@@ -506,6 +506,17 @@ class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
         """
         return {layer for layer in self.layers if isinstance(layer, SheetLayer)}
 
+    @property
+    def text_size(self) -> float:
+        """Text size in points
+        :rtype: float
+        """
+        return vs.GetPrefReal(57) / 42.42424
+
+    @text_size.setter
+    def text_size(self, value: float):
+        vs.SetPrefReal(57, value * 42.42424)
+
 
 class Units(object, metaclass=SingletonMeta):
 
