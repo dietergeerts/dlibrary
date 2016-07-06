@@ -1,4 +1,4 @@
-"""Used for all Vectorworks related stuff, like settings, and for plug-in objects and their setup and working.
+"""Module for all Vectorworks related stuff, like settings and active plug-in features.
 """
 from abc import ABCMeta, abstractmethod
 import os
@@ -9,15 +9,24 @@ from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException, If
 import vs
 
 
-class Platform(object):
+class PlatformEnum(object):
+    """Enum to identify the platform Vectorworks is running on.
+    """
+
     MAC_OS = 1
     WINDOWS = 2
 
 
 class Vectorworks(object, metaclass=SingletonMeta):
+    """Singleton class to represent the running Vectorworks instance.
+    """
 
     @property
     def version(self) -> str:
+        """Vectorworks' main version, like '12.5', or '2016'.
+
+        :rtype: str
+        """
         major, minor, maintenance, platform, build_number = vs.GetVersionEx()
         return str(major + 1995 if major > 12 else major)
 
@@ -56,7 +65,7 @@ class Vectorworks(object, metaclass=SingletonMeta):
         You can ask VW to do the conversion, as simply replacing the characters are not enough (Posix uses volume
         mounting instead of drive names). This can be done through vs.ConvertHSF2PosixPath().
         """
-        if self.platform == Platform.MAC_OS:
+        if self.platform == PlatformEnum.MAC_OS:
             succeeded, file_path = vs.ConvertHSF2PosixPath(file_path)
         return file_path
 
