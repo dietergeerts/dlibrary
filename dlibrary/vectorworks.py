@@ -260,11 +260,13 @@ class AbstractWidget(object, metaclass=ABCMeta):
     """Abstract base class for object info pallet widgets.
     """
 
-    def __init__(self, visible: callable=None):
+    def __init__(self, visible: callable=None, disabled: callable=None):
         """
         :type visible: () -> bool
+        :type disabled: () -> bool
         """
         self.__visible = visible
+        self.__disabled = disabled
 
     @property
     def custom_visibility(self) -> bool:
@@ -285,15 +287,20 @@ class AbstractWidget(object, metaclass=ABCMeta):
             vis = self.__visible()
             if vis != vs.vsoWidgetGetVisible(widget_id):
                 vs.vsoWidgetSetVisible(widget_id, vis)
+        if self.__disabled is not None:
+            enabled = not self.__disabled()
+            if enabled != vs.vsoWidgetGetEnable(widget_id):
+                vs.vsoWidgetSetEnable(widget_id, enabled)
 
 
 class ParameterWidget(AbstractWidget):
 
-    def __init__(self, parameter: str, visible: callable=None):
+    def __init__(self, parameter: str, visible: callable=None, disabled: callable=None):
         """
         :type visible: () -> bool
+        :type disabled: () -> bool
         """
-        super().__init__(visible)
+        super().__init__(visible, disabled)
         self.__parameter = parameter
 
     def add(self, widget_id: int):
