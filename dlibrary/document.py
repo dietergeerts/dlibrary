@@ -362,6 +362,14 @@ class Clazz(AbstractKeyedObject, IClazzAttributes):
         vs.NameClass(active_clazz)
         return ObjectRepository().get(name)
 
+    @staticmethod
+    def get_or_create(name: str):
+        """Gets the class, creates if not found.
+        :rtype: Clazz
+        """
+        clazz = ObjectRepository().get(name)
+        return clazz if clazz is not None and isinstance(clazz, Clazz) else Clazz.create(name)
+
     def __init__(self, handle_or_name):
         """
         :type handle_or_name: vs.Handle | str
