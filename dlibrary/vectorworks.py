@@ -22,6 +22,11 @@ class Vectorworks(object, metaclass=SingletonMeta):
     """
 
     @property
+    def platform(self) -> int:
+        major, minor, maintenance, platform, build_number = vs.GetVersionEx()
+        return platform
+
+    @property
     def version(self) -> str:
         """Vectorworks' main version, like '12.5', or '2016'.
 
@@ -29,11 +34,6 @@ class Vectorworks(object, metaclass=SingletonMeta):
         """
         major, minor, maintenance, platform, build_number = vs.GetVersionEx()
         return str(major + 1995 if major > 12 else major)
-
-    @property
-    def platform(self) -> int:
-        major, minor, maintenance, platform, build_number = vs.GetVersionEx()
-        return platform
 
     @property
     def dongle(self) -> str:

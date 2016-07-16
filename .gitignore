@@ -1,2 +1,3 @@
 .idea
 *.lck
+/dlibrary_docs/dist/
