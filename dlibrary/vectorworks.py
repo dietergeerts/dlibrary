@@ -4,7 +4,8 @@ from abc import ABCMeta, abstractmethod
 import os
 
 from dlibrary.dialog_predefined import AlertType, Alert
-from dlibrary.object import Record
+# TODO: We can't import record because of circular references! We must solve this!
+# from dlibrary.object import Record
 from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException, If
 import vs
 
@@ -18,36 +19,55 @@ class PlatformEnum(object):
 
 
 class Vectorworks(object, metaclass=SingletonMeta):
-    """Singleton class to represent the running Vectorworks instance.
+    """Singleton to represent the running Vectorworks instance.
     """
+
+    def __init_version_information(self):
+        major, minor, maintenance, self.__platform, build_number = vs.GetVersionEx()
+        self.__version = str(major + 1995 if major > 12 else major)
+
+    def __init_user_information(self):
+        self.__dongle = vs.GetActiveSerialNumber()[-6:]
 
     @property
     def platform(self) -> int:
-        major, minor, maintenance, platform, build_number = vs.GetVersionEx()
-        return platform
+        """
+        :rtype: PlatformEnum
+        """
+        self.__init_version_information() if self.__platform is None else None
+        return self.__platform
 
     @property
     def version(self) -> str:
         """Vectorworks' main version, like '12.5', or '2016'.
-
         :rtype: str
         """
-        major, minor, maintenance, platform, build_number = vs.GetVersionEx()
-        return str(major + 1995 if major > 12 else major)
+        self.__init_version_information() if self.__version is None else None
+        return self.__version
 
     @property
     def dongle(self) -> str:
-        return vs.GetActiveSerialNumber()[-6:]
+        """The user' identification number (= last 6 digits of serial)
+        :rtype: str
+        """
+        self.__init_user_information() if self.__dongle is None else None
+        return self.__dongle
 
-    def get_folder_path_of_plugin_file(self, filename: str) -> str:
-        succeeded, file_path = vs.FindFileInPluginFolder(filename)
-        return self.__get_os_independent_file_path(file_path)
+    def get_os_independent_filepath(self, filepath: str) -> str:
+        """Resolves the filepath to be os independent.
 
-    def get_folder_path_of_active_document(self) -> str:
-        return self.get_file_path_of_active_document()[:-len(vs.GetFName())]
+        Patrick Stanford <patstanford@coviana.com> on the VectorScript Discussion List:
+        Since Mac OS 10, as they're rewritten it using UNIX kernel, the mac uses Posix natively.
+        Since VW predates that, the old calls use HFS paths and need to be converted for newer APIs.
+        You can ask VW to do the conversion, as simply replacing the characters are not enough (Posix
+        uses volume mounting instead of drive names). This can be done through vs.ConvertHSF2PosixPath().
+        """
+        return vs.ConvertHSF2PosixPath(filepath)[1] if self.platform == PlatformEnum.MAC_OS else filepath
 
-    def get_file_path_of_active_document(self) -> str:
-        return self.__get_os_independent_file_path(vs.GetFPathName())
+    def get_plugin_file_filepath(self, filename: str) -> str:
+        """Resolves the filepath based on the filename for a file in one of the plugin directories.
+        """
+        return self.get_os_independent_filepath(os.path.join(vs.FindFileInPluginFolder(filename)[1], filename))
 
     @staticmethod
     def show_message(message: str):
@@ -56,18 +76,6 @@ class Vectorworks(object, metaclass=SingletonMeta):
     @staticmethod
     def clear_message():
         vs.ClrMessage()
-
-    def __get_os_independent_file_path(self, file_path: str) -> str:
-        """
-        Patrick Stanford <patstanford@coviana.com> on the VectorScript Discussion List:
-        Since Mac OS 10, as they're rewritten it using UNIX kernel, the mac uses Posix natively.
-        Since VW predates that, the old calls use HFS paths and need to be converted for newer APIs.
-        You can ask VW to do the conversion, as simply replacing the characters are not enough (Posix uses volume
-        mounting instead of drive names). This can be done through vs.ConvertHSF2PosixPath().
-        """
-        if self.platform == PlatformEnum.MAC_OS:
-            succeeded, file_path = vs.ConvertHSF2PosixPath(file_path)
-        return file_path
 
 
 class ActivePlugInType(object):
@@ -110,15 +118,15 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
             # raise VSException('GetCustomObjectInfo')
         return plugin_handle
 
-    @property
-    def parameters(self) -> Record:
-        # Singletons will keep it's data throughout the entire Vectorworks session!
-        # This result isn't the same during that session, it depends on the active plugin!
-        succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
-        # TODO: What if we want this record for a menu or tool plugin?
-        if not succeeded:
-            raise VSException('GetCustomObjectInfo')
-        return Record(record_handle)
+    # @property
+    # def parameters(self) -> Record:
+    #     # Singletons will keep it's data throughout the entire Vectorworks session!
+    #     # This result isn't the same during that session, it depends on the active plugin!
+    #     succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
+    #     # TODO: What if we want this record for a menu or tool plugin?
+    #     if not succeeded:
+    #         raise VSException('GetCustomObjectInfo')
+    #     return Record(record_handle)
 
     @property
     def origin(self) -> tuple:
@@ -468,27 +476,14 @@ class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
 
 class AbstractActivePlugInXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
-    def __init__(self, active_plugin_type: str, suffix: str):
-        """
-        :type active_plugin_type: ActivePlugInType(Enum)
-        """
-        file_path = Vectorworks().get_folder_path_of_plugin_file(ActivePlugIn().name + active_plugin_type)
-        super().__init__(os.path.join(file_path, ActivePlugIn().name + suffix + '.xml'))
+    def __init__(self, suffix: str):
+        super().__init__(Vectorworks().get_plugin_file_filepath(ActivePlugIn().name + suffix + '.xml'))
 
 
 class AbstractActivePlugInPrefsXmlFile(AbstractActivePlugInXmlFile, metaclass=ABCMeta):
 
-    def __init__(self, active_plugin_type: str):
-        """
-        :type active_plugin_type: ActivePlugInType(Enum)
-        """
-        super().__init__(active_plugin_type, 'Prefs')
-
-
-class AbstractActivePlugInDrawingXmlFile(AbstractXmlFile, metaclass=ABCMeta):
-
     def __init__(self):
-        super().__init__(os.path.join(Vectorworks().get_folder_path_of_active_document(), ActivePlugIn().name + '.xml'))
+        super().__init__('Prefs')
 
 
 class Security(object):

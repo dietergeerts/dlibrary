@@ -36,7 +36,7 @@ def run():
 class DLibraryTestDialogXmlFile(AbstractActivePlugInDialogXmlFile):
 
     def __init__(self):
-        super().__init__('Main', ActivePlugInType.MENU)
+        super().__init__('Main')
 
 
 class ChoiceItem(object):

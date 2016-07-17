@@ -14,12 +14,8 @@ import vs
 @XmlFileLists(lists={'control'})
 class AbstractActivePlugInDialogXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
-    def __init__(self, dialog_name: str, active_plugin_type: str):
-        """
-        :type active_plugin_type: ActivePlugInType(Enum)
-        """
-        file_path = Vectorworks().get_folder_path_of_plugin_file(ActivePlugIn().name + active_plugin_type)
-        super().__init__(os.path.join(file_path, ActivePlugIn().name + dialog_name + 'Dialog.xml'))
+    def __init__(self, dialog_name: str):
+        super().__init__(Vectorworks().get_plugin_file_filepath(ActivePlugIn().name + dialog_name + 'Dialog.xml'))
 
 
 class AbstractDataContext(object, metaclass=ABCMeta):

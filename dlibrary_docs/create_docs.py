@@ -27,30 +27,48 @@ class TextUtil(object):
 
     @staticmethod
     def first_line(text: str) -> str:
-        return text.splitlines()[0] if text is not None else None
+        return text.splitlines()[0] if text else ''
 
     @staticmethod
     def first_word(text: str) -> str:
-        return TextUtil.first_line(text).split(' ')[0] if text is not None else None
+        return TextUtil.first_line(text).split(' ')[0] if text else ''
 
     @staticmethod
     def strip(text: str) -> str:
-        return text.strip() if text is not None else None
+        return text.strip() if text else ''
+
+    @staticmethod
+    def extract_return_type(text: str) -> tuple:
+        """
+        :rtype: (str, str)
+        """
+        text, lines = TextUtil.__extract_lines(text, ':rtype: ')
+        return text, lines[-1].replace(':rtype: ', '') if lines else ''
+
+    @staticmethod
+    def __extract_lines(text: str, start_with: str) -> tuple:
+        """
+        :rtype: (str, list[str])
+        """
+        return (
+            '\n'.join([line for line in text.splitlines() if not line.startswith(start_with)]),
+            [line for line in text.splitlines() if line.startswith(start_with)]
+        ) if text else ('', [])
 
 
 class Markdown(object):
 
     @staticmethod
     def emphasis(text: str) -> str:
-        return '*%s*' % text if text is not None else ''
+        return '*%s*' % text if text else ''
 
     @staticmethod
     def strong(text: str) -> str:
-        return '**%s**' % text if text is not None else ''
+        return '**%s**' % text if text else ''
 
     @staticmethod
     def tag(tag: str, text: str) -> str:
-        return '<%s>%s</%s>' % (tag, text, tag)
+        return '<%s>%s</%s>' % (tag, text or '', tag)
 
     @staticmethod
     def link(url: str, text: str=None) -> str:
@@ -58,7 +76,7 @@ class Markdown(object):
 
     @staticmethod
     def newline() -> str:
-        return '\n'
+        return '  \n'
 
     @staticmethod
     def header(text: str, level: int=1) -> str:
@@ -70,7 +88,7 @@ class Markdown(object):
 
     @staticmethod
     def blockquote(text: str) -> str:
-        return '> ' + '> '.join(text.splitlines()) + Markdown.newline() if text is not None else ''
+        return '%s%s' % ('\n'.join('> %s' % line for line in text.splitlines()), Markdown.newline()) if text else ''
 
     @staticmethod
     def list_item(text: str) -> str:
@@ -79,9 +97,14 @@ class Markdown(object):
 
 class DLibraryMember(object):
 
-    def __init__(self, member, name: str):
-        self.__name = name
-        self.__doc = TextUtil.strip(inspect.getdoc(member))
+    def __init__(self, member: tuple):
+        """
+        :param member: tuple of member name and actual member
+        :type member: (str, obj)
+        """
+        self.__name = member[0]
+        self.__doc = TextUtil.strip(inspect.getdoc(member[1]))
+        self.__doc, self.__return_type = TextUtil.extract_return_type(self.__doc)
         self.__doc_excerpt = TextUtil.first_line(self.__doc)
 
     @property
@@ -96,11 +119,15 @@ class DLibraryMember(object):
     def doc(self) -> str:
         return self.__doc
 
+    @property
+    def return_type(self) -> str:
+        return self.__return_type
+
 
 class DLibraryModule(DLibraryMember):
 
     def __init__(self, module):
-        super().__init__(module, module.__name__.replace('dlibrary.', ''))
+        super().__init__((module.__name__.replace('dlibrary.', ''), module))
         self.__pretty_name = self.name.replace('_', ' ').title()
 
         def in_module(obj) -> bool:
@@ -139,8 +166,8 @@ class DLibraryModule(DLibraryMember):
 
 class DLibraryModuleMember(DLibraryMember):
 
-    def __init__(self, member, name: str, module: DLibraryModule):
-        super().__init__(member, name)
+    def __init__(self, member, module: DLibraryModule):
+        super().__init__(member)
         self.__link = '%s/%s.md' % (module.name, self.name)
         self.__module = module
 
@@ -156,9 +183,12 @@ class DLibraryModuleMember(DLibraryMember):
 class DLibraryClass(DLibraryModuleMember):
 
     def __init__(self, cls, module: DLibraryModule):
-        super().__init__(cls, cls.__name__, module)
+        super().__init__((cls.__name__, cls), module)
         self.__category = TextUtil.first_word(inspect.getdoc(cls))
-        self.__constants = [member for member in inspect.getmembers(cls) if member[0].isupper()]
+        all_members = [member for member in inspect.getmembers(cls) if pydoc.visiblename(member[0])]
+        self.__constants = [DLibraryConstant(member) for member in all_members if member[0].isupper()]
+        self.__properties = [DLibraryProperty(member) for member in all_members if isinstance(member[1], property)]
+        self.__methods = [DLibraryMethod(member) for member in all_members if inspect.isfunction(member[1])]
 
     @property
     def is_enum(self) -> bool:
@@ -171,9 +201,51 @@ class DLibraryClass(DLibraryModuleMember):
     @property
     def constants(self) -> list:
         """
-        :rtype: list[(str, str)]
+        :rtype: list[DLibraryConstant]
         """
         return self.__constants
+
+    @property
+    def properties(self) -> list:
+        """
+        :rtype: list[DLibraryProperty]
+        """
+        return self.__properties
+
+    @property
+    def methods(self) -> list:
+        """
+        :rtype: list[DLibraryMethod]
+        """
+        return self.__methods
+
+
+class DLibraryConstant(DLibraryMember):
+
+    def __init__(self, constant):
+        super().__init__(constant)
+        self.__value = constant[1]
+
+    @property
+    def value(self):
+        return self.__value
+
+
+class DLibraryProperty(DLibraryMember):
+
+    def __init__(self, prop):
+        super().__init__(prop)
+        self.__has_setter = prop[1].fset is not None
+
+    @property
+    def has_setter(self) -> bool:
+        return self.__has_setter
+
+
+class DLibraryMethod(DLibraryMember):
+
+    def __init__(self, method):
+        super().__init__(method)
 
 
 def clean_docs():
@@ -204,14 +276,34 @@ def write_api_member(member: DLibraryModuleMember, content: str):
     wrapped += Markdown.header(
         '%s \> %s \> %s' % (Markdown.link('../index.md', 'DLibrary'), member.module.pretty_name, member.name), 1)
     wrapped += Markdown.blockquote(member.doc)
+    wrapped += Markdown.newline()
     wrapped += content
     FileUtil.write_file(os.path.join(API_DOCS_PATH, member.module.name, '%s.md' % member.name), wrapped)
 
 
 def write_api_class(cls: DLibraryClass):
     content = ''
-    for constant in cls.constants:
-        content += Markdown.list_item('%s = %s' % constant)
+    if cls.constants:
+        content += Markdown.newline()
+        for constant in cls.constants:
+            content += Markdown.list_item('%s = %s' % (Markdown.strong(constant.name), constant.value))
+        content += Markdown.newline()
+    if cls.properties:
+        content += Markdown.header('Properties', 2)
+        content += Markdown.newline()
+        for prop in cls.properties:
+            content += Markdown.list_item('%s | get%s | %s%s' % (
+                Markdown.strong(prop.name), '/set' if prop.has_setter else '', prop.return_type,
+                ' - %s' % Markdown.tag('small', prop.doc_excerpt) if prop.doc_excerpt else ''))
+        content += Markdown.newline()
+    if cls.methods:
+        content += Markdown.header('Methods', 2)
+        for method in cls.methods:
+            content += Markdown.newline()
+            content += Markdown.strong(method.name)
+            content += Markdown.newline()
+            content += Markdown.blockquote(method.doc)
+            content += Markdown.newline()
     write_api_member(cls, content)
 
 
