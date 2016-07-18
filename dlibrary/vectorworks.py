@@ -86,39 +86,31 @@ class Vectorworks(object, metaclass=SingletonMeta):
 
 class ActivePlugIn(object, metaclass=SingletonMeta):
     """Singleton to represent the currently executing plugin, hence 'active'.
+
+    Note that this is a singleton in the view of the currently executing plugin script.
+    Be aware of this when changing this class' functionality.
     """
 
-    def __init__(self):
-        self.__version = ''
-
     @property
-    def version(self) -> str:
-        return self.__version
-
-    @version.setter
-    def version(self, value: str):
-        self.__version = value
+    def handle(self) -> vs.Handle:
+        """Will return the instance or definition handle.
+        :rtype: vs.Handle
+        """
+        succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
+        if not succeeded:  # >> not an instance >> get the definition handle.
+            # TODO: Make the difference in plugin definition and instance clearer, probably more generic!
+            plugin_handle = vs.GetObject(self.name)
+        return plugin_handle
 
     @property
     def name(self) -> str:
-        # Singletons will keep it's data throughout the entire Vectorworks session!
-        # This result isn't the same during that session, it depends on the active plugin!
+        """
+        :rtype: str
+        """
         succeeded, name, record_handle = vs.GetPluginInfo()
         if not succeeded:
             raise VSException('GetPluginInfo')
         return name
-
-    @property
-    def handle(self) -> vs.Handle:
-        # Singletons will keep it's data throughout the entire Vectorworks session!
-        # This result isn't the same during that session, it depends on the active plugin!
-        succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
-        if not succeeded:
-            # If not succeeded, then it means that it's not an instance, so we want to get the definition handle.
-            # TODO: Make the difference in plugin definition and instance clearer, probably more generic!
-            plugin_handle = vs.GetObject(self.name)
-            # raise VSException('GetCustomObjectInfo')
-        return plugin_handle
 
     # @property
     # def parameters(self) -> Record:
@@ -461,8 +453,7 @@ class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
         return self.__parameters[name] if name in self.__parameters else self.__store_and_get_parameter(name)
 
     def __store_and_get_parameter(self, name: str):
-        value = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the v
-        # s module!
+        value = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the vs module!
         # For a boolean value, VW return 1 or 0, while we actually want a bool, so we'll convert if needed.
         record = vs.GetParametricRecord(ActivePlugIn().handle)
         fields = [vs.GetFldName(record, index) for index in range(1, vs.NumFields(record) + 1)]

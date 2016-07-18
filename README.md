@@ -62,3 +62,4 @@ when update the file with a new version!
 - For the class docstring, always start with it's type, as the auto-generated documentation will use this to group and
 render them in a specific way. Use one of these: Enum, Singleton.
 - Always put the return type of properties in the docstring, as inspect can't get type hints from properties!
+- Keep in mind that for Singletons, they are unique for the VW sessions, not the script run!

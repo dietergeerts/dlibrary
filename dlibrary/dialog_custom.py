@@ -58,10 +58,9 @@ class Dialog(AbstractDataContext):
 
     @staticmethod
     def __create_title(view: dict) -> str:
-        return ('%s - %s %s' % (
-            view['dialog']['@title'], ActivePlugIn().name,
-            'v%s' % ActivePlugIn().version if ActivePlugIn().version != '' else ''
-        )).strip()  # To remove the space left when there is no version.
+        return view['dialog']['@title']
+        # TODO: Add a way to append the plugin name and version to the title in an easy way!
+        # independent from if this dialog is being run in a normal document script or actual plugin!
 
     @staticmethod
     def __get_dialog_control(dialog: dict) -> list:
