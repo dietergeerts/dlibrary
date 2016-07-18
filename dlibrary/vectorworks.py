@@ -85,6 +85,8 @@ class Vectorworks(object, metaclass=SingletonMeta):
 
 
 class ActivePlugIn(object, metaclass=SingletonMeta):
+    """Singleton to represent the currently executing plugin, hence 'active'.
+    """
 
     def __init__(self):
         self.__version = ''
