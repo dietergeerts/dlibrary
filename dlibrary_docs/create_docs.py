@@ -246,6 +246,20 @@ class DLibraryMethod(DLibraryMember):
 
     def __init__(self, method):
         super().__init__(method)
+        signature = inspect.signature(method[1])
+        self.__parameters = signature.parameters.values()
+        self.__returns = signature.return_annotation
+
+    @property
+    def parameters(self) -> list:
+        """
+        :rtype: list[Parameter]
+        """
+        return self.__parameters
+
+    @property
+    def returns(self):
+        return self.__returns
 
 
 def clean_docs():
@@ -300,9 +314,18 @@ def write_api_class(cls: DLibraryClass):
         content += Markdown.header('Methods', 2)
         for method in cls.methods:
             content += Markdown.newline()
-            content += Markdown.strong(method.name)
+            content += '%s(%s)%s' % (
+                Markdown.strong(method.name),
+                ', '.join('%s%s%s' % (
+                    param.name,
+                    ': %s' % param.annotation.__name__ if param.annotation is not inspect.Parameter.empty else '',
+                    '=%s' % param.default if param.default is not inspect.Parameter.empty else ''
+                ) for param in method.parameters),
+                ' -> %s' % method.returns.__name__ if method.returns is not inspect.Signature.empty else '')
             content += Markdown.newline()
             content += Markdown.blockquote(method.doc)
+            content += Markdown.newline()
+            content += '<br/>'
             content += Markdown.newline()
     write_api_member(cls, content)
 

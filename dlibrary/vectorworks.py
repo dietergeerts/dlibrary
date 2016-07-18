@@ -31,7 +31,7 @@ class Vectorworks(object, metaclass=SingletonMeta):
 
     @property
     def platform(self) -> int:
-        """
+        """The platform (= OS) Vectorworks is running on.
         :rtype: PlatformEnum
         """
         self.__init_version_information() if self.__platform is None else None
@@ -69,19 +69,19 @@ class Vectorworks(object, metaclass=SingletonMeta):
         """
         return self.get_os_independent_filepath(os.path.join(vs.FindFileInPluginFolder(filename)[1], filename))
 
-    @staticmethod
-    def show_message(message: str):
+    # noinspection PyMethodMayBeStatic
+    def show_message(self, message: str):
+        """Show a floating message in the message palette.
+        Handy to show processing information or script results.
+        Any previous messages will be cleared.
+        """
         vs.Message(message)
 
-    @staticmethod
-    def clear_message():
+    # noinspection PyMethodMayBeStatic
+    def clear_message(self):
+        """Clear any floating messages and close the message palette.
+        """
         vs.ClrMessage()
-
-
-class ActivePlugInType(object):
-    MENU = '.vsm'
-    TOOL = '.vst'
-    OBJECT = '.vso'
 
 
 class ActivePlugIn(object, metaclass=SingletonMeta):
