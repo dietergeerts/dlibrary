@@ -72,6 +72,7 @@ class Vectorworks(object, metaclass=SingletonMeta):
     # noinspection PyMethodMayBeStatic
     def show_message(self, message: str):
         """Show a floating message in the message palette.
+
         Handy to show processing information or script results.
         Any previous messages will be cleared.
         """
