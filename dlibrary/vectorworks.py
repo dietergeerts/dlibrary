@@ -93,34 +93,25 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
     """
 
     @property
+    def name(self) -> str:
+        """Will return the name of the menu/tool/object plug-in.
+        :rtype: str
+        """
+        return vs.GetPluginInfo()[1]
+
+    @property
     def handle(self) -> vs.Handle:
-        """Will return the instance or definition handle.
+        """Will return the instance or definition handle of an object plug-in.
         :rtype: vs.Handle
         """
         succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
-        if not succeeded:  # >> not an instance >> get the definition handle.
-            # TODO: Make the difference in plugin definition and instance clearer, probably more generic!
-            plugin_handle = vs.GetObject(self.name)
-        return plugin_handle
+        return plugin_handle if succeeded else vs.GetObject(self.name)
 
-    @property
-    def name(self) -> str:
-        """
-        :rtype: str
-        """
-        succeeded, name, record_handle = vs.GetPluginInfo()
-        if not succeeded:
-            raise VSException('GetPluginInfo')
-        return name
-
+    # TODO: define parametric record class from abstract record class in object_base and use it here!
     # @property
     # def parameters(self) -> Record:
-    #     # Singletons will keep it's data throughout the entire Vectorworks session!
-    #     # This result isn't the same during that session, it depends on the active plugin!
     #     succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
     #     # TODO: What if we want this record for a menu or tool plugin?
-    #     if not succeeded:
-    #         raise VSException('GetCustomObjectInfo')
     #     return Record(record_handle)
 
     @property

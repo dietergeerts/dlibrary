@@ -98,3 +98,5 @@ class ObjectRepository(object, metaclass=SingletonMeta):
         :rtype: T <= AbstractKeyedObject
         """
         return self.__constructors.get(ObjectTypeEnum.get(handle_or_name), lambda h_o_n: None)(handle_or_name)
+
+# TODO: create abstract record and field classes for use in the different record types (parameteric, ifc, normal)!
