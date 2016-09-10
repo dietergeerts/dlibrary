@@ -7,7 +7,7 @@ from dlibrary.document import AbstractResourceList
 from dlibrary.utility import XmlFileLists, Event, VSException, Convert, SingletonMeta, AbstractPropertyClassDecorator, \
     ObservableField, ObservableMethod, ObservableList, XmlDict
 from dlibrary.utility import AbstractXmlFile
-from dlibrary.vectorworks import ActivePlugIn, Vectorworks
+from dlibrary.vectorworks import ActivePlugin, Vectorworks
 import vs
 
 
@@ -15,7 +15,7 @@ import vs
 class AbstractActivePlugInDialogXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
     def __init__(self, dialog_name: str):
-        super().__init__(Vectorworks().get_plugin_file_filepath(ActivePlugIn().name + dialog_name + 'Dialog.xml'))
+        super().__init__(Vectorworks().get_plugin_file_filepath(ActivePlugin().name + dialog_name + 'Dialog.xml'))
 
 
 class AbstractDataContext(object, metaclass=ABCMeta):

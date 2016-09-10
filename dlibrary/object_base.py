@@ -21,6 +21,7 @@ class ObjectTypeEnum(object):
     RECTANGLE = 3
     GROUP = 11
     SYMBOL = 15
+    PLUGIN_OBJECT = 86
 
     @staticmethod
     def get(handle_or_name) -> int:
@@ -99,4 +100,4 @@ class ObjectRepository(object, metaclass=SingletonMeta):
         """
         return self.__constructors.get(ObjectTypeEnum.get(handle_or_name), lambda h_o_n: None)(handle_or_name)
 
-# TODO: create abstract record and field classes for use in the different record types (parameteric, ifc, normal)!
+# TODO: create abstract record and field classes for use in the different record types (parameteric, ifc, normal)!?

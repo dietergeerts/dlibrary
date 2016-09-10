@@ -6,16 +6,15 @@ from dlibrary.utility import AbstractViewModel, ViewModelList, ObservableField, 
     ObservableMethod, ObservableCommand, VSException
 
 # pydevd.settrace('localhost', port=8080, stdoutToServer=True, stderrToServer=True, suspend=False)
-from dlibrary.vectorworks import ActivePlugInType, ActivePlugInInfo, ActivePlugIn
+from dlibrary.vectorworks import ActivePlugInType, ActivePlugin
 
 
-@ActivePlugInInfo(version='2015.5.8')
 def run():
     try:
         items = create_items()
         dialog = Dialog(DLibraryTestDialogXmlFile(), DLibraryTestVsmViewModel(items))
     except VSException:
-        PlugInFileVsExceptionAlert(ActivePlugIn().name).show()
+        PlugInFileVsExceptionAlert(ActivePlugin().name).show()
     except FileNotFoundError as e:
         PlugInFileFileNotFoundErrorAlert(e.filename).show()
     except PermissionError as e:
@@ -92,7 +91,7 @@ class PredefinedDialogsViewModel(object):
         self.__show_alert_success = ObservableCommand(
             lambda: self.__show_alert(AlertType.SUCCESS), self.__can_show_alert, [self.dialog_text])
         self.__show_plugin_alert_vsexception = ObservableCommand(
-            lambda: PlugInFileVsExceptionAlert(ActivePlugIn().name).show())
+            lambda: PlugInFileVsExceptionAlert(ActivePlugin().name).show())
         self.__show_plugin_alert_filenotfounderror = ObservableCommand(
             lambda: PlugInFileFileNotFoundErrorAlert('filex.xml').show())
         self.__show_plugin_alert_permissionerror = ObservableCommand(

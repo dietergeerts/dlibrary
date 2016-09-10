@@ -1,13 +1,11 @@
-"""Module for all Vectorworks related stuff, like settings and active plug-in features.
+"""Module for all Vectorworks related stuff, like settings and active plugin features.
 """
-from abc import ABCMeta, abstractmethod
 import os
+from abc import ABCMeta, abstractmethod
 
-from dlibrary.dialog_predefined import AlertType, Alert
-# TODO: We can't import record because of circular references! We must solve this!
-# from dlibrary.object import Record
-from dlibrary.utility import AbstractXmlFile, SingletonMeta, VSException, If
 import vs
+from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
+from dlibrary.utility import SingletonMeta
 
 
 class PlatformEnum(object):
@@ -27,7 +25,7 @@ class Vectorworks(object, metaclass=SingletonMeta):
         self.__version = str(major + 1995 if major > 12 else major)
 
     def __init_user_information(self):
-        self.__dongle = vs.GetActiveSerialNumber()[-6:]
+        self.__user_id = vs.GetActiveSerialNumber()[-6:]
 
     @property
     def platform(self) -> int:
@@ -46,12 +44,12 @@ class Vectorworks(object, metaclass=SingletonMeta):
         return self.__version
 
     @property
-    def dongle(self) -> str:
-        """The user' identification number (= last 6 digits of serial)
+    def user_id(self) -> str:
+        """The user' identification number (= last 6 digits of serial = dongle number)
         :rtype: str
         """
-        self.__init_user_information() if self.__dongle is None else None
-        return self.__dongle
+        self.__init_user_information() if self.__user_id is None else None
+        return self.__user_id
 
     def get_os_independent_filepath(self, filepath: str) -> str:
         """Resolves the filepath to be os independent.
@@ -85,7 +83,54 @@ class Vectorworks(object, metaclass=SingletonMeta):
         vs.ClrMessage()
 
 
-class ActivePlugIn(object, metaclass=SingletonMeta):
+class VectorworksSecurity(object):
+    """Decorator to secure a function based on the user id and/or VW version running.
+    
+    If used together with other decorators, all decorators below will not be executed if permission is denied.
+    So keep that in mind when applying multiple decorators to your function, as some may not be executed!
+    """
+
+    def __init__(self, version: str=None, user_ids: set=None, on_version_denied: callable=None, 
+                 on_user_id_denied: callable=None):
+        """
+        :param user_ids: User id == last 6 digits of serial == dongle number!
+        :type user_ids: set[str]
+        :type on_version_denied: (str) -> None  
+        :type on_user_id_denied: (str) -> None
+        """
+        self.__version = version
+        self.__user_ids = user_ids
+        self.__on_version_denied = on_version_denied
+        self.__on_user_id_denied = on_user_id_denied        
+
+    def __call__(self, function: callable) -> callable:
+        
+        def decorator(*args, **kwargs):
+            if self.__has_version_permission() and self.__has_user_id_permission():
+                function(*args, **kwargs)
+                
+        return decorator
+    
+    def __has_version_permission(self) -> bool:
+        permission = True
+        if self.__version:
+            version = Vectorworks().version
+            permission = version == self.__version
+            if not permission and self.__on_version_denied:
+                self.__on_version_denied(version)
+        return permission
+    
+    def __has_user_id_permission(self) -> bool:
+        permission = True        
+        if self.__user_ids:
+            user_id = Vectorworks().user_id
+            permission = user_id in self.__user_ids
+            if not permission and self.__on_user_id_denied:
+                self.__on_user_id_denied(user_id)
+        return permission
+
+
+class ActivePlugin(object, metaclass=SingletonMeta):
     """Singleton to represent the currently executing plugin, hence 'active'.
 
     Note that this is a singleton in the view of the currently executing plugin script.
@@ -94,68 +139,51 @@ class ActivePlugIn(object, metaclass=SingletonMeta):
 
     @property
     def name(self) -> str:
-        """Will return the name of the menu/tool/object plug-in.
+        """Will return the name of the menu/tool/object plugin.
         :rtype: str
         """
         return vs.GetPluginInfo()[1]
 
     @property
     def handle(self) -> vs.Handle:
-        """Will return the instance or definition handle of an object plug-in.
+        """Will return the instance or definition handle of an object plugin.
         :rtype: vs.Handle
         """
         succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
         return plugin_handle if succeeded else vs.GetObject(self.name)
 
-    # TODO: define parametric record class from abstract record class in object_base and use it here!
-    # @property
-    # def parameters(self) -> Record:
-    #     succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
-    #     # TODO: What if we want this record for a menu or tool plugin?
-    #     return Record(record_handle)
-
     @property
-    def origin(self) -> tuple:
-        """:rtype: (float, float)"""
-        return vs.GetSymLoc(self.handle)
-
-    @property
-    def rotation(self) -> float:
-        """:rtype: float"""
-        return vs.GetSymRot(self.handle)
+    def instance(self) -> AbstractKeyedObject:
+        """Will return the instance, represented by PluginObject, or None if in definition 'mode'.
+        :rtype: PluginObject
+        """
+        succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
+        return ObjectRepository().get(plugin_handle) if succeeded else None
 
 
-class ActivePlugInInfo(object):
-    """
-    Decorator to initialize the active plugin. This should be used on the main run method of the plugin!
+class ActivePluginEventEnum(object):
+    """Enum to identify the possible plugin events.
     """
 
-    def __init__(self, version: str):
-        self.__version = version
-
-    def __call__(self, function: callable) -> callable:
-        def initialize_active_plugin_function(*args, **kwargs):
-            ActivePlugIn().version = self.__version
-            function(*args, **kwargs)
-        return initialize_active_plugin_function
-
-
-class ActivePlugInEvent(object):
-    VSO_ON_RESET = 3           # data: -
+    VSO_ON_RESET = 3           # data: -; Will also happen for none-event-enabled plugins!
     VSO_ON_INITIALIZATION = 5  # data: -
-    VSO_ON_DOUBLE_CLICK = 7    # data: -; Will only happen when double click behaviour is set to custom dialog!
+    VSO_ON_DOUBLE_CLICK = 7    # data: -; Will only happen when double click behaviour is set to custom event!
     VSO_ON_WIDGET_CLICK = 35   # data: widget_id
     VSO_ON_WIDGET_PREP = 41    # data: -
     VSO_ON_ADD_STATE = 44      # data: widget_id
 
 
-class ActivePlugInOnEvent(object):
-    """Decorator for setting an event callback for an event-enabled plug-in.
+class OnActivePluginEvent(object):
+    """Decorator for setting an event callback for an event-enabled plugin.
+
+    The function which we decorate will execute first, to enable extra initialization prior to the callback.
+    For none-event-enabled plugins, only the VSO_ON_RESET event will happen!
     """
 
     def __init__(self, event: int, callback: callable):
         """
-        :type callback: (self, int) -> None || (int) -> None
+        :type event: ActivePluginEventEnum  
+        :type callback: (int) -> None
         """
         self.__event = event
         self.__callback = callback
@@ -163,8 +191,7 @@ class ActivePlugInOnEvent(object):
     def __call__(self, function: callable) -> callable:
 
         def decorator(*args, **kwargs):
-            function (*args, **kwargs)  # Execute main function first, to enable extra initialization.
-
+            function(*args, **kwargs)
             event, data = vs.vsoGetEventInfo()
             self.__callback(data) if event == self.__event else None
 
@@ -172,53 +199,68 @@ class ActivePlugInOnEvent(object):
 
 
 class AbstractResetArgs(object, metaclass=ABCMeta):
+    """Abstract base class for reset arguments.
+    """
     pass
 
 
 class EmptyResetArgs(AbstractResetArgs):
+    """Reset arguments for when they are something else then available here.
+    """
     pass
 
 
 class CreationResetArgs(AbstractResetArgs):
+    """Reset arguments for when the reset happened because of creation.
+    """
     pass
 
 
-class ParameterChangedResetArgs(AbstractResetArgs):
+class ParameterChangeResetArgs(AbstractResetArgs):
+    """Reset arguments for when the reset happened because of a parameter change.
+    """
 
     def __init__(self, index: int):
-        self.__name = ActivePlugIn().parameters.get_field(index).name
+        self.__index = index
+        
+    def __init_name(self):
+        self.__name = vs.GetFldName(vs.GetCustomObjectInfo()[3], self.__index)
 
     @property
     def name(self) -> str:
+        """Returns the name of the changed parameter.
+        :rtype: str
+        """
+        self.__init_name() if self.__name is None else None
         return self.__name
 
 
-class ActivePlugInOnReset(object):
-    """Decorator for setting a reset callback for an event-enabled plug-in.
+class OnActivePluginReset(object):
+    """Decorator for setting a reset callback with reset args for an event-enabled plugin.
+    
+    (!) If you don't need the reset args, then use OnActivePluginEvent, as it creates more overhead for VW.   
+    The function which we decorate will execute first, to enable extra initialization prior to the callback.
     """
 
-    def __init__(self, callback: callable, with_args: bool=False):
+    def __init__(self, callback: callable):
         """
-        :type callback: (self, AbstractResetArgs) -> None || (AbstractResetArgs) -> None
+        :type callback: (AbstractResetArgs) -> None
         """
         self.__callback = callback
-        self.__with_args = with_args
         self.__reset_args = None
 
     def __call__(self, function: callable) -> callable:
 
-        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_RESET, self.__execute_callback)
-        @If(self.__with_args, ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_RESET, self.__resolve_reset_args))
-        @If(self.__with_args, ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_ADD_STATE, self.__add_reset_args_state))
-        @If(self.__with_args, ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_INITIALIZATION, self.__init_reset_args))
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_RESET, self.__execute_callback)
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_RESET, self.__resolve_reset_args)
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_ADD_STATE, self.__add_reset_args_state)
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_INITIALIZATION, self.__init_reset_args)
         def decorator(*args, **kwargs):
-            function(*args, **kwargs)  # Execute main function first, to enable extra initialization.
+            function(*args, **kwargs)
 
         return decorator
 
-    def __execute_callback(self, data: int):
-        self.__callback(self.__reset_args)
-
+    # noinspection PyUnusedLocal
     @staticmethod
     def __init_reset_args(data: int):
         vs.SetPrefInt(590, 1)      # 590 = enable state eventing, 1 = reset state events.
@@ -226,126 +268,164 @@ class ActivePlugInOnReset(object):
 
     @staticmethod
     def __add_reset_args_state(data: int):
-        vs.vsoStateAddCurrent(ActivePlugIn().handle, data)  # Only this MUST be called, nothing else!
+        vs.vsoStateAddCurrent(ActivePlugin().handle, data)  # Only this MUST be called, nothing else!
 
+    # noinspection PyUnusedLocal
     def __resolve_reset_args(self, data: int):
         self.__reset_args = (
             self.__try_get_creation_reset_args() or
             self.__try_get_parameter_change_reset_args() or
             EmptyResetArgs())
-        vs.vsoStateClear(ActivePlugIn().handle)  # EXTREMELY IMPORTANT to have this!
+        vs.vsoStateClear(ActivePlugin().handle)  # EXTREMELY IMPORTANT to have this!
 
+    # noinspection PyUnusedLocal
+    def __execute_callback(self, data: int):
+        self.__callback(self.__reset_args)
+        
     @staticmethod
     def __try_get_creation_reset_args() -> CreationResetArgs:
-        trigger = vs.vsoStateGet(ActivePlugIn().handle, 0)  # 0 = creation. (13 and 16 on 2nd round also happens!)
+        trigger = vs.vsoStateGet(ActivePlugin().handle, 0)  # 0 = creation. (13 and 16 on 2nd round also happens!)
         return CreationResetArgs() if trigger else None
 
     @staticmethod
-    def __try_get_parameter_change_reset_args() -> ParameterChangedResetArgs:
-        trigger, widget_id, parameter_index, old_value = vs.vsoStateGetParamChng(ActivePlugIn().handle)
-        return ParameterChangedResetArgs(parameter_index) if trigger else None
+    def __try_get_parameter_change_reset_args() -> ParameterChangeResetArgs:
+        trigger, widget_id, parameter_index, old_value = vs.vsoStateGetParamChng(ActivePlugin().handle)
+        return ParameterChangeResetArgs(parameter_index) if trigger else None
 
 
 class AbstractWidget(object, metaclass=ABCMeta):
-    """Abstract base class for object info pallet widgets.
+    """Abstract base class for object info-pallet widgets.
     """
 
-    def __init__(self, visible: callable=None):
+    def __init__(self, is_visible: callable=None, is_enabled: callable=None, on_click: callable=None):
         """
-        :type visible: () -> bool
+        :type is_visible: () -> bool  
+        :type is_enabled: () -> bool  
+        :type on_click: () -> None
         """
-        self.__visible = visible
+        self.__is_visible = is_visible
+        self.__is_enabled = is_enabled
+        self.__on_click = on_click
+        self._id = 0  # Will be set when added to the info-pallet.
 
     @property
-    def custom_visibility(self) -> bool:
-        """:rtype: bool"""
-        return self.__visible is not None
+    def has_custom_visibility(self) -> bool:
+        """Returns whether the widget has a visibility check set.
+        :rtype: bool
+        """
+        return self.__is_visible is not None
+    
+    @property
+    def has_custom_enabling(self) -> bool:
+        """Returns whether the widget has an enabled check set.
+        :rtype: bool
+        """
+        return self.__is_enabled is not None
+
+    def add(self, widget_id: int):
+        """Adds the widget to the object info-pallet with the given id.
+        """
+        self._id = widget_id
+        self._add()
+
+    def update(self):
+        """Update the widget visibility and enabled status.
+        """
+        vs.vsoWidgetSetVisible(self._id, self.__is_visible()) if self.has_custom_visibility else None
+        vs.vsoWidgetSetEnable(self._id, self.__is_enabled()) if self.has_custom_enabling else None
+        
+    def click(self):
+        """Execute the user's widget click.
+        """
+        self.__on_click() if self.__on_click else None
 
     @abstractmethod
-    def add_to_info_pallet(self, widget_id: int):
-        """Adds the widget to the object info pallet, giving it an id.
+    def _add(self):
+        """Adds the widget to the object info-pallet, with the widget specific call.
         """
         pass
 
-    def update(self, widget_id: int):
-        """Will be called internally to update the visibility status of the widget, if it has custom visibility.
-        The widget_id is given, as I couldn't find a solution to save it here, for some reason it didn't work. -Dieter.
-        """
-        if self.__visible is not None:
-            vis = self.__visible()
-            if vis != vs.vsoWidgetGetVisible(widget_id):
-                vs.vsoWidgetSetVisible(widget_id, vis)
-
 
 class ParameterWidget(AbstractWidget):
+    """Represents a widget for the given parameter, VW will use the correct type automatically.
+    """
 
-    def __init__(self, parameter: str, visible: callable=None):
+    def __init__(self, parameter: str, is_visible: callable=None, is_enabled: callable=None, on_click: callable=None):
         """
-        :type visible: () -> bool
+        :type is_visible: () -> bool  
+        :type is_enabled: () -> bool
+        :type on_click: () -> None
         """
-        super().__init__(visible)
+        super().__init__(is_visible, is_enabled, on_click)
         self.__parameter = parameter
 
-    def add_to_info_pallet(self, widget_id: int):
-        if not vs.vsoAddParamWidget(widget_id, self.__parameter, ''):  # '' for using parameter alternate name.
-            raise VSException('vsoAddParamWidget(%s, %s, '')' % (widget_id, self.__parameter))
+    def _add(self):
+        vs.vsoAddParamWidget(self._id, self.__parameter, '')  # '' for using the parameter's alternate name.
 
 
 class ButtonWidget(AbstractWidget):
+    """Represents a button on the object info-pallet.
+    """
 
-    def __init__(self, text: str, on_click: callable, reset: bool=False, visible: callable=None):
+    def __init__(self, label: str, on_click: callable, reset_object: bool=False, is_visible: callable=None,
+                 is_enabled: callable=None):
         """
-        :param reset: If true, the pio instance will be reset after the on_click def.
-        :type visible: () -> bool
+        :type on_click: () -> None  
+        :param reset_object: If true, the pio instance will be reset after the on_click handler.  
+        :type is_visible: () -> bool  
+        :type is_enabled: () -> bool
         """
-        super().__init__(visible)
-        self.__text = text
-        self.__on_click = on_click if not reset else lambda : self.__on_click_and_reset(on_click)
+        super().__init__(is_visible, is_enabled, self._click)
+        self.__label = label
+        self.__on_click = on_click
+        self.__reset_object = reset_object
+        
+    def _add(self):
+        vs.vsoInsertWidget(self._id, 12, self._id, self.__label, 0)  # 12 = Button
 
-    @property
-    def on_click(self) -> callable:
-        return self.__on_click
-
-    def add_to_info_pallet(self, widget_id: int):
-        if not vs.vsoInsertWidget(widget_id, 12, widget_id, self.__text, 0):  # 12 = Button.
-            raise VSException('vsoInsertWidget(%s, 12, %s, %s, 0)' % (widget_id, widget_id, self.__text))
-
-    @staticmethod
-    def __on_click_and_reset(on_click: callable):
-        on_click()
-        vs.ResetObject(ActivePlugIn().handle)
+    def _click(self):
+        self.__on_click()
+        vs.ResetObject(ActivePlugin().handle) if self.__reset_object else None
 
 
 class StaticTextWidget(AbstractWidget):
+    """Represents static text on the object info-pallet.
+    """
 
-    def __init__(self, text: str='', visible: callable=None):
+    def __init__(self, label: str, is_visible: callable=None, is_enabled: callable=None, on_click: callable=None):
         """
-        :type visible: () -> bool
+        :type is_visible: () -> bool  
+        :type is_enabled: () -> bool  
+        :type on_click: () -> None
         """
-        super().__init__(visible)
-        self.__text = text
+        super().__init__(is_visible, is_enabled, on_click)
+        self.__label = label
 
-    def add_to_info_pallet(self, widget_id: int):
-        if not vs.vsoInsertWidget(widget_id, 13, widget_id, self.__text, 0):  # 13 = Static text.
-            raise VSException('vsoInsertWidget(%s, 13, %s, %s, 0)' % (widget_id, widget_id, self.__text))
-
-
+    def _add(self):
+        vs.vsoInsertWidget(self._id, 13, self._id, self.__label, 0)  # 13 = Static text.
+        
+        
 class SeparatorWidget(AbstractWidget):
+    """Represents a separator on the object info-pallet. Great for grouping parameters.
+    """
 
-    def __init__(self, text: str='', visible: callable=None):
+    def __init__(self, label: str='', is_visible: callable=None, is_enabled: callable=None, on_click: callable=None):
         """
-        :type visible: () -> bool
+        :type is_visible: () -> bool  
+        :type is_enabled: () -> bool  
+        :type on_click: () -> None
         """
-        super().__init__(visible)
-        self.__text = text
+        super().__init__(is_visible, is_enabled, on_click)
+        self.__label = label
 
-    def add_to_info_pallet(self, widget_id: int):
-        if not vs.vsoInsertWidget(widget_id, 100, widget_id, self.__text.upper() + ' ', 0):  # 100 = Separator.
-            raise VSException('vsoInsertWidget(%s, 100, %s, %s + \' \', 0)' % (widget_id, widget_id, self.__text))
+    def _add(self):
+        vs.vsoInsertWidget(self._id, 100, self._id, self.__label.upper() + ' ', 0)  # 100 = Separator.
 
 
-class ActivePlugInInfoPallet(object):
-    """Decorator for setting the info pallet for an event-enabled plug-in.
+class ActivePluginInfoPallet(object):
+    """Decorator for setting the object info-pallet for an event-enabled plugin.
+    
+    The function which we decorate will execute first, to enable extra initialization prior to the callback.
     """
 
     def __init__(self, widgets: list):
@@ -356,84 +436,95 @@ class ActivePlugInInfoPallet(object):
 
     def __call__(self, function: callable) -> callable:
 
-        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_INITIALIZATION, self.__init_info_pallet)
-        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_WIDGET_PREP, self.__prepare_widgets)
-        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_WIDGET_CLICK, self.__on_widget_click)
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_WIDGET_CLICK, self.__on_widget_click)
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_WIDGET_PREP, self.__prepare_widgets)
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_INITIALIZATION, self.__init_info_pallet)
         def decorator(*args, **kwargs):
-            function (*args, **kwargs)  # Execute main function first, to enable extra initialization.
+            function(*args, **kwargs)
 
         return decorator
 
+    # noinspection PyUnusedLocal
     def __init_info_pallet(self, data: int):
         vs.SetObjPropVS(8, True)  # 8 = Custom Info Palette property; 12 = Custom widget visibility!
-        vs.SetObjPropVS(12, True) if any(widget.custom_visibility for widget in self.__widgets) else None
-        [widget.add_to_info_pallet(index) for index, widget in enumerate(self.__widgets)]
+        vs.SetObjPropVS(12, True) if any(w.has_custom_visibility for w in self.__widgets) else None
+        [widget.add(index) for index, widget in enumerate(self.__widgets)]
 
+    # noinspection PyUnusedLocal
     def __prepare_widgets(self, data: int):
-        [widget.update(index) for index, widget in enumerate(self.__widgets)]
+        [widget.update() for widget in self.__widgets]
         vs.vsoSetEventResult(-8)  # -8 = event handled! REQUIRED cleanup!
 
     def __on_widget_click(self, data: int):
-        widget = self.__widgets[data]  # data will be the widget index.
-        widget.on_click() if isinstance(widget, ButtonWidget) else None
+        self.__widgets[data].click()  # data will be the widget index.
 
 
-class DoubleClickBehaviour(object):
+class DoubleClickBehaviourEnum(object):
+    """Enum for the available options of the double click behaviour for the plugin.
+    """
+    
     DEFAULT = 0            # The default behaviour for the object type will be used.
     CUSTOM_EVENT = 1       # The VSO_ON_DOUBLE_CLICK event will be thrown.
     PROPERTIES_DIALOG = 2  # Is actually the object info palette that will be shown.
     RESHAPE_MODE = 3       # Go into reshape mode, practical for path shaped objects.
 
 
-class ActivePlugInDoubleClickBehaviour(object):
+class ActivePluginDoubleClickBehaviour(object):
     """Decorator to set the double click behaviour for an event-enabled plug-in.
+    
+    The function which we decorate will execute first, to enable extra initialization prior to the callback.
     """
 
-    def __init__(self, behaviour: int=DoubleClickBehaviour.DEFAULT, callback: callable=None):
+    def __init__(self, behaviour: int, event_handler: callable=None):
         """
-        :type behaviour: DoubleClickBehaviour
-        :type callback: (self) -> None || () -> None
+        :type behaviour: DoubleClickBehaviourEnum
+        :type event_handler: () -> None
         """
         self.__behaviour = behaviour
-        self.__callback = callback
+        self.__event_handler = event_handler
 
     def __call__(self, function: callable) -> callable:
 
-        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_INITIALIZATION, self.__init_double_click_behaviour)
-        @If(self.__callback, ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_DOUBLE_CLICK, self.__on_double_click))
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_DOUBLE_CLICK, self.__on_double_click)
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_INITIALIZATION, self.__init_double_click_behaviour)
         def decorator(*args, **kwargs):
-            function(*args, **kwargs)  # Execute main function first, to enable extra initialization.
+            function(*args, **kwargs)
 
         return decorator
 
     def __init_double_click_behaviour(self):
         vs.SetObjPropCharVS(3, self.__behaviour)  # 3 = Double click behavior!
 
+    # noinspection PyUnusedLocal
     def __on_double_click(self, data: int):
-        self.__callback()
+        self.__event_handler()
 
 
-class ActivePlugInFontStyleEnabled(object):
-    """Decorator for setting the plug-in font style enabled.
+class ActivePluginFontStyleEnabled(object):
+    """Decorator for setting the plugin font style enabled.
+    
+    The function which we decorate will execute first, to enable extra initialization prior to the callback.
     """
 
     def __call__(self, function: callable) -> callable:
 
         # Because of a VW bug, font style enabling has to happen in the reset event for event-enabled plug-ins!
-        # TODO: Check to see how we can work with not-event-enabled plug-ins. @If, or making @OnEvent execute always?
-        @ActivePlugInOnEvent(ActivePlugInEvent.VSO_ON_RESET, self.__set_font_style_enabled)
+        # For none-event-enabled plugins, the reset event will happen (it's the only), so we have no problem here.
+        @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_RESET, self.__set_font_style_enabled)
         def decorator(*args, **kwargs):
-            function (*args, **kwargs)  # Execute main function first, to enable extra initialization.
+            function(*args, **kwargs)
 
         return decorator
 
+    # noinspection PyUnusedLocal
     @staticmethod
     def __set_font_style_enabled(data: int):
-        vs.SetObjectVariableBoolean(ActivePlugIn().handle, 800, True)
+        vs.SetObjectVariableBoolean(ActivePlugin().handle, 800, True)
 
 
-class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
+class AbstractActivePluginParameters(object, metaclass=ABCMeta):
     """
+    
     Vectorworks will always give you the initial values of parameters. So when changing them inside your script,
     you'll still get the initial values. Therefore we'll create some sort of cache to remember the current values.
     """
@@ -447,7 +538,7 @@ class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
     def __store_and_get_parameter(self, name: str):
         value = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the vs module!
         # For a boolean value, VW return 1 or 0, while we actually want a bool, so we'll convert if needed.
-        record = vs.GetParametricRecord(ActivePlugIn().handle)
+        record = vs.GetParametricRecord(ActivePlugin().handle)
         fields = [vs.GetFldName(record, index) for index in range(1, vs.NumFields(record) + 1)]
         is_bool = vs.GetFldType(record, fields.index(name) + 1) == 2
         self.__parameters[name] = value if not is_bool else value == 1
@@ -455,58 +546,5 @@ class AbstractActivePlugInParameters(object, metaclass=ABCMeta):
 
     def _set_parameter(self, name: str, value):
         self.__parameters[name] = value
-        vs.SetRField(ActivePlugIn().handle, ActivePlugIn().name, name,
+        vs.SetRField(ActivePlugin().handle, ActivePlugin().name, name,
                      value if isinstance(value, str) else vs.Num2Str(-2, value))
-
-
-class AbstractActivePlugInXmlFile(AbstractXmlFile, metaclass=ABCMeta):
-
-    def __init__(self, suffix: str):
-        super().__init__(Vectorworks().get_plugin_file_filepath(ActivePlugIn().name + suffix + '.xml'))
-
-
-class AbstractActivePlugInPrefsXmlFile(AbstractActivePlugInXmlFile, metaclass=ABCMeta):
-
-    def __init__(self):
-        super().__init__('Prefs')
-
-
-class Security(object):
-    """
-    Decorator to secure a function based on the dongle and VW version running.
-    Make sure you use this as the topmost decorator in order for the check to be the first thing that will happen!
-    If your plugin is event enabled, then make sure that you have the following order:
-        @ActivePlugInInfo
-        @ActivePlugInSetup > before security, as we'll setup the info pallet here!
-        @Security
-        @ActivePlugInEvents
-    This is because everything under @Security will not run if the user has no permission!
-    """
-
-    @staticmethod
-    def __create_no_license_alert():
-        return Alert(AlertType.WARNING,
-                     'You have no rights to use this plugin.',
-                     'Contact the plugin distributor to acquire a license.')
-
-    @staticmethod
-    def __create_other_license_alert(version: str):
-        return Alert(AlertType.WARNING,
-                     'Your license is for Vectorworks %s' % version,
-                     'Contact the plugin distributor to update your license.')
-
-    def __init__(self, version: str, dongles: set=None):
-        self.__version = version
-        self.__dongles = dongles
-        self.__no_license_alert = self.__create_no_license_alert()
-        self.__other_license_alert = self.__create_other_license_alert(version)
-
-    def __call__(self, function: callable) -> callable:
-        def secured_function(*args, **kwargs):
-            if (Vectorworks().dongle not in self.__dongles) if (self.__dongles is not None) else False:
-                self.__no_license_alert.show()
-            elif Vectorworks().version != self.__version:
-                self.__other_license_alert.show()
-            else:
-                function(*args, **kwargs)
-        return secured_function

@@ -10,6 +10,7 @@ from dlibrary.utility import VSException, Convert
 import vs
 
 
+
 class RecordField(AbstractKeyedObject):
     """OBSOLETE, use dlibrary.document.RecordField instead.
     """
@@ -352,6 +353,20 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, IOb
 
     def reset(self):
         vs.ResetObject(self.handle)
+
+
+class PluginObject(AbstractObject):
+    """Wrapper for custom plugin objects."""
+
+    @property
+    def origin(self) -> tuple:
+        """:rtype: (float, float)"""
+        return vs.GetSymLoc(self.handle)
+
+    @property
+    def rotation(self) -> float:
+        """:rtype: float"""
+        return vs.GetSymRot(self.handle)
 
 
 class DrawnObject(AbstractObject):

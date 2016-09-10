@@ -59,6 +59,10 @@ class TextUtil(object):
 class Markdown(object):
 
     @staticmethod
+    def escape(text: str) -> str:
+        return text.replace('*', '\*').replace('_', '\_') if text else ''
+
+    @staticmethod
     def emphasis(text: str) -> str:
         return '*%s*' % text if text else ''
 
@@ -180,6 +184,45 @@ class DLibraryModuleMember(DLibraryMember):
         return self.__module
 
 
+class DLibraryMethod(DLibraryMember):
+
+    def __init__(self, method):
+        super().__init__(method)
+        signature = inspect.signature(method[1])
+        self.__parameters = signature.parameters.values()
+        self.__returns = signature.return_annotation
+
+    @property
+    def parameters(self) -> list:
+        """
+        :rtype: list[Parameter]
+        """
+        return self.__parameters
+
+    @property
+    def returns(self):
+        return self.__returns
+
+    def write(self):
+        content = ''
+        content += Markdown.newline()
+        content += '%s(%s)%s' % (
+            Markdown.strong(Markdown.escape(self.name)),
+            ', '.join('%s%s%s' % (
+                param.name,
+                ': %s' % param.annotation.__name__ if param.annotation is not inspect.Parameter.empty else '',
+                '=%s' % param.default if param.default is not inspect.Parameter.empty else ''
+            ) for param in self.parameters),
+            ' -> %s' % self.returns.__name__ if self.returns is not inspect.Signature.empty else '')
+        content += Markdown.newline()
+        content += Markdown.blockquote(self.doc)
+        content += Markdown.newline()
+        content += '<br/>'
+        content += Markdown.newline()
+        content += Markdown.newline()
+        return content
+
+
 class DLibraryClass(DLibraryModuleMember):
 
     def __init__(self, cls, module: DLibraryModule):
@@ -187,8 +230,11 @@ class DLibraryClass(DLibraryModuleMember):
         self.__category = TextUtil.first_word(inspect.getdoc(cls))
         all_members = [member for member in inspect.getmembers(cls) if pydoc.visiblename(member[0])]
         self.__constants = [DLibraryConstant(member) for member in all_members if member[0].isupper()]
+        const = next((m for m in all_members if inspect.isfunction(m[1]) and m[1].__name__ == '__init__'), None)
+        self.__constructor = DLibraryMethod(const) if const else None
         self.__properties = [DLibraryProperty(member) for member in all_members if isinstance(member[1], property)]
-        self.__methods = [DLibraryMethod(member) for member in all_members if inspect.isfunction(member[1])]
+        self.__methods = [DLibraryMethod(m) for m in all_members
+                          if inspect.isfunction(m[1]) and m[1].__name__ != '__init__' and m[1].__name__ != '__call__']
 
     @property
     def is_enum(self) -> bool:
@@ -204,6 +250,10 @@ class DLibraryClass(DLibraryModuleMember):
         :rtype: list[DLibraryConstant]
         """
         return self.__constants
+
+    @property
+    def constructor(self) -> DLibraryMethod:
+        return self.__constructor
 
     @property
     def properties(self) -> list:
@@ -240,26 +290,6 @@ class DLibraryProperty(DLibraryMember):
     @property
     def has_setter(self) -> bool:
         return self.__has_setter
-
-
-class DLibraryMethod(DLibraryMember):
-
-    def __init__(self, method):
-        super().__init__(method)
-        signature = inspect.signature(method[1])
-        self.__parameters = signature.parameters.values()
-        self.__returns = signature.return_annotation
-
-    @property
-    def parameters(self) -> list:
-        """
-        :rtype: list[Parameter]
-        """
-        return self.__parameters
-
-    @property
-    def returns(self):
-        return self.__returns
 
 
 def clean_docs():
@@ -302,6 +332,9 @@ def write_api_class(cls: DLibraryClass):
         for constant in cls.constants:
             content += Markdown.list_item('%s = %s' % (Markdown.strong(constant.name), constant.value))
         content += Markdown.newline()
+    if cls.constructor:
+        content += Markdown.header('Constructor', 2)
+        content += cls.constructor.write()
     if cls.properties:
         content += Markdown.header('Properties', 2)
         content += Markdown.newline()
@@ -313,20 +346,7 @@ def write_api_class(cls: DLibraryClass):
     if cls.methods:
         content += Markdown.header('Methods', 2)
         for method in cls.methods:
-            content += Markdown.newline()
-            content += '%s(%s)%s' % (
-                Markdown.strong(method.name),
-                ', '.join('%s%s%s' % (
-                    param.name,
-                    ': %s' % param.annotation.__name__ if param.annotation is not inspect.Parameter.empty else '',
-                    '=%s' % param.default if param.default is not inspect.Parameter.empty else ''
-                ) for param in method.parameters),
-                ' -> %s' % method.returns.__name__ if method.returns is not inspect.Signature.empty else '')
-            content += Markdown.newline()
-            content += Markdown.blockquote(method.doc)
-            content += Markdown.newline()
-            content += '<br/>'
-            content += Markdown.newline()
+            content += method.write()
     write_api_member(cls, content)
 
 

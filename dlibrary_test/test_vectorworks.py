@@ -1,5 +1,5 @@
 # from unittest import TestCase
-# from dlibrary.vectorworks import Vectorworks, ActivePlugIn, Security
+# from dlibrary.vectorworks import Vectorworks, ActivePlugIn, VectorworksSecurity
 # from dlibrary_test.testing import VectorworksInstance
 
 
@@ -52,7 +52,7 @@
 #         """
 #         When giving only the Vectorworks version to the security, dongles can't be checked!
 #         """
-#         @Security(version='2015')
+#         @VectorworksSecurity(version='2015')
 #         def run_with_only_version_security():
 #             pass
 #
