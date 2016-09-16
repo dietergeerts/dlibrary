@@ -194,18 +194,12 @@ class AbstractResource(AbstractKeyedObject, metaclass=ABCMeta):
     def create_placeholder(name: str):
         pass
 
-    def __init__(self, handle_or_name, name: str=''):
-        """OBSOLETE name parameter. Will be removed and is now optional.
+    def __init__(self, handle_or_name):
+        """
+
         :type handle_or_name: vs.Handle | str
         """
-        # TODO: Remove name parameter in version 2017!
         super().__init__(handle_or_name)
-
-    @property
-    def _handle(self) -> str:
-        """:rtype: str - OBSOLETE, use handle property instead."""
-        # TODO: Remove this property in version 2017!
-        return self.handle
 
 
 class AbstractVectorFill(AbstractKeyedObject, metaclass=ABCMeta):
@@ -777,13 +771,6 @@ class AbstractResourceList(object, metaclass=ABCMeta):
         return self.__abstract_resource
 
 
-class DefinitionTypeEnum(object):
-    """SYMBOL_DEFINITION is OBSOLETE. Use ObjectTypeEnum from object_base!
-    """
-    SYMBOL_DEFINITION = 16  # TODO: Remove in v2017!
-    RECORD_DEFINITION = 47
-
-
 class SymbolDefinition(AbstractResource, IRecords):
     """Class to represent a symbol definition.
     """
@@ -865,4 +852,4 @@ class RecordDefinitionResourceList(AbstractResourceList):
         :type location: ResourceLocation
         :type folder: ResourceFolder
         """
-        super().__init__(DefinitionTypeEnum.RECORD_DEFINITION, RecordDefinition, location, folder, path)
+        super().__init__(ObjectTypeEnum.RECORD_DEFINITION, RecordDefinition, location, folder, path)

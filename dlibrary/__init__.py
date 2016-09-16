@@ -1,3 +1,7 @@
+"""The DLibrary package, which serves as OOP wrapper around vs calls, to make plugin development way easier.
+
+This file should contain only setup stuff, and will only be executed once when VW starts up.
+"""
 from dlibrary.document import HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill, Clazz, LineStyle, \
     SymbolDefinition
 from dlibrary.object import Rectangle, Locus, Symbol, Group, PluginObject

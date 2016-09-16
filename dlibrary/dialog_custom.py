@@ -1,14 +1,15 @@
-"""Used for all custom dialog stuff. Most of it is internal business.
+"""Module for all custom dialog stuff. Mainly internal business.
+
+Dialogs can be build by defining them inside an .xml file, and then creating the dialog, pointing to that file.
 """
 from abc import ABCMeta, abstractmethod
-import os
 
+import vs
 from dlibrary.document import AbstractResourceList
+from dlibrary.utility import AbstractXmlFile
 from dlibrary.utility import XmlFileLists, Event, VSException, Convert, SingletonMeta, AbstractPropertyClassDecorator, \
     ObservableField, ObservableMethod, ObservableList, XmlDict
-from dlibrary.utility import AbstractXmlFile
 from dlibrary.vectorworks import ActivePlugin, Vectorworks
-import vs
 
 
 @XmlFileLists(lists={'control'})
