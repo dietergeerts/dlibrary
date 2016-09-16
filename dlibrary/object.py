@@ -459,6 +459,14 @@ class Text(AbstractObject):
         """:type value: TextVerticalAlignmentEnum"""
         vs.SetTextVertAlignN(self.handle, value)
 
+    @property
+    def font_size(self) -> int:
+        return int(vs.GetTextSize(self.handle, 0))
+
+    @font_size.setter
+    def font_size(self, value: int):
+        vs.SetTextSize(self.handle, 0, vs.GetTextLength(self.handle), value)
+
 
 class Line(AbstractObject):
 

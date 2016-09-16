@@ -85,32 +85,32 @@ class Vectorworks(object, metaclass=SingletonMeta):
 
 class VectorworksSecurity(object):
     """Decorator to secure a function based on the user id and/or VW version running.
-    
+
     If used together with other decorators, all decorators below will not be executed if permission is denied.
     So keep that in mind when applying multiple decorators to your function, as some may not be executed!
     """
 
-    def __init__(self, version: str=None, user_ids: set=None, on_version_denied: callable=None, 
+    def __init__(self, version: str=None, user_ids: set=None, on_version_denied: callable=None,
                  on_user_id_denied: callable=None):
         """
         :param user_ids: User id == last 6 digits of serial == dongle number!
         :type user_ids: set[str]
-        :type on_version_denied: (str) -> None  
+        :type on_version_denied: (str) -> None
         :type on_user_id_denied: (str) -> None
         """
         self.__version = version
         self.__user_ids = user_ids
         self.__on_version_denied = on_version_denied
-        self.__on_user_id_denied = on_user_id_denied        
+        self.__on_user_id_denied = on_user_id_denied
 
     def __call__(self, function: callable) -> callable:
-        
+
         def decorator(*args, **kwargs):
             if self.__has_version_permission() and self.__has_user_id_permission():
                 function(*args, **kwargs)
-                
+
         return decorator
-    
+
     def __has_version_permission(self) -> bool:
         permission = True
         if self.__version:
@@ -119,9 +119,9 @@ class VectorworksSecurity(object):
             if not permission and self.__on_version_denied:
                 self.__on_version_denied(version)
         return permission
-    
+
     def __has_user_id_permission(self) -> bool:
-        permission = True        
+        permission = True
         if self.__user_ids:
             user_id = Vectorworks().user_id
             permission = user_id in self.__user_ids
@@ -182,7 +182,7 @@ class OnActivePluginEvent(object):
 
     def __init__(self, event: int, callback: callable):
         """
-        :type event: ActivePluginEventEnum  
+        :type event: ActivePluginEventEnum
         :type callback: (int) -> None
         """
         self.__event = event
@@ -222,7 +222,7 @@ class ParameterChangeResetArgs(AbstractResetArgs):
 
     def __init__(self, index: int):
         self.__index = index
-        
+
     def __init_name(self):
         self.__name = vs.GetFldName(vs.GetCustomObjectInfo()[3], self.__index)
 
@@ -237,8 +237,8 @@ class ParameterChangeResetArgs(AbstractResetArgs):
 
 class OnActivePluginReset(object):
     """Decorator for setting a reset callback with reset args for an event-enabled plugin.
-    
-    (!) If you don't need the reset args, then use OnActivePluginEvent, as it creates more overhead for VW.   
+
+    (!) If you don't need the reset args, then use OnActivePluginEvent, as it creates more overhead for VW.
     The function which we decorate will execute first, to enable extra initialization prior to the callback.
     """
 
@@ -281,7 +281,7 @@ class OnActivePluginReset(object):
     # noinspection PyUnusedLocal
     def __execute_callback(self, data: int):
         self.__callback(self.__reset_args)
-        
+
     @staticmethod
     def __try_get_creation_reset_args() -> CreationResetArgs:
         trigger = vs.vsoStateGet(ActivePlugin().handle, 0)  # 0 = creation. (13 and 16 on 2nd round also happens!)
@@ -299,8 +299,8 @@ class AbstractWidget(object, metaclass=ABCMeta):
 
     def __init__(self, is_visible: callable=None, is_enabled: callable=None, on_click: callable=None):
         """
-        :type is_visible: () -> bool  
-        :type is_enabled: () -> bool  
+        :type is_visible: () -> bool
+        :type is_enabled: () -> bool
         :type on_click: () -> None
         """
         self.__is_visible = is_visible
@@ -318,7 +318,7 @@ class AbstractWidget(object, metaclass=ABCMeta):
         :rtype: bool
         """
         return self.__is_visible is not None
-    
+
     @property
     def has_custom_enabling(self) -> bool:
         """Returns whether the widget has an enabled check set.
@@ -337,7 +337,7 @@ class AbstractWidget(object, metaclass=ABCMeta):
         """
         vs.vsoWidgetSetVisible(self.id, self.__is_visible()) if self.has_custom_visibility else None
         vs.vsoWidgetSetEnable(self.id, self.__is_enabled()) if self.has_custom_enabling else None
-        
+
     def click(self):
         """Execute the user's widget click.
         """
@@ -356,7 +356,7 @@ class ParameterWidget(AbstractWidget):
 
     def __init__(self, parameter: str, is_visible: callable=None, is_enabled: callable=None, on_click: callable=None):
         """
-        :type is_visible: () -> bool  
+        :type is_visible: () -> bool
         :type is_enabled: () -> bool
         :type on_click: () -> None
         """
@@ -373,7 +373,7 @@ class ButtonWidget(AbstractWidget):
 
     def __init__(self, label: str, on_click: callable, is_visible: callable=None, is_enabled: callable=None):
         """
-        :type on_click: () -> None  
+        :type on_click: () -> None
         :type is_visible: () -> bool
         :type is_enabled: () -> bool
         """
@@ -390,8 +390,8 @@ class StaticTextWidget(AbstractWidget):
 
     def __init__(self, label: str, is_visible: callable=None, is_enabled: callable=None, on_click: callable=None):
         """
-        :type is_visible: () -> bool  
-        :type is_enabled: () -> bool  
+        :type is_visible: () -> bool
+        :type is_enabled: () -> bool
         :type on_click: () -> None
         """
         super().__init__(is_visible, is_enabled, on_click)
@@ -399,16 +399,16 @@ class StaticTextWidget(AbstractWidget):
 
     def _add(self):
         vs.vsoInsertWidget(self.id, 13, self.id, self.__label, 0)  # 13 = Static text.
-        
-        
+
+
 class SeparatorWidget(AbstractWidget):
     """Represents a separator on the object info-pallet. Great for grouping parameters.
     """
 
     def __init__(self, label: str='', is_visible: callable=None, is_enabled: callable=None, on_click: callable=None):
         """
-        :type is_visible: () -> bool  
-        :type is_enabled: () -> bool  
+        :type is_visible: () -> bool
+        :type is_enabled: () -> bool
         :type on_click: () -> None
         """
         super().__init__(is_visible, is_enabled, on_click)
@@ -420,7 +420,7 @@ class SeparatorWidget(AbstractWidget):
 
 class ActivePluginInfoPallet(object):
     """Decorator for setting the object info-pallet for an event-enabled plugin.
-    
+
     The function which we decorate will execute first, to enable extra initialization prior to the callback.
     """
 
@@ -458,7 +458,7 @@ class ActivePluginInfoPallet(object):
 class DoubleClickBehaviourEnum(object):
     """Enum for the available options of the double click behaviour for the plugin.
     """
-    
+
     DEFAULT = 0            # The default behaviour for the object type will be used.
     CUSTOM_EVENT = 1       # The VSO_ON_DOUBLE_CLICK event will be thrown.
     PROPERTIES_DIALOG = 2  # Is actually the object info palette that will be shown.
@@ -467,7 +467,7 @@ class DoubleClickBehaviourEnum(object):
 
 class ActivePluginDoubleClickBehaviour(object):
     """Decorator to set the double click behaviour for an event-enabled plug-in.
-    
+
     The function which we decorate will execute first, to enable extra initialization prior to the callback.
     """
 
@@ -498,7 +498,7 @@ class ActivePluginDoubleClickBehaviour(object):
 
 class ActivePluginFontStyleEnabled(object):
     """Decorator for setting the plugin font style enabled.
-    
+
     The function which we decorate will execute first, to enable extra initialization prior to the callback.
     """
 
@@ -520,7 +520,7 @@ class ActivePluginFontStyleEnabled(object):
 
 class AbstractActivePluginParameters(object, metaclass=ABCMeta):
     """Abstract base class to easily work with the plugin parameters.
-    
+
     Vectorworks will always give you the initial values of parameters. So when changing them inside your script,
     you'll still get the initial values. Therefore we'll create some sort of cache to remember the current values.
 
