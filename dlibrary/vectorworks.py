@@ -306,7 +306,11 @@ class AbstractWidget(object, metaclass=ABCMeta):
         self.__is_visible = is_visible
         self.__is_enabled = is_enabled
         self.__on_click = on_click
-        self._id = 0  # Will be set when added to the info-pallet.
+        self.__id = 0  # Will be set when added to the info-pallet.
+
+    @property
+    def id(self) -> int:
+        return self.__id
 
     @property
     def has_custom_visibility(self) -> bool:
@@ -325,14 +329,14 @@ class AbstractWidget(object, metaclass=ABCMeta):
     def add(self, widget_id: int):
         """Adds the widget to the object info-pallet with the given id.
         """
-        self._id = widget_id
+        self.__id = widget_id
         self._add()
 
     def update(self):
         """Update the widget visibility and enabled status.
         """
-        vs.vsoWidgetSetVisible(self._id, self.__is_visible()) if self.has_custom_visibility else None
-        vs.vsoWidgetSetEnable(self._id, self.__is_enabled()) if self.has_custom_enabling else None
+        vs.vsoWidgetSetVisible(self.id, self.__is_visible()) if self.has_custom_visibility else None
+        vs.vsoWidgetSetEnable(self.id, self.__is_enabled()) if self.has_custom_enabling else None
         
     def click(self):
         """Execute the user's widget click.
@@ -360,32 +364,24 @@ class ParameterWidget(AbstractWidget):
         self.__parameter = parameter
 
     def _add(self):
-        vs.vsoAddParamWidget(self._id, self.__parameter, '')  # '' for using the parameter's alternate name.
+        vs.vsoAddParamWidget(self.id, self.__parameter, '')  # '' for using the parameter's alternate name.
 
 
 class ButtonWidget(AbstractWidget):
     """Represents a button on the object info-pallet.
     """
 
-    def __init__(self, label: str, on_click: callable, reset_object: bool=False, is_visible: callable=None,
-                 is_enabled: callable=None):
+    def __init__(self, label: str, on_click: callable, is_visible: callable=None, is_enabled: callable=None):
         """
         :type on_click: () -> None  
-        :param reset_object: If true, the pio instance will be reset after the on_click handler.  
-        :type is_visible: () -> bool  
+        :type is_visible: () -> bool
         :type is_enabled: () -> bool
         """
-        super().__init__(is_visible, is_enabled, self._click)
+        super().__init__(is_visible, is_enabled, on_click)
         self.__label = label
-        self.__on_click = on_click
-        self.__reset_object = reset_object
-        
-    def _add(self):
-        vs.vsoInsertWidget(self._id, 12, self._id, self.__label, 0)  # 12 = Button
 
-    def _click(self):
-        self.__on_click()
-        vs.ResetObject(ActivePlugin().handle) if self.__reset_object else None
+    def _add(self):
+        vs.vsoInsertWidget(self.id, 12, self.id, self.__label, 0)  # 12 = Button
 
 
 class StaticTextWidget(AbstractWidget):
@@ -402,7 +398,7 @@ class StaticTextWidget(AbstractWidget):
         self.__label = label
 
     def _add(self):
-        vs.vsoInsertWidget(self._id, 13, self._id, self.__label, 0)  # 13 = Static text.
+        vs.vsoInsertWidget(self.id, 13, self.id, self.__label, 0)  # 13 = Static text.
         
         
 class SeparatorWidget(AbstractWidget):
@@ -419,7 +415,7 @@ class SeparatorWidget(AbstractWidget):
         self.__label = label
 
     def _add(self):
-        vs.vsoInsertWidget(self._id, 100, self._id, self.__label.upper() + ' ', 0)  # 100 = Separator.
+        vs.vsoInsertWidget(self.id, 100, self.id, self.__label.upper() + ' ', 0)  # 100 = Separator.
 
 
 class ActivePluginInfoPallet(object):
@@ -523,28 +519,42 @@ class ActivePluginFontStyleEnabled(object):
 
 
 class AbstractActivePluginParameters(object, metaclass=ABCMeta):
-    """
+    """Abstract base class to easily work with the plugin parameters.
     
     Vectorworks will always give you the initial values of parameters. So when changing them inside your script,
     you'll still get the initial values. Therefore we'll create some sort of cache to remember the current values.
+
+    Using this will enable you to transform parameters and adjust them to defaults etc... without the rest of your
+    script having to worry about this. Your IDE will also be very happy to find the actually parameters by name.
     """
 
     def __init__(self):
         self.__parameters = dict()
 
-    def _get_parameter(self, name: str):
-        return self.__parameters[name] if name in self.__parameters else self.__store_and_get_parameter(name)
+    def __init_record_and_fields(self):
+        self.__record = vs.GetParametricRecord(ActivePlugin().handle)
+        self.__fields = [vs.GetFldName(self.__record, index) for index in range(1, vs.NumFields(self.__record) + 1)]
 
-    def __store_and_get_parameter(self, name: str):
-        value = getattr(vs, 'P%s' % name)  # Vectorworks puts parameters inside the vs module!
-        # For a boolean value, VW return 1 or 0, while we actually want a bool, so we'll convert if needed.
-        record = vs.GetParametricRecord(ActivePlugin().handle)
-        fields = [vs.GetFldName(record, index) for index in range(1, vs.NumFields(record) + 1)]
-        is_bool = vs.GetFldType(record, fields.index(name) + 1) == 2
-        self.__parameters[name] = value if not is_bool else value == 1
+    def __init_parameter(self, name: str):
+        """Retrieve the initial value of the parameter and put it into the parameters cache.
+
+        Vectorworks puts parameters inside the vs module, prefixed with 'P'.
+        For a boolean value, VW return 1 or 0, while we actually want a bool, so we'll convert if needed.
+        """
+        value = getattr(vs, 'P%s' % name)
+        self.__init_record_and_fields() if not self.__record else None
+        is_bool = vs.GetFldType(self.__record, self.__fields.index(name) + 1) == 2
+        self.__parameters[name] = value == 1 if is_bool else value
+
+    def get_parameter(self, name: str):
+        """Returns the parameter. The type depends on the plugin parameter.
+        """
+        self.__init_parameter(name) if name not in self.__parameters else None
         return self.__parameters[name]
 
-    def _set_parameter(self, name: str, value):
+    def set_parameter(self, name: str, value):
+        """Sets the parameter to the given value, type depends on the plugin parameter.
+        """
         self.__parameters[name] = value
-        vs.SetRField(ActivePlugin().handle, ActivePlugin().name, name,
-                     value if isinstance(value, str) else vs.Num2Str(-2, value))
+        value = str(value) if not isinstance(value, float) else vs.Num2Str(-2, value)
+        vs.SetRField(ActivePlugin().handle, ActivePlugin().name, name, value)
