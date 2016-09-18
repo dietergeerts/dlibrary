@@ -357,18 +357,13 @@ class ApiDocs(object):
             ''.join('%s%s' % (MD.ruler(), m.generate_index()) for m in self.modules))
 
 
-def write_examples():
-    examples_src = os.path.join('.', 'examples')
-    for filename in os.listdir(examples_src):
-        with open(os.path.join(examples_src, filename)) as src_file:
-            with open(os.path.join(EXAMPLES_PATH, '%s.md' % filename), 'w', encoding='utf-8') as dst_file:
-                dst_file.write('```\n#!python\n\n%s\n```' % src_file.read())
-
-
 class ExampleDocs(object):
 
     def generate(self, path: str):
-        pass
+        examples_src = os.path.join('.', 'examples')
+        for filename in os.listdir(examples_src):
+            with open(os.path.join(examples_src, filename)) as src:
+                FileUtil.write_file(os.path.join(path, '%s.md' % filename), '```\n#!python\n\n%s\n```' % src.read())
 
 
 # Setup paths.

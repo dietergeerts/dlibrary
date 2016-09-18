@@ -42,7 +42,6 @@ class Criteria(object):
 
     def get(self) -> set:
         """Get all objects that meet the criteria set.
-
         :rtype: set(AbstractKeyedObject)
         """
         objects = set()

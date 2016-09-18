@@ -159,11 +159,17 @@ class ActivePlugin(object, metaclass=SingletonMeta):
 
 class ActivePluginEventEnum(object):
     """Enum to identify the possible plugin events.
+
+    The only event you really need is the VSO_ON_RESET event, all the rest are used internally and there are many
+    decorators provided to setup all event-enabled plugin features available in Vectorworks.
+
+    :VSO_ON_RESET         -- Will always happen, even for non-event enabled plugins.
+    :VSO_ON_DOUBLE_CLICK  -- Will only happen when double click behaviour is set to custom event.
     """
 
-    VSO_ON_RESET = 3           # data: -; Will also happen for none-event-enabled plugins!
+    VSO_ON_RESET = 3           # data: -
     VSO_ON_INITIALIZATION = 5  # data: -
-    VSO_ON_DOUBLE_CLICK = 7    # data: -; Will only happen when double click behaviour is set to custom event!
+    VSO_ON_DOUBLE_CLICK = 7    # data: -
     VSO_ON_WIDGET_CLICK = 35   # data: widget_id
     VSO_ON_WIDGET_PREP = 41    # data: -
     VSO_ON_ADD_STATE = 44      # data: widget_id
