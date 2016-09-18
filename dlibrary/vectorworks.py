@@ -38,7 +38,6 @@ class Vectorworks(object, metaclass=SingletonMeta):
     @property
     def version(self) -> str:
         """Vectorworks' main version, like '12.5', or '2016'.
-        :rtype: str
         """
         self.__init_version_information() if self.__version is None else None
         return self.__version
@@ -46,7 +45,6 @@ class Vectorworks(object, metaclass=SingletonMeta):
     @property
     def user_id(self) -> str:
         """The user' identification number (= last 6 digits of serial = dongle number)
-        :rtype: str
         """
         self.__init_user_information() if self.__user_id is None else None
         return self.__user_id
@@ -140,14 +138,12 @@ class ActivePlugin(object, metaclass=SingletonMeta):
     @property
     def name(self) -> str:
         """Will return the name of the menu/tool/object plugin.
-        :rtype: str
         """
         return vs.GetPluginInfo()[1]
 
     @property
     def handle(self) -> vs.Handle:
         """Will return the instance or definition handle of an object plugin.
-        :rtype: vs.Handle
         """
         succeeded, name, plugin_handle, record_handle, wall_handle = vs.GetCustomObjectInfo()
         return plugin_handle if succeeded else vs.GetObject(self.name)
@@ -229,7 +225,6 @@ class ParameterChangeResetArgs(AbstractResetArgs):
     @property
     def name(self) -> str:
         """Returns the name of the changed parameter.
-        :rtype: str
         """
         self.__init_name() if self.__name is None else None
         return self.__name
@@ -310,19 +305,18 @@ class AbstractWidget(object, metaclass=ABCMeta):
 
     @property
     def id(self) -> int:
+        """Returns the id that was given while adding it to the OIP."""
         return self.__id
 
     @property
     def has_custom_visibility(self) -> bool:
         """Returns whether the widget has a visibility check set.
-        :rtype: bool
         """
         return self.__is_visible is not None
 
     @property
     def has_custom_enabling(self) -> bool:
         """Returns whether the widget has an enabled check set.
-        :rtype: bool
         """
         return self.__is_enabled is not None
 
@@ -457,12 +451,17 @@ class ActivePluginInfoPallet(object):
 
 class DoubleClickBehaviourEnum(object):
     """Enum for the available options of the double click behaviour for the plugin.
+
+    :DEFAULT            -- The default behaviour for the object type will be used.
+    :CUSTOM_EVENT       -- The VSO_ON_DOUBLE_CLICK event will be thrown.
+    :PROPERTIES_DIALOG  -- Is actually the object info palette that will be shown.
+    :RESHAPE_MODE       -- Go into reshape mode, practical for path shaped objects.
     """
 
-    DEFAULT = 0            # The default behaviour for the object type will be used.
-    CUSTOM_EVENT = 1       # The VSO_ON_DOUBLE_CLICK event will be thrown.
-    PROPERTIES_DIALOG = 2  # Is actually the object info palette that will be shown.
-    RESHAPE_MODE = 3       # Go into reshape mode, practical for path shaped objects.
+    DEFAULT = 0
+    CUSTOM_EVENT = 1
+    PROPERTIES_DIALOG = 2
+    RESHAPE_MODE = 3
 
 
 class ActivePluginDoubleClickBehaviour(object):

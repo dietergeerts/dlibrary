@@ -4,14 +4,11 @@ import inspect
 import os
 import pkgutil
 import pydoc
+import re
 import shutil
+from abc import ABCMeta
 
 import dlibrary
-
-DIST_PATH = os.path.abspath(os.path.join('.', 'dist'))
-VERSION_PATH = os.path.join(DIST_PATH, dlibrary.__version__.split('.')[0])
-API_DOCS_PATH = os.path.join(VERSION_PATH, 'api')
-EXAMPLES_PATH = os.path.join(VERSION_PATH, 'examples')
 
 
 class FileUtil(object):
@@ -26,37 +23,20 @@ class FileUtil(object):
 class TextUtil(object):
 
     @staticmethod
-    def first_line(text: str) -> str:
-        return text.splitlines()[0] if text else ''
-
-    @staticmethod
-    def first_word(text: str) -> str:
-        return TextUtil.first_line(text).split(' ')[0] if text else ''
-
-    @staticmethod
     def strip(text: str) -> str:
         return text.strip() if text else ''
 
     @staticmethod
-    def extract_return_type(text: str) -> tuple:
-        """
-        :rtype: (str, str)
-        """
-        text, lines = TextUtil.__extract_lines(text, ':rtype: ')
-        return text, lines[-1].replace(':rtype: ', '') if lines else ''
+    def first_line(text: str) -> str:
+        return text.splitlines()[0] if text else ''
 
     @staticmethod
-    def __extract_lines(text: str, start_with: str) -> tuple:
-        """
-        :rtype: (str, list[str])
-        """
-        return (
-            '\n'.join([line for line in text.splitlines() if not line.startswith(start_with)]),
-            [line for line in text.splitlines() if line.startswith(start_with)]
-        ) if text else ('', [])
+    def for_each_line(text: str, handler: callable) -> str:
+        """:type handler: (str) -> str"""
+        return '\n'.join(handler(l) for l in text.splitlines()) if text else ''
 
 
-class Markdown(object):
+class MD(object):
 
     @staticmethod
     def escape(text: str) -> str:
@@ -64,11 +44,13 @@ class Markdown(object):
 
     @staticmethod
     def emphasis(text: str) -> str:
-        return '*%s*' % text if text else ''
+        return re.sub(r'  \*', '*  ',
+                      TextUtil.for_each_line(text, lambda t: '*%s*' % t if TextUtil.strip(t) else ''))
 
     @staticmethod
     def strong(text: str) -> str:
-        return '**%s**' % text if text else ''
+        return re.sub(r'  \*\*', '**  ',
+                      TextUtil.for_each_line(text, lambda t: '**%s**' % t if TextUtil.strip(t) else ''))
 
     @staticmethod
     def tag(tag: str, text: str) -> str:
@@ -84,280 +66,295 @@ class Markdown(object):
 
     @staticmethod
     def header(text: str, level: int=1) -> str:
-        return '%s %s%s' % ('#' * level, text or '', Markdown.newline())
+        return '%s %s%s%s' % ('#' * level, text or '', MD.newline(), MD.newline())
 
     @staticmethod
     def paragraph(text: str) -> str:
-        return '%s%s' % (text or '', Markdown.newline())
+        return '%s%s%s' % (text or '', MD.newline(), MD.newline())
 
     @staticmethod
     def blockquote(text: str) -> str:
-        return '%s%s' % ('\n'.join('> %s' % line for line in text.splitlines()), Markdown.newline()) if text else ''
+        return '%s%s%s' % (TextUtil.for_each_line(text, lambda t: '> %s' % t), MD.newline(), MD.newline())
 
     @staticmethod
     def list_item(text: str) -> str:
-        return '- %s%s' % (text or '', Markdown.newline())
+        return '- %s%s' % (text or '', MD.newline())
+
+    @staticmethod
+    def ruler() -> str:
+        return '\n---\n\n'
 
 
-class DLibraryMember(object):
+class DLMember(object, metaclass=ABCMeta):
 
-    def __init__(self, member: tuple):
-        """
-        :param member: tuple of member name and actual member
-        :type member: (str, obj)
-        """
-        self.__name = member[0]
-        self.__doc = TextUtil.strip(inspect.getdoc(member[1]))
-        self.__doc, self.__return_type = TextUtil.extract_return_type(self.__doc)
+    def __init__(self, name: str, member: object):
+        self.__name = name
+        self.__pretty_name = MD.tag('small', '.'.join(name.split('.')[:-1]) + '.') + name.split('.')[-1]
+        docs = [TextUtil.strip(l) for l in TextUtil.strip(inspect.getdoc(member)).splitlines()]
+        self.__doc_types = [l for l in docs if l.startswith((':type', ':rtype'))]
+        self.__doc = self.__pretty_info([l for l in docs if l not in self.__doc_types])
         self.__doc_excerpt = TextUtil.first_line(self.__doc)
+
+    @staticmethod
+    def __pretty_info(docs: list) -> str:
+        return re.sub(re.compile(r'\n(:[^ ])', re.MULTILINE), MD.newline() + r'\1', '\n'.join(docs))
 
     @property
     def name(self) -> str:
         return self.__name
 
     @property
-    def doc_excerpt(self) -> str:
-        return self.__doc_excerpt
+    def pretty_name(self) -> str:
+        return self.__pretty_name
+
+    @property
+    def doc_types(self) -> list:
+        """:rtype: list[str]"""
+        return self.__doc_types
 
     @property
     def doc(self) -> str:
         return self.__doc
 
     @property
-    def return_type(self) -> str:
-        return self.__return_type
+    def doc_excerpt(self) -> str:
+        return self.__doc_excerpt
+
+    def generate_excerpt(self) -> str:
+        return '%s - %s' % (MD.strong(self.name), self.doc_excerpt)
 
 
-class DLibraryModule(DLibraryMember):
+class DLConstant(DLMember):
 
-    def __init__(self, module):
-        super().__init__((module.__name__.replace('dlibrary.', ''), module))
-        self.__pretty_name = self.name.replace('_', ' ').title()
-
-        def in_module(obj) -> bool:
-            return obj.__module__ == module.__name__
-
-        all_classes = [cls for _, cls in inspect.getmembers(module, inspect.isclass)]
-        self.__classes = [DLibraryClass(cls, self) for cls in all_classes if in_module(cls)]
-        self.__enum_classes = [cls for cls in self.__classes if cls.is_enum]
-        self.__singleton_classes = [cls for cls in self.__classes if cls.is_singleton]
+    def __init__(self, name: str, member: object):
+        super().__init__(name, member)
+        self.__value = member
 
     @property
-    def pretty_name(self) -> str:
-        return self.__pretty_name
-
-    @property
-    def all_classes(self) -> list:
-        """
-        :rtype: list[DLibraryClass]
-        """
-        return self.__classes
-
-    @property
-    def enum_classes(self) -> list:
-        """
-        :rtype: list[DLibraryClass]
-        """
-        return self.__enum_classes
-
-    @property
-    def singleton_classes(self) -> list:
-        """
-        :rtype: list[DLibraryClass]
-        """
-        return self.__singleton_classes
-
-
-class DLibraryModuleMember(DLibraryMember):
-
-    def __init__(self, member, module: DLibraryModule):
-        super().__init__(member)
-        self.__link = '%s/%s.md' % (module.name, self.name)
-        self.__module = module
-
-    @property
-    def link(self):
-        return self.__link
-
-    @property
-    def module(self) -> DLibraryModule:
-        return self.__module
-
-
-class DLibraryMethod(DLibraryMember):
-
-    def __init__(self, method):
-        super().__init__(method)
-        signature = inspect.signature(method[1])
-        self.__parameters = signature.parameters.values()
-        self.__returns = signature.return_annotation
-
-    @property
-    def parameters(self) -> list:
-        """
-        :rtype: list[Parameter]
-        """
-        return self.__parameters
-
-    @property
-    def returns(self):
-        return self.__returns
-
-    def write(self):
-        content = ''
-        content += Markdown.newline()
-        content += '%s(%s)%s' % (
-            Markdown.strong(Markdown.escape(self.name)),
-            ', '.join('%s%s%s' % (
-                param.name,
-                ': %s' % param.annotation.__name__ if param.annotation is not inspect.Parameter.empty else '',
-                '=%s' % param.default if param.default is not inspect.Parameter.empty else ''
-            ) for param in self.parameters),
-            ' -> %s' % self.returns.__name__ if self.returns is not inspect.Signature.empty else '')
-        content += Markdown.newline()
-        content += Markdown.blockquote(self.doc)
-        content += Markdown.newline()
-        content += '<br/>'
-        content += Markdown.newline()
-        content += Markdown.newline()
-        return content
-
-
-class DLibraryClass(DLibraryModuleMember):
-
-    def __init__(self, cls, module: DLibraryModule):
-        super().__init__((cls.__name__, cls), module)
-        self.__category = TextUtil.first_word(inspect.getdoc(cls))
-        all_members = [member for member in inspect.getmembers(cls) if pydoc.visiblename(member[0])]
-        self.__constants = [DLibraryConstant(member) for member in all_members if member[0].isupper()]
-        const = next((m for m in all_members if inspect.isfunction(m[1]) and m[1].__name__ == '__init__'), None)
-        self.__constructor = DLibraryMethod(const) if const else None
-        self.__properties = [DLibraryProperty(member) for member in all_members if isinstance(member[1], property)]
-        self.__methods = [DLibraryMethod(m) for m in all_members
-                          if inspect.isfunction(m[1]) and m[1].__name__ != '__init__' and m[1].__name__ != '__call__']
-
-    @property
-    def is_enum(self) -> bool:
-        return self.__category == 'Enum'
-
-    @property
-    def is_singleton(self) -> bool:
-        return self.__category == 'Singleton'
-
-    @property
-    def constants(self) -> list:
-        """
-        :rtype: list[DLibraryConstant]
-        """
-        return self.__constants
-
-    @property
-    def constructor(self) -> DLibraryMethod:
-        return self.__constructor
-
-    @property
-    def properties(self) -> list:
-        """
-        :rtype: list[DLibraryProperty]
-        """
-        return self.__properties
-
-    @property
-    def methods(self) -> list:
-        """
-        :rtype: list[DLibraryMethod]
-        """
-        return self.__methods
-
-
-class DLibraryConstant(DLibraryMember):
-
-    def __init__(self, constant):
-        super().__init__(constant)
-        self.__value = constant[1]
-
-    @property
-    def value(self):
+    def value(self) -> object:
         return self.__value
 
+    def generate_excerpt(self) -> str:
+        return '%s %s' % (MD.strong(self.name), MD.tag('small', '(%s)' % self.value))
 
-class DLibraryProperty(DLibraryMember):
 
-    def __init__(self, prop):
-        super().__init__(prop)
-        self.__has_setter = prop[1].fset is not None
+class DLMethod(DLMember):
+
+    def __init__(self, name: str, member: object):
+        method = member if inspect.isfunction(member) else member.__func__
+        super().__init__(name, method)
+        self.__is_static_method = isinstance(member, staticmethod)
+        self.__is_class_method = isinstance(member, classmethod)
+        self.__is_constructor = self.name == '__init__'
+        self.__is_method = inspect.isfunction(member) and not self.__is_constructor
+        self.__signature = self.__update_signature_from_docs(inspect.signature(method), self.doc_types)
+
+    @staticmethod
+    def __update_signature_from_docs(sig: inspect.Signature, docs: list) -> inspect.Signature:
+        """:type docs: list[str]"""
+        rtype = next((l[8:] for l in docs if l.startswith(':rtype')), None)
+        ptypes = {t[0]: t[1] for t in [p.split(': ') for p in [l[6:] for l in docs if l.startswith(':type')]]}
+        parameters = [p.replace(annotation=ptypes.get(n, p.annotation)) for n, p in sig.parameters.items()]
+        return sig.replace(parameters=parameters, return_annotation=rtype if rtype else sig.return_annotation)
+
+    @property
+    def is_static_method(self) -> bool:
+        return self.__is_static_method
+
+    @property
+    def is_class_method(self) -> bool:
+        return self.__is_class_method
+
+    @property
+    def is_constructor(self) -> bool:
+        return self.__is_constructor
+
+    @property
+    def is_method(self) -> bool:
+        return self.__is_method
+
+    @property
+    def signature(self) -> inspect.Signature:
+        return self.__signature
+
+    def generate_signature(self) -> str:
+        return '%s%s' % (
+            MD.strong(MD.escape(self.name)),
+            str(self.signature).replace(':', ': ').replace('->', '`->`'))
+
+    def generate_excerpt(self) -> str:
+        return self.generate_signature()
+
+    def generate_docs(self) -> str:
+        return '%s%s%s' % (self.generate_signature(), MD.newline()*2, MD.blockquote(self.doc))
+
+
+class DLProperty(DLMethod):
+
+    def __init__(self, name: str, member: property):
+        super().__init__(name, member.fget)
+        self.__has_setter = member.fset is not None
 
     @property
     def has_setter(self) -> bool:
         return self.__has_setter
 
-
-def clean_docs():
-    shutil.rmtree(DIST_PATH) if os.path.exists(DIST_PATH) else None
-
-
-def write_api_index(modules: list):
-    """
-    :type modules: list[DLibraryModule]
-    """
-    content = ''
-    content += Markdown.header('DLibrary', 1)
-    for module in modules:
-        content += Markdown.header(module.pretty_name, 2)
-        content += Markdown.blockquote(module.doc)
-        for class_group in [module.enum_classes, module.singleton_classes]:
-            content += Markdown.newline()
-            for cls in class_group:
-                content += Markdown.list_item('%s - %s' % (
-                    Markdown.strong(Markdown.link(cls.link, cls.name)),
-                    Markdown.tag('small', cls.doc_excerpt)))
-            content += Markdown.newline()
-    FileUtil.write_file(os.path.join(API_DOCS_PATH, 'index.md'), content)
+    def generate_excerpt(self) -> str:
+        return '%s %s %s' % (
+            MD.tag('small', '(get%s)' % ('/set' if self.has_setter else '')),
+            re.sub(r'\(.*\)', '', super().generate_excerpt()),
+            MD.tag('small', '-- %s' % self.doc_excerpt) if self.doc_excerpt else '')
 
 
-def write_api_member(member: DLibraryModuleMember, content: str):
-    wrapped = ''
-    wrapped += Markdown.header(
-        '%s \> %s \> %s' % (Markdown.link('../index.md', 'DLibrary'), member.module.pretty_name, member.name), 1)
-    wrapped += Markdown.blockquote(member.doc)
-    wrapped += Markdown.newline()
-    wrapped += content
-    FileUtil.write_file(os.path.join(API_DOCS_PATH, member.module.name, '%s.md' % member.name), wrapped)
+class DLClass(DLMember):
+
+    def __init__(self, name: str, member: object):
+        super().__init__(name, member)
+        self.__module = member.__module__
+        self.__link = os.path.join(self.__module, '%s.md' % self.name) if 'dlibrary' in self.__module else ''
+        self.__base_classes = [DLClass(m.__name__, m) for m in member.__bases__]
+        members = [m for m in inspect.getmembers(member) if self.__is_visible(m[0])]
+        methods = [DLMethod(m[0], m[1]) for m in members if self.__is_method(m[1])]
+        self.__constants = [DLConstant(m[0], m[1]) for m in members if m[0].isupper()]
+        self.__static_methods = [m for m in methods if m.is_static_method]
+        self.__class_methods = [m for m in methods if m.is_class_method]
+        self.__constructors = [m for m in methods if m.is_constructor]
+        self.__properties = [DLProperty(m[0], m[1]) for m in members if isinstance(m[1], property)]
+        self.__methods = [m for m in methods if m.is_method]
+
+    @staticmethod
+    def __is_visible(name: str) -> bool:
+        return pydoc.visiblename(name) and name != '__call__'
+
+    @staticmethod
+    def __is_method(member: object) -> bool:
+        return inspect.isfunction(member) or isinstance(member, (staticmethod, classmethod))
+
+    @property
+    def module(self) -> str:
+        return self.__module
+
+    @property
+    def link(self) -> str:
+        return self.__link
+
+    @property
+    def base_classes(self) -> list:
+        """:rtype: list[DLClass]"""
+        return self.__base_classes
+
+    @property
+    def constants(self) -> list:
+        """:rtype: list[DLConstant]"""
+        return self.__constants
+
+    @property
+    def static_methods(self) -> list:
+        """:rtype: list[DLMethod]"""
+        return self.__static_methods
+
+    @property
+    def class_methods(self) -> list:
+        """:rtype: list[DLMethod]"""
+        return self.__class_methods
+
+    @property
+    def constructors(self) -> list:
+        """:rtype: list[DLMethod]"""
+        return self.__constructors
+
+    @property
+    def properties(self) -> list:
+        """:rtype: list[DLProperty]"""
+        return self.__properties
+
+    @property
+    def methods(self) -> list:
+        """:rtype: list[DLMethod]"""
+        return self.__methods
+
+    def generate(self, path: str):
+        FileUtil.write_file(os.path.join(path, '%s.md' % self.name), self.generate_docs())
+
+    def generate_excerpt(self) -> str:
+        return '%s %s' % (
+            MD.strong(MD.link(self.link, self.name) if self.link else self.name),
+            MD.tag('small', self.doc_excerpt))
+
+    def generate_docs(self) -> str:
+        return '%s'*9 % (
+            MD.header('%s%s' % (MD.tag('small', self.module + '.'), self.name), 1),
+            MD.blockquote(MD.strong(self.doc)),
+            self.generate_docs_for_members('Base classes', self.base_classes).replace('](', '](..%s' % os.path.sep),
+            self.generate_docs_for_members('Constants', self.constants),
+            self.generate_docs_for_methods('Static methods', self.static_methods),
+            self.generate_docs_for_methods('Class methods', self.class_methods),
+            self.generate_docs_for_methods('Constructor', self.constructors),
+            self.generate_docs_for_members('Properties', self.properties),
+            self.generate_docs_for_methods('Methods', self.methods))
+
+    def generate_docs_for_members(self, name: str, items: list) -> str:
+        """:type items: list[DLMember]"""
+        return self.__generate_docs_for_section(name, ''.join(MD.list_item(i.generate_excerpt()) for i in items))
+
+    def generate_docs_for_methods(self, name: str, methods: list) -> str:
+        """:type methods: list[DLMethod]"""
+        return self.__generate_docs_for_section(name, ''.join(m.generate_docs() for m in methods))
+
+    @staticmethod
+    def __generate_docs_for_section(name: str, content: str) -> str:
+        return '%s%s%s' % (MD.header(name, 2), content, MD.newline()) if content else ''
 
 
-def write_api_class(cls: DLibraryClass):
-    content = ''
-    if cls.constants:
-        content += Markdown.newline()
-        for constant in cls.constants:
-            content += Markdown.list_item('%s = %s' % (Markdown.strong(constant.name), constant.value))
-        content += Markdown.newline()
-    if cls.constructor:
-        content += Markdown.header('Constructor', 2)
-        content += cls.constructor.write()
-    if cls.properties:
-        content += Markdown.header('Properties', 2)
-        content += Markdown.newline()
-        for prop in cls.properties:
-            content += Markdown.list_item('%s | get%s | %s%s' % (
-                Markdown.strong(prop.name), '/set' if prop.has_setter else '', prop.return_type,
-                ' - %s' % Markdown.tag('small', prop.doc_excerpt) if prop.doc_excerpt else ''))
-        content += Markdown.newline()
-    if cls.methods:
-        content += Markdown.header('Methods', 2)
-        for method in cls.methods:
-            content += method.write()
-    write_api_member(cls, content)
+class DLModule(DLMember):
+
+    def __init__(self, name: str, module: object):
+        super().__init__(name, module)
+        self.__classes = [DLClass(m[0], m[1]) for m in inspect.getmembers(module, inspect.isclass)]
+        self.__classes = [cls for cls in self.__classes if cls.module == self.name]
+
+    @property
+    def classes(self) -> list:
+        """":rtype: list[DLClass]"""
+        return self.__classes
+
+    def generate(self, path: str):
+        [c.generate(os.path.join(path, self.name)) for c in self.classes]
+
+    def generate_index(self) -> str:
+        return '%s'*4 % (
+            MD.header(self.pretty_name, 2),
+            MD.blockquote(self.doc),
+            MD.newline().join(MD.list_item(c.generate_excerpt()) for c in self.classes),
+            MD.newline())
 
 
-def write_api_docs():
-    modules = [DLibraryModule(pydoc.resolve(module_name)[0]) for importer, module_name, is_package
-               in pkgutil.walk_packages(dlibrary.__path__, '%s.' % dlibrary.__name__)
-               if 'libs' not in module_name]  # We don't document libs!
-    write_api_index(modules)
-    for module in modules:
-        for cls in module.all_classes:
-            write_api_class(cls)
+class ApiDocs(object):
+
+    def __init__(self):
+        self.__modules = [
+            DLModule(name, pydoc.resolve(name)[0])
+            for _, name, _ in pkgutil.walk_packages(dlibrary.__path__, '%s.' % dlibrary.__name__)
+            if 'libs' not in name]  # We don't document libs!
+
+    @property
+    def modules(self) -> list:
+        """:rtype: list[DLModule]"""
+        return self.__modules
+
+    def generate(self, path: str):
+        FileUtil.write_file(os.path.join(path, 'index.md'), self.generate_index())
+        [m.generate(path) for m in self.modules]
+
+    def generate_index(self) -> str:
+        return '%s'*7 % (
+            MD.header('dlibrary', 1),
+            MD.blockquote(MD.strong(TextUtil.first_line(TextUtil.strip(inspect.getdoc(dlibrary))))),
+            MD.list_item('%s %s' % (MD.strong('Author:'), dlibrary.__author__)),
+            MD.list_item('%s %s' % (MD.strong('Version:'), dlibrary.__version__)),
+            MD.list_item('%s %s' % (MD.strong('License:'), dlibrary.__license__)),
+            MD.newline(),
+            ''.join('%s%s' % (MD.ruler(), m.generate_index()) for m in self.modules))
 
 
 def write_examples():
@@ -368,6 +365,23 @@ def write_examples():
                 dst_file.write('```\n#!python\n\n%s\n```' % src_file.read())
 
 
-clean_docs()
-write_api_docs()
-# write_examples()
+class ExampleDocs(object):
+
+    def generate(self, path: str):
+        pass
+
+
+# Setup paths.
+DIST_PATH = os.path.abspath(os.path.join('.', 'dist'))
+VERSION_PATH = os.path.join(DIST_PATH, dlibrary.__version__.split('.')[0])
+API_DOCS_PATH = os.path.join(VERSION_PATH, 'api')
+EXAMPLES_PATH = os.path.join(VERSION_PATH, 'examples')
+
+# Clean dist directory.
+shutil.rmtree(DIST_PATH) if os.path.exists(DIST_PATH) else None
+
+# Write api docs.
+ApiDocs().generate(API_DOCS_PATH)
+
+# Write example docs.
+ExampleDocs().generate(EXAMPLES_PATH)

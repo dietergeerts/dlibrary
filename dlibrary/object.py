@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
 from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill, SymbolDefinition, \
-    DataFieldTypeEnum, PioFieldTypeEnum
+    DataFieldTypeEnum, PioFieldTypeEnum, IRecords
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 from dlibrary.utility import VSException, Convert
 import vs
@@ -135,7 +135,7 @@ class Attributes(AbstractKeyedObject):
         vs.SetObjEndMarker(self.handle, style, angle, size, width, thickness_basis, thickness, visibility)
 
 
-class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, IObjectOrder, metaclass=ABCMeta):
+class AbstractObject(AbstractKeyedObject, IObjectAttributes, IRecords, IObjectOrder, metaclass=ABCMeta):
 
     @property
     def layer(self) -> Layer:

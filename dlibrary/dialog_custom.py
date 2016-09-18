@@ -20,12 +20,14 @@ class AbstractActivePlugInDialogXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
 
 class AbstractDataContext(object, metaclass=ABCMeta):
+
     def __init__(self, data_context: object):
         self.__data_context = data_context
         self.__data_context_changed = Event()
 
     @property
     def data_context_changed(self) -> Event:
+        """:rtype: Event"""
         return self.__data_context_changed
 
     # Will be used only by the topmost one, the Dialog, as all the rest are AbstractControl objects.
@@ -95,6 +97,7 @@ class Dialog(AbstractDataContext):
 
 
 class Layout(object):
+
     VERTICAL = 1
     HORIZONTAL = 2
 
