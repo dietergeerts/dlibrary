@@ -9,5 +9,4 @@ task, that the reason why we'll add test and build out the mocks on issue basis.
 """
 
 __author__ = 'Dieter Geerts <dieter@dworks.be>'
-__version__ = '2016.12.0'
 __license__ = 'MIT'

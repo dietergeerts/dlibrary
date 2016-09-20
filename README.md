@@ -61,3 +61,10 @@ after the initial release, we'll work with FEATURE branches, named like `feature
 - Keep in mind that for Singletons, they are unique for the VW sessions, not the script run!
 - vs.py has been extended to add the things NNA didn't include like the Handle class. Make sure you leave this and check
 when update the file with a new version!
+
+### RELEASING
+
+- Update the version number.
+- Commit and tag the release.
+- Create new version on Bitbucket.
+- Update the wiki repo with new docs.

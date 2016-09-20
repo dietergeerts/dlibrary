@@ -9,5 +9,4 @@ stuff automatically instead of manually. That the reason why we'll add test and 
 """
 
 __author__ = 'Dieter Geerts <dieter@dworks.be>'
-__version__ = '2016.12.0'
 __license__ = 'MIT'

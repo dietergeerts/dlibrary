@@ -5,5 +5,4 @@ all tests to make sure the issue/bug is solved correctly. Tests are added on iss
 """
 
 __author__ = 'Dieter Geerts <dieter@dworks.be>'
-__version__ = '2016.12.0'
 __license__ = 'MIT'

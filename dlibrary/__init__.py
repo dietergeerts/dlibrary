@@ -8,7 +8,7 @@ from dlibrary.object import Rectangle, Locus, Symbol, Group, PluginObject
 from dlibrary.object_base import ObjectRepository, ObjectTypeEnum
 
 __author__ = 'Dieter Geerts <dieter@dworks.be>'
-__version__ = '2016.12.0'
+__version__ = '2017.0.0'
 __license__ = 'MIT'
 
 ObjectRepository().register(ObjectTypeEnum.HATCH_FILL_DEFINITION, HatchVectorFill)
