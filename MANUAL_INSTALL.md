@@ -1,14 +1,13 @@
-VW DLibrary
-========================================================================================================================
+# DLibrary
 
 Common library for VW plug-ins.
 
-## REMARK ##############################################################################################################
+## REMARK
 
 Please prefer to use the automatic install, which is way easier, though because of a bug in VW, the script in the 
 install.vwx file needs te be ran first, which includes a pre-install step to prepare VW for the installation.
 
-## MANUAL INSTALL ######################################################################################################
+## MANUAL INSTALL
 
 Only install if you have no or an older version of this library and the plugin needs this version.
 
@@ -16,7 +15,7 @@ Only install if you have no or an older version of this library and the plugin n
 
 To manually install this library in order for Vectorworks to use, follow these steps:
  
-- Copy the `dlibrary` folder to a folder of your chose.
+- Copy the `dlibrary` folder to a folder of your chose, but make sure Vectorworks doesn't scan it for resources.
 - Add that folder, where the `dlibrary` folder resides, to the Python Script Settings in Vectorworks.
 - Restart Vectorworks.
 
