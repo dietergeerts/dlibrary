@@ -577,6 +577,7 @@ class AbstractActivePluginParameters(object, metaclass=ABCMeta):
 
     Vectorworks will always give you the initial values of parameters. So when changing them inside your script,
     you'll still get the initial values. Therefore we'll create some sort of cache to remember the current values.
+    Just make sure you only instantiate one of this class per script run in order to not miss the cached values.
 
     Using this will enable you to transform parameters and adjust them to defaults etc... without the rest of your
     script having to worry about this. Your IDE will also be very happy to find the actually parameters by name.
