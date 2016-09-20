@@ -201,6 +201,10 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, IRecords, IObjectOr
     def reset(self):
         vs.ResetObject(self.handle)
 
+    @property
+    def _handle(self) -> vs.Handle:
+        return self.handle
+
 
 class PluginObject(AbstractObject):
     """Wrapper for custom plugin objects."""

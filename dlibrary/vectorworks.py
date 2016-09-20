@@ -540,7 +540,8 @@ class ActivePluginDoubleClickBehaviour(object):
 
         return decorator
 
-    def __init_double_click_behaviour(self):
+    # noinspection PyUnusedLocal
+    def __init_double_click_behaviour(self, data: int):
         vs.SetObjPropCharVS(3, self.__behaviour)  # 3 = Double click behavior!
 
     # noinspection PyUnusedLocal
@@ -584,7 +585,8 @@ class AbstractActivePluginParameters(object, metaclass=ABCMeta):
     def __init__(self):
         self.__parameters = dict()
 
-    def __init_record_and_fields(self):
+    # noinspection PyUnusedLocal
+    def __init_record_and_fields(self, name: str):
         self.__record = vs.GetParametricRecord(ActivePlugin().handle)
         self.__fields = [vs.GetFldName(self.__record, index) for index in range(1, vs.NumFields(self.__record) + 1)]
 
@@ -638,6 +640,7 @@ class ActivePluginParameter(object):
 
         self.__name = function.__name__
 
+        # noinspection PyUnusedLocal
         @property
         @functools.wraps(function)
         @OnErrorDoAndRetry(AttributeError, self.__init_parameter)
