@@ -6,7 +6,7 @@ from collections import OrderedDict
 from dlibrary.object_base import ObjectRepository, AbstractKeyedObject, ObjectTypeEnum
 from dlibrary.utility import SingletonMeta, ObservableList, SingletonABCMeta, Convert
 import vs
-from dlibrary.vectorworks import Vectorworks
+from dlibrary.vectorworks import Vectorworks, CorrectVsFilepath
 
 
 class DataFieldTypeEnum(object):
@@ -489,11 +489,12 @@ class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
         return self.filepath[:-len(vs.GetFName())]
 
     @property
+    @CorrectVsFilepath()
     def filepath(self) -> str:
         """
         :rtype: str
         """
-        return Vectorworks().get_os_independent_filepath(vs.GetFPathName())
+        return vs.GetFPathName()
 
     @property
     def filename(self) -> str:

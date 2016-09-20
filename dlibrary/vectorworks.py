@@ -1,11 +1,12 @@
 """Module for all Vectorworks related stuff, like settings and active plugin features.
 """
+import functools
 import os
 from abc import ABCMeta, abstractmethod
 
 import vs
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
-from dlibrary.utility import SingletonMeta
+from dlibrary.utility import SingletonMeta, OnErrorDoAndRetry
 
 
 class PlatformEnum(object):
@@ -14,6 +15,27 @@ class PlatformEnum(object):
 
     MAC_OS = 1
     WINDOWS = 2
+
+
+class CorrectVsFilepath(object):
+    """Decorator to correct file paths from old vs calls that use HFS paths on MacOS.
+
+    Patrick Stanford <patstanford@coviana.com> on the VectorScript Discussion List:
+
+    Since Mac OS 10, as they're rewritten it using UNIX kernel, the mac uses Posix natively. Since VW predates that,
+    the old calls use HFS paths and need to be converted for newer APIs. You can ask VW to do the conversion, as simply
+    replacing the characters are not enough (Posix uses volume mounting instead of drive names). This can be done
+    through vs.ConvertHSF2PosixPath().
+    """
+
+    def __call__(self, function: callable) -> callable:
+
+        @functools.wraps(function)
+        def decorator(*args, **kwargs):
+            filepath = function(*args, **kwargs)
+            return vs.ConvertHSF2PosixPath(filepath)[1] if Vectorworks().platform == PlatformEnum.MAC_OS else filepath
+
+        return decorator
 
 
 class Vectorworks(object, metaclass=SingletonMeta):
@@ -28,57 +50,76 @@ class Vectorworks(object, metaclass=SingletonMeta):
         self.__user_id = vs.GetActiveSerialNumber()[-6:]
 
     @property
+    @OnErrorDoAndRetry(AttributeError, __init_version_information)
     def platform(self) -> int:
         """The platform (= OS) Vectorworks is running on.
         :rtype: PlatformEnum
         """
-        self.__init_version_information() if self.__platform is None else None
         return self.__platform
 
     @property
+    @OnErrorDoAndRetry(AttributeError, __init_version_information)
     def version(self) -> str:
         """Vectorworks' main version, like '12.5', or '2016'.
         """
-        self.__init_version_information() if self.__version is None else None
         return self.__version
 
     @property
+    @OnErrorDoAndRetry(AttributeError, __init_user_information)
     def user_id(self) -> str:
         """The user' identification number (= last 6 digits of serial = dongle number)
         """
-        self.__init_user_information() if self.__user_id is None else None
         return self.__user_id
 
-    def get_os_independent_filepath(self, filepath: str) -> str:
-        """Resolves the filepath to be os independent.
-
-        Patrick Stanford <patstanford@coviana.com> on the VectorScript Discussion List:
-        Since Mac OS 10, as they're rewritten it using UNIX kernel, the mac uses Posix natively.
-        Since VW predates that, the old calls use HFS paths and need to be converted for newer APIs.
-        You can ask VW to do the conversion, as simply replacing the characters are not enough (Posix
-        uses volume mounting instead of drive names). This can be done through vs.ConvertHSF2PosixPath().
-        """
-        return vs.ConvertHSF2PosixPath(filepath)[1] if self.platform == PlatformEnum.MAC_OS else filepath
-
+    @CorrectVsFilepath()
     def get_plugin_file_filepath(self, filename: str) -> str:
         """Resolves the filepath based on the filename for a file in one of the plugin directories.
         """
-        return self.get_os_independent_filepath(os.path.join(vs.FindFileInPluginFolder(filename)[1], filename))
+        return os.path.join(vs.FindFileInPluginFolder(filename)[1], filename)
 
-    # noinspection PyMethodMayBeStatic
-    def show_message(self, message: str):
-        """Show a floating message in the message palette.
 
-        Handy to show processing information or script results.
-        Any previous messages will be cleared.
-        """
-        vs.Message(message)
+class ShowScriptMessage(object):
+    """Decorator to show a floating message or function result, before or after the decorated function execution.
 
-    # noinspection PyMethodMayBeStatic
-    def clear_message(self):
-        """Clear any floating messages and close the message palette.
-        """
-        vs.ClrMessage()
+    The message will be shown in the floating message palette. Handy to show processing information or script results.
+    Any previous messages will be cleared. The message palette can only show up to 256 characters.
+    """
+
+    def __init__(self, message: str=None, before: bool=False):
+        self.__message = message
+        self.__before = before
+
+    def __call__(self, function: callable) -> callable:
+
+        @functools.wraps(function)
+        def decorator(*args, **kwargs):
+            vs.Message(self.__message) if self.__message and self.__before else None
+            result = function(*args, **kwargs)
+            vs.Message(self.__message or result) if not self.__message or not self.__before else None
+            return result
+
+        return decorator
+
+
+class ClearScriptMessage(object):
+    """Decorator to clear the floating Vectorworks message, before or after the decorated function execution.
+
+    Besides clearing the message, it will also close the floating message palette.
+    """
+
+    def __init__(self, after: bool=False):
+        self.__after = after
+
+    def __call__(self, function: callable) -> callable:
+
+        @functools.wraps(function)
+        def decorator(*args, **kwargs):
+            vs.ClrMessage() if not self.__after else None
+            result = function(*args, **kwargs)
+            vs.ClrMessage() if self.__after else None
+            return result
+
+        return decorator
 
 
 class VectorworksSecurity(object):
@@ -103,9 +144,10 @@ class VectorworksSecurity(object):
 
     def __call__(self, function: callable) -> callable:
 
+        @functools.wraps(function)
         def decorator(*args, **kwargs):
             if self.__has_version_permission() and self.__has_user_id_permission():
-                function(*args, **kwargs)
+                return function(*args, **kwargs)
 
         return decorator
 
@@ -192,10 +234,12 @@ class OnActivePluginEvent(object):
 
     def __call__(self, function: callable) -> callable:
 
+        @functools.wraps(function)
         def decorator(*args, **kwargs):
-            function(*args, **kwargs)
+            result = function(*args, **kwargs)
             event, data = vs.vsoGetEventInfo()
             self.__callback(data) if event == self.__event else None
+            return result
 
         return decorator
 
@@ -229,10 +273,10 @@ class ParameterChangeResetArgs(AbstractResetArgs):
         self.__name = vs.GetFldName(vs.GetCustomObjectInfo()[3], self.__index)
 
     @property
+    @OnErrorDoAndRetry(AttributeError, __init_name)
     def name(self) -> str:
         """Returns the name of the changed parameter.
         """
-        self.__init_name() if self.__name is None else None
         return self.__name
 
 
@@ -252,12 +296,13 @@ class OnActivePluginReset(object):
 
     def __call__(self, function: callable) -> callable:
 
+        @functools.wraps(function)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_RESET, self.__execute_callback)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_RESET, self.__resolve_reset_args)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_ADD_STATE, self.__add_reset_args_state)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_INITIALIZATION, self.__init_reset_args)
         def decorator(*args, **kwargs):
-            function(*args, **kwargs)
+            return function(*args, **kwargs)
 
         return decorator
 
@@ -432,11 +477,12 @@ class ActivePluginInfoPallet(object):
 
     def __call__(self, function: callable) -> callable:
 
+        @functools.wraps(function)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_WIDGET_CLICK, self.__on_widget_click)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_WIDGET_PREP, self.__prepare_widgets)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_INITIALIZATION, self.__init_info_pallet)
         def decorator(*args, **kwargs):
-            function(*args, **kwargs)
+            return function(*args, **kwargs)
 
         return decorator
 
@@ -486,10 +532,11 @@ class ActivePluginDoubleClickBehaviour(object):
 
     def __call__(self, function: callable) -> callable:
 
+        @functools.wraps(function)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_DOUBLE_CLICK, self.__on_double_click)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_INITIALIZATION, self.__init_double_click_behaviour)
         def decorator(*args, **kwargs):
-            function(*args, **kwargs)
+            return function(*args, **kwargs)
 
         return decorator
 
@@ -511,9 +558,10 @@ class ActivePluginFontStyleEnabled(object):
 
         # Because of a VW bug, font style enabling has to happen in the reset event for event-enabled plug-ins!
         # For none-event-enabled plugins, the reset event will happen (it's the only), so we have no problem here.
+        @functools.wraps(function)
         @OnActivePluginEvent(ActivePluginEventEnum.VSO_ON_RESET, self.__set_font_style_enabled)
         def decorator(*args, **kwargs):
-            function(*args, **kwargs)
+            return function(*args, **kwargs)
 
         return decorator
 
@@ -540,6 +588,7 @@ class AbstractActivePluginParameters(object, metaclass=ABCMeta):
         self.__record = vs.GetParametricRecord(ActivePlugin().handle)
         self.__fields = [vs.GetFldName(self.__record, index) for index in range(1, vs.NumFields(self.__record) + 1)]
 
+    @OnErrorDoAndRetry(AttributeError, __init_record_and_fields)
     def __init_parameter(self, name: str):
         """Retrieve the initial value of the parameter and put it into the parameters cache.
 
@@ -547,14 +596,13 @@ class AbstractActivePluginParameters(object, metaclass=ABCMeta):
         For a boolean value, VW return 1 or 0, while we actually want a bool, so we'll convert if needed.
         """
         value = getattr(vs, 'P%s' % name)
-        self.__init_record_and_fields() if not self.__record else None
         is_bool = vs.GetFldType(self.__record, self.__fields.index(name) + 1) == 2
         self.__parameters[name] = value == 1 if is_bool else value
 
+    @OnErrorDoAndRetry(KeyError, __init_parameter)
     def get_parameter(self, name: str):
         """Returns the parameter. The type depends on the plugin parameter.
         """
-        self.__init_parameter(name) if name not in self.__parameters else None
         return self.__parameters[name]
 
     def set_parameter(self, name: str, value):
@@ -563,3 +611,58 @@ class AbstractActivePluginParameters(object, metaclass=ABCMeta):
         self.__parameters[name] = value
         value = str(value) if not isinstance(value, float) else vs.Num2Str(-2, value)
         vs.SetRField(ActivePlugin().handle, ActivePlugin().name, name, value)
+
+
+class ActivePluginParameter(object):
+    """Decorator for a plugin parameter property.
+
+    Vectorworks will always give you the initial values of parameters. So when changing them inside your script,
+    you'll still get the initial values. Therefore we'll create some sort of cache to remember the current values.
+
+    Using this will enable you to transform parameters and adjust them to defaults etc... without the rest of your
+    script having to worry about this. Your IDE will also be very happy to find the actually parameters by name.
+
+    The decorated function will be ran after the parameter has been set, so you can use that to do extra stuff.
+    Transformations can be done through the transform function you give to the decorator.
+    """
+
+    def __init__(self, get_transform: callable=None, set_transform: callable=None):
+        """
+        :param get_transform: transformation function, to transform from the internal value.
+        :param set_transform: transformation function. to transform to the internal value.
+        """
+        self.__get_transform = get_transform
+        self.__set_transform = set_transform
+
+    def __call__(self, function: callable) -> callable:
+
+        self.__name = function.__name__
+
+        @property
+        @functools.wraps(function)
+        @OnErrorDoAndRetry(AttributeError, self.__init_parameter)
+        def parameter(*args):
+            return self.__get_transform(self.__parameter) if self.__get_transform else self.__parameter
+
+        @parameter.setter
+        @functools.wraps(function)
+        def parameter(*args):
+            value = self.__parameter = self.__set_transform(args[1]) if self.__set_transform else args[1]
+            value = str(value) if not isinstance(value, float) else vs.Num2Str(-2, value)
+            vs.SetRField(ActivePlugin().handle, ActivePlugin().name, self.__name, value)
+            function(*args)
+
+        return parameter
+
+    def __init_parameter(self):
+        """Retrieve the initial value of the parameter.
+
+        Vectorworks puts parameters inside the vs module, prefixed with 'P'.
+        For a boolean value, VW return 1 or 0, while we actually want a bool, so we'll convert if needed.
+        """
+        record = vs.GetParametricRecord(ActivePlugin().handle)
+        fields = [vs.GetFldName(record, index) for index in range(1, vs.NumFields(record) + 1)]
+        is_bool = vs.GetFldType(record, fields.index(self.__name) + 1) == 2
+
+        value = getattr(vs, 'P%s' % self.__name)
+        self.__parameter = value == 1 if is_bool else value

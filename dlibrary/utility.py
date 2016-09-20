@@ -623,3 +623,32 @@ class If(object):
 
     def __call__(self, function: callable) -> callable:
         return self.__decorator(function) if self.__condition else function
+
+
+class OnErrorDoAndRetry(object):
+    """Decorator for lazy-initialization, as an exception can occur because of missing stuff.
+
+    Sometimes, we want some initialization to be ran only when it's needed. This initialization will set our things on
+    the instance or class. This decorator can be set on functions/properties that depends on these things. When they
+    aren't available yet, an error will occur, thus actually saying that initialization isn't done yet. When this
+    happen, we will run the handler function, with the same arguments, and try the function again.
+    """
+
+    def __init__(self, error: Exception, handler: callable):
+        """
+        :type handler: (*args, **kwargs) -> None
+        """
+        self.__error = error
+        self.__handler = handler
+
+    def __call__(self, function: callable) -> callable:
+
+        def decorator(*args, **kwargs):
+            # noinspection PyBroadException
+            try:
+                return function(*args, **kwargs)
+            except self.__error:
+                self.__handler(*args, **kwargs)
+                return function(*args, **kwargs)
+
+        return decorator
