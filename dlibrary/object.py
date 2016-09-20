@@ -4,143 +4,10 @@ from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
 from dlibrary.document import Layer, Units, Clazz, IAttributes, AbstractVectorFill, SymbolDefinition, \
-    DataFieldTypeEnum, PioFieldTypeEnum
+    DataFieldTypeEnum, PioFieldTypeEnum, IRecords
 from dlibrary.object_base import AbstractKeyedObject, ObjectRepository
 from dlibrary.utility import VSException, Convert
 import vs
-
-
-class RecordField(AbstractKeyedObject):
-    """OBSOLETE, use dlibrary.document.RecordField instead.
-    """
-    # TODO: Remove inheritance from AbstractKeyedObject! Inherit from object in version 2017!
-
-    @property
-    def handle(self) -> vs.Handle:
-        """:rtype: vs.Handle OBSOLETE!"""
-        # TODO: Remove in version 2017!
-        return self.__handle
-
-    def __init__(self, record_handle: vs.Handle, index: int, record_name: str=None, object_handle: vs.Handle=None,
-                 parametric: bool=False):
-        """Use the record_name, object_handle and parametric, as they will become mandatory in future versions!
-        Not using them will render most things in this class useless!
-        """
-        # TODO: Make record_name and object_handle mandatory in version 2017!
-        super().__init__(record_handle)
-        self.__record_handle = record_handle
-        self.__index = index
-        self.__record_name = record_name
-        self.__object_handle = object_handle
-        self.__parametric = parametric
-
-    @property
-    def name(self) -> str:
-        """:rtype: str"""
-        return vs.GetFldName(self.__record_handle, self.__index)
-
-    @property
-    def type(self) -> int:
-        """:rtype: DataFieldTypeEnum | PioFieldTypeEnum"""
-        return vs.GetFldType(self.__record_handle, self.__index)
-    
-    @property
-    def value(self):
-        """:rtype: str | int | bool | float"""
-        if self.__record_name is None or self.__object_handle is None:
-            raise VSException('RecordField.value can\'t be used without record_name and object_handle!')
-        # TODO: Remove check in version 2017, as then they will be mandatory!
-        return {
-            True: {
-                PioFieldTypeEnum.INTEGER: self.__to_int,
-                PioFieldTypeEnum.BOOLEAN: self.__to_bool,
-                PioFieldTypeEnum.REAL: self.__to_float,
-                PioFieldTypeEnum.REAL_DIMENSION: self.__to_float,
-                PioFieldTypeEnum.REAL_X_COORDINATE: self.__to_float,
-                PioFieldTypeEnum.REAL_Y_COORDINATE: self.__to_float
-            },
-            False: {
-                DataFieldTypeEnum.INTEGER: self.__to_int,
-                DataFieldTypeEnum.BOOLEAN: self.__to_bool,
-                DataFieldTypeEnum.NUMBER_GENERAL: self.__to_float,
-                DataFieldTypeEnum.NUMBER_DECIMAL: self.__to_float,
-                DataFieldTypeEnum.NUMBER_PERCENTAGE: self.__to_float,
-                DataFieldTypeEnum.NUMBER_SCIENTIFIC: self.__to_float,
-                DataFieldTypeEnum.NUMBER_FRACTIONAL: self.__to_float,
-                DataFieldTypeEnum.NUMBER_DIMENSION: self.__to_float,
-                DataFieldTypeEnum.NUMBER_DIMENSION_AREA: self.__to_float_from_area,
-                DataFieldTypeEnum.NUMBER_DIMENSION_VOLUME: self.__to_float_from_volume,
-                DataFieldTypeEnum.NUMBER_ANGLE: self.__to_float_from_angle
-            }
-        }.get(self.__parametric).get(self.type, self.__to_str)(
-            vs.GetRField(self.__object_handle, self.__record_name, self.name))
-
-    @value.setter
-    def value(self, value: str):
-        """:type value: str"""
-        if self.__record_name is None or self.__object_handle is None:
-            raise VSException('RecordField.value can\'t be used without record_name and object_handle!')
-        # TODO: Remove check in version 2017, as then they will be mandatory!
-        vs.SetRField(self.__object_handle, self.__record_name, self.name, value)
-
-    @staticmethod
-    def __to_str(value: str) -> str:
-        return value
-
-    @staticmethod
-    def __to_int(value: str) -> int:
-        return int(vs.Str2Num(value))
-
-    @staticmethod
-    def __to_bool(value: str) -> bool:
-        return Convert.str2bool(value)
-
-    @staticmethod
-    def __to_float(value: str) -> float:
-        return Units.resolve_length_units(value)
-
-    @staticmethod
-    def __to_float_from_area(value: str) -> float:
-        return vs.Str2Area(value)
-
-    @staticmethod
-    def __to_float_from_volume(value: str) -> float:
-        return vs.Str2Volume(value)
-
-    @staticmethod
-    def __to_float_from_angle(value: str) -> float:
-        return vs.Str2Angle(value)
-
-
-class Record(AbstractKeyedObject):
-    """OBSOLETE, use dlibrary.document.Record instead.
-    """
-
-    def __init__(self, handle: vs.Handle, object_handle: vs.Handle=None):
-        """Use the object_handle, as it will become mandatory in future versions!
-        Not using the object_handle will make working with the record instance very limited!
-        """
-        # TODO: Make object_handle mandatory in version 2017!
-        super().__init__(handle)
-        self.__object_handle = object_handle
-
-    @property
-    def parametric(self) -> bool:
-        """:rtype: bool"""
-        return vs.GetParametricRecord(self.__object_handle) == self.handle
-
-    @property
-    def fields(self) -> OrderedDict:
-        """:rtype: OrderedDict[str, RecordField]"""
-        fields = OrderedDict()
-        for index in range(1, vs.NumFields(self.handle) + 1):
-            field = self.get_field(index)
-            fields[field.name] = field
-        return fields
-
-    def get_field(self, index: int) -> RecordField:
-        """Get the field based on it's index, 1-n based."""
-        return RecordField(self.handle, index, self.name, self.__object_handle, self.parametric)
 
 
 class IObjectHandle(object, metaclass=ABCMeta):
@@ -150,7 +17,6 @@ class IObjectHandle(object, metaclass=ABCMeta):
     @property
     @abstractmethod
     def _object_handle(self) -> vs.Handle:
-        """:rtype: vs.Handle"""
         pass
 
 
@@ -195,25 +61,6 @@ class IObjectAttributes(IObjectHandle, IAttributes, metaclass=ABCMeta):
         :type value: T <= AbstractVectorLine
         """
         vs.SetLSN(self._object_handle, vs.Name2Index(value.name) * -1)
-
-
-class IObjectRecords(object, metaclass=ABCMeta):
-    """OBSOLETE, use dlibrary.document.IRecords instead.
-    """
-    # TODO: Remove in version 2017.
-
-    @property
-    @abstractmethod
-    def _object_handle(self) -> vs.Handle:
-        """:rtype: vs.Handle"""
-        pass
-
-    @property
-    def records(self) -> dict:
-        """:rtype: dict[str, Record]"""
-        return {record.name: record for record in (
-            Record(vs.GetRecord(self._object_handle, index), self._object_handle)
-            for index in range(1, vs.NumRecords(self._object_handle) + 1))}
 
 
 class IObjectOrder(IObjectHandle, metaclass=ABCMeta):
@@ -287,7 +134,7 @@ class Attributes(AbstractKeyedObject):
         vs.SetObjEndMarker(self.handle, style, angle, size, width, thickness_basis, thickness, visibility)
 
 
-class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, IObjectOrder, metaclass=ABCMeta):
+class AbstractObject(AbstractKeyedObject, IObjectAttributes, IRecords, IObjectOrder, metaclass=ABCMeta):
 
     @property
     def layer(self) -> Layer:
@@ -307,33 +154,27 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, IOb
 
     @property
     def bb_top(self) -> float:
-        """:rtype: float"""
         return vs.GetBBox(self.handle)[0][1]
 
     @property
     def bb_left(self) -> float:
-        """:rtype: float"""
         return vs.GetBBox(self.handle)[0][0]
 
     @property
     def bb_right(self) -> float:
-        """:rtype: float"""
         return vs.GetBBox(self.handle)[1][0]
 
     @property
     def bb_bottom(self) -> float:
-        """:rtype: float"""
         return vs.GetBBox(self.handle)[1][1]
 
     @property
     def bb_width(self) -> float:
-        """:rtype: float"""
         top_left, bottom_right = vs.GetBBox(self.handle)
         return bottom_right[0] - top_left[0]
 
     @property
     def bb_height(self) -> float:
-        """:rtype: float"""
         top_left, bottom_right = vs.GetBBox(self.handle)
         return top_left[1] - bottom_right[1]
 
@@ -352,6 +193,23 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, IObjectRecords, IOb
 
     def reset(self):
         vs.ResetObject(self.handle)
+
+    @property
+    def _handle(self) -> vs.Handle:
+        return self.handle
+
+
+class PluginObject(AbstractObject):
+    """Wrapper for custom plugin objects."""
+
+    @property
+    def origin(self) -> tuple:
+        """:rtype: (float, float)"""
+        return vs.GetSymLoc(self.handle)
+
+    @property
+    def rotation(self) -> float:
+        return vs.GetSymRot(self.handle)
 
 
 class DrawnObject(AbstractObject):
@@ -513,7 +371,6 @@ class Rectangle(AbstractObject):
 
     @property
     def width(self) -> float:
-        """:rtype: float"""
         return vs.HWidth(self.handle)
 
     @width.setter
@@ -524,7 +381,6 @@ class Rectangle(AbstractObject):
 
     @property
     def height(self) -> float:
-        """:rtype: float"""
         return vs.HHeight(self.handle)
 
     @height.setter
@@ -616,23 +472,19 @@ class Symbol(AbstractObject):
 
     @property
     def scale_x(self) -> float:
-        """:rtype: float"""
         return vs.GetObjectVariableReal(self.handle, 102)
 
     @scale_x.setter
     def scale_x(self, value: float):
-        """:type value: float"""
         vs.SetObjectVariableReal(self.handle, 102, value)
         vs.ResetObject(self.handle)
 
     @property
     def scale_y(self) -> float:
-        """:rtype: float"""
         return vs.GetObjectVariableReal(self.handle, 103) if self.__asymmetric_scaling else self.scale_x
 
     @scale_y.setter
     def scale_y(self, value: float):
-        """:type value: float"""
         if self.__asymmetric_scaling:
             vs.SetObjectVariableReal(self.handle, 103, value)
             vs.ResetObject(self.handle)
@@ -641,12 +493,10 @@ class Symbol(AbstractObject):
 
     @property
     def scale_z(self) -> float:
-        """:rtype: float"""
         return vs.GetObjectVariableReal(self.handle, 104) if self.__asymmetric_scaling else self.scale_x
 
     @scale_z.setter
     def scale_z(self, value: float):
-        """:type value: float"""
         if self.__asymmetric_scaling:
             vs.SetObjectVariableReal(self.handle, 104, value)
             vs.ResetObject(self.handle)

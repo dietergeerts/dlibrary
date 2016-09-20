@@ -9,12 +9,16 @@ import vs
 # You can use this installation file for your own plugins, just fill in the variables in the SETUP part. ###############
 # An install script must go at the top level of your .zip file in order for Vectorworks to pick it up. For more ########
 # information about install files, see: http://developer.vectorworks.net/index.php/VS:Implementing_Installation_Script #
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #
+# VW has a bug, when just started, some vs functions aren't available yet, like vs.GetFolder. To overcome this, the    #
+# script in the install.vwx file has to be run first, and then the user have to install the plugin without restarting  #
+# Vectorworks.                                                                                                         #
 ########################################################################################################################
 
 
 # SETUP ################################################################################################################
 
-plugin_name = 'DProjectInfo'
+plugin_name = 'MyPluginNameAndFolderNameInZipFile'
 dlibrary_version = '2016.4.0'
 include_choose_custom_install_folder = True
 include_update_or_install_dlibrary = True

@@ -16,11 +16,13 @@ class ObjectTypeEnum(object):
     IMAGE_FILL_DEFINITION = 119
     LINE_STYLE_DEFINITION = 96
     CLASS_DEFINITION = 94
+    RECORD_DEFINITION = 47
     SYMBOL_DEFINITION = 16
     LOCUS = 17
     RECTANGLE = 3
     GROUP = 11
     SYMBOL = 15
+    PLUGIN_OBJECT = 86
 
     @staticmethod
     def get(handle_or_name) -> int:
@@ -48,12 +50,10 @@ class AbstractKeyedObject(object, metaclass=ABCMeta):
 
     @property
     def handle(self) -> vs.Handle:
-        """:rtype: vs.Handle"""
         return self.__handle
 
     @property
     def name(self) -> str:
-        """:rtype: str"""
         name = vs.GetName(self.handle)
         return None if name == 'none' or name == '' else name
 
@@ -98,3 +98,5 @@ class ObjectRepository(object, metaclass=SingletonMeta):
         :rtype: T <= AbstractKeyedObject
         """
         return self.__constructors.get(ObjectTypeEnum.get(handle_or_name), lambda h_o_n: None)(handle_or_name)
+
+# TODO: create abstract record and field classes for use in the different record types (parameteric, ifc, normal)!?

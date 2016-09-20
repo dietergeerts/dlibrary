@@ -1,28 +1,26 @@
-"""Used for all custom dialog stuff. Most of it is internal business.
+"""Module for all custom dialog stuff. Mainly internal business.
+
+Dialogs can be build by defining them inside an .xml file, and then creating the dialog, pointing to that file.
 """
 from abc import ABCMeta, abstractmethod
-import os
 
+import vs
 from dlibrary.document import AbstractResourceList
+from dlibrary.utility import AbstractXmlFile
 from dlibrary.utility import XmlFileLists, Event, VSException, Convert, SingletonMeta, AbstractPropertyClassDecorator, \
     ObservableField, ObservableMethod, ObservableList, XmlDict
-from dlibrary.utility import AbstractXmlFile
-from dlibrary.vectorworks import ActivePlugIn, Vectorworks
-import vs
+from dlibrary.vectorworks import ActivePlugin, Vectorworks
 
 
 @XmlFileLists(lists={'control'})
 class AbstractActivePlugInDialogXmlFile(AbstractXmlFile, metaclass=ABCMeta):
 
-    def __init__(self, dialog_name: str, active_plugin_type: str):
-        """
-        :type active_plugin_type: ActivePlugInType(Enum)
-        """
-        file_path = Vectorworks().get_folder_path_of_plugin_file(ActivePlugIn().name + active_plugin_type)
-        super().__init__(os.path.join(file_path, ActivePlugIn().name + dialog_name + 'Dialog.xml'))
+    def __init__(self, dialog_name: str):
+        super().__init__(Vectorworks().get_plugin_file_filepath(ActivePlugin().name + dialog_name + 'Dialog.xml'))
 
 
 class AbstractDataContext(object, metaclass=ABCMeta):
+
     def __init__(self, data_context: object):
         self.__data_context = data_context
         self.__data_context_changed = Event()
@@ -62,10 +60,9 @@ class Dialog(AbstractDataContext):
 
     @staticmethod
     def __create_title(view: dict) -> str:
-        return ('%s - %s %s' % (
-            view['dialog']['@title'], ActivePlugIn().name,
-            'v%s' % ActivePlugIn().version if ActivePlugIn().version != '' else ''
-        )).strip()  # To remove the space left when there is no version.
+        return view['dialog']['@title']
+        # TODO: Add a way to append the plugin name and version to the title in an easy way!
+        # independent from if this dialog is being run in a normal document script or actual plugin!
 
     @staticmethod
     def __get_dialog_control(dialog: dict) -> list:
@@ -99,6 +96,7 @@ class Dialog(AbstractDataContext):
 
 
 class Layout(object):
+
     VERTICAL = 1
     HORIZONTAL = 2
 

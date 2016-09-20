@@ -1,4 +1,6 @@
 """Our own doc formatter class, to have our docs like we want/need them.
+
+This is the old stuff used for the docs, though I'll keep it here as reference.
 """
 from collections import deque
 import pkgutil
@@ -12,7 +14,7 @@ class DLibraryDoc(pydoc.Doc):
     """
 
     __tab = '.' * 8           # Html spaces doesn't work for Bitbucket markdown!
-    __newline = '  \n'        # Markdown needs two extra spaces to see it as an actual new line.
+    __newline = '  \n'        # MD needs two extra spaces to see it as an actual new line.
     __rule = '-' * 80 + '\n'
 
     @classmethod

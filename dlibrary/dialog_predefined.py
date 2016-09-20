@@ -59,3 +59,19 @@ class PlugInFileOsErrorAlert(Alert):
                          'Something went wrong while loading the plug-in file `%s`.' % filename,
                          'Make sure the plug-in file is in the plug-in folder, '
                          'have read/write permissions and is not corrupt.')
+
+
+class NoLicenseAlert(Alert):
+
+    def __init__(self, user_id: str):
+        super().__init__(AlertType.WARNING,
+                         'You have no rights to use this plugin.',
+                         'Contact the plugin distributor to acquire a license.')
+
+
+class OtherLicenseAlert(Alert):
+
+    def __init__(self, version: str):
+        super().__init__(AlertType.WARNING,
+                         'Your license is not for Vectorworks %s' % version,
+                         'Contact the plugin distributor to update your license.')
