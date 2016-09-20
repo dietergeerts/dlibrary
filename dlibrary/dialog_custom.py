@@ -27,7 +27,6 @@ class AbstractDataContext(object, metaclass=ABCMeta):
 
     @property
     def data_context_changed(self) -> Event:
-        """:rtype: Event"""
         return self.__data_context_changed
 
     # Will be used only by the topmost one, the Dialog, as all the rest are AbstractControl objects.

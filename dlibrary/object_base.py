@@ -16,8 +16,8 @@ class ObjectTypeEnum(object):
     IMAGE_FILL_DEFINITION = 119
     LINE_STYLE_DEFINITION = 96
     CLASS_DEFINITION = 94
-    SYMBOL_DEFINITION = 16
     RECORD_DEFINITION = 47
+    SYMBOL_DEFINITION = 16
     LOCUS = 17
     RECTANGLE = 3
     GROUP = 11
@@ -50,12 +50,10 @@ class AbstractKeyedObject(object, metaclass=ABCMeta):
 
     @property
     def handle(self) -> vs.Handle:
-        """:rtype: vs.Handle"""
         return self.__handle
 
     @property
     def name(self) -> str:
-        """:rtype: str"""
         name = vs.GetName(self.handle)
         return None if name == 'none' or name == '' else name
 

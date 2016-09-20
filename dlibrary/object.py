@@ -17,7 +17,6 @@ class IObjectHandle(object, metaclass=ABCMeta):
     @property
     @abstractmethod
     def _object_handle(self) -> vs.Handle:
-        """:rtype: vs.Handle"""
         pass
 
 
@@ -155,33 +154,27 @@ class AbstractObject(AbstractKeyedObject, IObjectAttributes, IRecords, IObjectOr
 
     @property
     def bb_top(self) -> float:
-        """:rtype: float"""
         return vs.GetBBox(self.handle)[0][1]
 
     @property
     def bb_left(self) -> float:
-        """:rtype: float"""
         return vs.GetBBox(self.handle)[0][0]
 
     @property
     def bb_right(self) -> float:
-        """:rtype: float"""
         return vs.GetBBox(self.handle)[1][0]
 
     @property
     def bb_bottom(self) -> float:
-        """:rtype: float"""
         return vs.GetBBox(self.handle)[1][1]
 
     @property
     def bb_width(self) -> float:
-        """:rtype: float"""
         top_left, bottom_right = vs.GetBBox(self.handle)
         return bottom_right[0] - top_left[0]
 
     @property
     def bb_height(self) -> float:
-        """:rtype: float"""
         top_left, bottom_right = vs.GetBBox(self.handle)
         return top_left[1] - bottom_right[1]
 
@@ -216,7 +209,6 @@ class PluginObject(AbstractObject):
 
     @property
     def rotation(self) -> float:
-        """:rtype: float"""
         return vs.GetSymRot(self.handle)
 
 
@@ -379,7 +371,6 @@ class Rectangle(AbstractObject):
 
     @property
     def width(self) -> float:
-        """:rtype: float"""
         return vs.HWidth(self.handle)
 
     @width.setter
@@ -390,7 +381,6 @@ class Rectangle(AbstractObject):
 
     @property
     def height(self) -> float:
-        """:rtype: float"""
         return vs.HHeight(self.handle)
 
     @height.setter
@@ -482,23 +472,19 @@ class Symbol(AbstractObject):
 
     @property
     def scale_x(self) -> float:
-        """:rtype: float"""
         return vs.GetObjectVariableReal(self.handle, 102)
 
     @scale_x.setter
     def scale_x(self, value: float):
-        """:type value: float"""
         vs.SetObjectVariableReal(self.handle, 102, value)
         vs.ResetObject(self.handle)
 
     @property
     def scale_y(self) -> float:
-        """:rtype: float"""
         return vs.GetObjectVariableReal(self.handle, 103) if self.__asymmetric_scaling else self.scale_x
 
     @scale_y.setter
     def scale_y(self, value: float):
-        """:type value: float"""
         if self.__asymmetric_scaling:
             vs.SetObjectVariableReal(self.handle, 103, value)
             vs.ResetObject(self.handle)
@@ -507,12 +493,10 @@ class Symbol(AbstractObject):
 
     @property
     def scale_z(self) -> float:
-        """:rtype: float"""
         return vs.GetObjectVariableReal(self.handle, 104) if self.__asymmetric_scaling else self.scale_x
 
     @scale_z.setter
     def scale_z(self, value: float):
-        """:type value: float"""
         if self.__asymmetric_scaling:
             vs.SetObjectVariableReal(self.handle, 104, value)
             vs.ResetObject(self.handle)

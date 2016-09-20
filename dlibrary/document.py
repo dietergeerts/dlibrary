@@ -3,10 +3,10 @@
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
+import vs
 from dlibrary.object_base import ObjectRepository, AbstractKeyedObject, ObjectTypeEnum
 from dlibrary.utility import SingletonMeta, ObservableList, SingletonABCMeta, Convert
-import vs
-from dlibrary.vectorworks import Vectorworks, CorrectVsFilepath
+from dlibrary.vectorworks import CorrectVsFilepath
 
 
 class DataFieldTypeEnum(object):
@@ -59,7 +59,6 @@ class RecordField(object):
 
     @property
     def name(self) -> str:
-        """:rtype: str"""
         return vs.GetFldName(self.__record_handle, self.__index)
 
     @property
@@ -139,7 +138,6 @@ class Record(AbstractKeyedObject):
 
     @property
     def parametric(self) -> bool:
-        """:rtype: bool"""
         return vs.GetParametricRecord(self.__object_handle) == self.handle
 
     @property
@@ -163,7 +161,6 @@ class IRecords(object, metaclass=ABCMeta):
     @property
     @abstractmethod
     def _handle(self) -> vs.Handle:
-        """:rtype: vs.Handle"""
         pass
 
     @property
@@ -196,7 +193,6 @@ class AbstractResource(AbstractKeyedObject, metaclass=ABCMeta):
 
     def __init__(self, handle_or_name):
         """
-
         :type handle_or_name: vs.Handle | str
         """
         super().__init__(handle_or_name)
@@ -373,7 +369,6 @@ class Clazz(AbstractKeyedObject, IClazzAttributes):
 
     @property
     def _clazz_name(self) -> str:
-        """:rtype: str"""
         return self.name
 
 
@@ -483,17 +478,11 @@ class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
 
     @property
     def directory(self) -> str:
-        """
-        :rtype: str
-        """
         return self.filepath[:-len(vs.GetFName())]
 
     @property
     @CorrectVsFilepath()
     def filepath(self) -> str:
-        """
-        :rtype: str
-        """
         return vs.GetFPathName()
 
     @property
@@ -527,7 +516,6 @@ class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
     @property
     def text_size(self) -> float:
         """Text size in points
-        :rtype: float
         """
         return vs.GetPrefReal(57) / 42.42424
 
@@ -632,7 +620,6 @@ class Units(object, metaclass=SingletonMeta):
 
     @property
     def length_precision(self) -> int:
-        """:rtype: int"""
         return vs.GetPrefLongInt(162)
 
 
@@ -746,7 +733,7 @@ class AbstractResourceList(object, metaclass=ABCMeta):
         else:
             handle = self.__get_resource(index) or self.__import_resource(index)
             name = self.__resource_names[index]  # Name could be changed due to import!
-            return self.__abstract_resource(handle, name)
+            return self.__abstract_resource(handle)
 
     def remove_resource(self, name: str):
         if name in self.names:
@@ -782,7 +769,7 @@ class SymbolDefinition(AbstractResource, IRecords):
             vs.BeginSym(name)
             vs.EndSym()
             vs.SetObjectVariableBoolean(vs.GetObject(name), 900, False)
-        return SymbolDefinition(vs.GetObject(name), name)
+        return SymbolDefinition(vs.GetObject(name))
 
     @staticmethod
     def get_by_name(name: str):
@@ -790,25 +777,17 @@ class SymbolDefinition(AbstractResource, IRecords):
         """
         obj_handle = vs.GetObject(name)
         obj_handle = obj_handle if vs.GetTypeN(obj_handle) == 16 else None  # 16 = symbol definition.
-        return SymbolDefinition(obj_handle, name) if obj_handle is not None else None
+        return SymbolDefinition(obj_handle) if obj_handle is not None else None
 
-    def __init__(self, handle_or_name, name: str=''):
-        """OBSOLETE name parameter. This will be removed and is now optional.
-        :type handle: vs.Handle | str
+    def __init__(self, handle_or_name):
         """
-        # TODO: Remove name parameter in version 2017!
+        :type handle_or_name: vs.Handle | str
+        """
         super().__init__(handle_or_name)
 
     @property
     def _handle(self) -> vs.Handle:
-        """:rtype: vs.Handle"""
         return self.handle
-
-    def place_symbol(self, insertion_point: tuple, rotation: float):
-        """OBSOLETE, use Symbol.create instead!
-        """
-        # TODO: Remove in version 2017!
-        vs.Symbol(self.name, Units.resolve_length_units(insertion_point), rotation)
 
 
 class SymbolDefinitionResourceList(AbstractResourceList):
@@ -830,13 +809,12 @@ class RecordDefinition(AbstractResource):
         if vs.GetObject(name) is None:
             vs.NewField(name, 'placeholder', '', 4, 0)
             vs.SetObjectVariableBoolean(vs.GetObject(name), 900, False)
-        return RecordDefinition(vs.GetObject(name), name)
+        return RecordDefinition(vs.GetObject(name))
 
-    def __init__(self, handle_or_name, name: str=''):
-        """OBSOLETE name parameter. Will be removed and is now made optional.
+    def __init__(self, handle_or_name):
+        """
         :type handle_or_name: vs.Handle | str
         """
-        # TODO: Remove name parameter in version 2017!
         super().__init__(handle_or_name)
         self.__fields = ObservableList(vs.GetFldName(self.handle, index)
                                        for index in range(1, vs.NumFields(self.handle) + 1))

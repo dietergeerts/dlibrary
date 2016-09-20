@@ -3,7 +3,7 @@
 This file should contain only setup stuff, and will only be executed once when VW starts up.
 """
 from dlibrary.document import HatchVectorFill, TileVectorFill, ImageVectorFill, GradientVectorFill, Clazz, LineStyle, \
-    SymbolDefinition
+    SymbolDefinition, RecordDefinition
 from dlibrary.object import Rectangle, Locus, Symbol, Group, PluginObject
 from dlibrary.object_base import ObjectRepository, ObjectTypeEnum
 
@@ -17,6 +17,7 @@ ObjectRepository().register(ObjectTypeEnum.IMAGE_FILL_DEFINITION, ImageVectorFil
 ObjectRepository().register(ObjectTypeEnum.GRADIENT_FILL_DEFINITION, GradientVectorFill)
 ObjectRepository().register(ObjectTypeEnum.LINE_STYLE_DEFINITION, LineStyle)
 ObjectRepository().register(ObjectTypeEnum.CLASS_DEFINITION, Clazz)
+ObjectRepository().register(ObjectTypeEnum.RECORD_DEFINITION, RecordDefinition)
 ObjectRepository().register(ObjectTypeEnum.SYMBOL_DEFINITION, SymbolDefinition)
 ObjectRepository().register(ObjectTypeEnum.LOCUS, Locus)
 ObjectRepository().register(ObjectTypeEnum.RECTANGLE, Rectangle)

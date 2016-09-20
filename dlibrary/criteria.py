@@ -1,7 +1,7 @@
 """Module for criteria, which is used for getting stuff (objects or properties of objects), based on criteria.
 """
 import vs
-from dlibrary.document import Layer, Record
+from dlibrary.document import Layer, RecordDefinition
 from dlibrary.object_base import ObjectRepository
 
 
@@ -20,14 +20,14 @@ class Criteria(object):
         self.__criteria.add('T=VIEWPORT')
         return self
 
-    def has_record(self, record: Record):
+    def has_record(self, record: RecordDefinition):
         """:rtype: Criteria"""
-        self.__criteria.add('R in [\'' + record.name + '\']')
+        self.__criteria.add('R in [\'%s\']' % record.name if record else None)
         return self
 
     def on_layer(self, layer: Layer):
         """:rtype: Criteria"""
-        self.__criteria.add('L=\'' + layer.name + '\'')
+        self.__criteria.add('L=\'%s\'' % layer.name if layer else None)
         return self
 
     def in_objects(self):
