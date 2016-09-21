@@ -10,7 +10,7 @@ You can start using this library by adding it to the script paths in Vectorworks
 > There is a [Wiki](https://bitbucket.org/dieterdworks/vw-dlibrary/wiki/Home) with API docs and examples.  
 >
 > **For upgrading plugins, see the
-> [Release notes](https://bitbucket.org/dieterdworks/vw-dlibrary/wiki/browse/2017/release_notes)**
+> [Release notes](https://bitbucket.org/dieterdworks/vw-dlibrary/wiki/2017/release_notes)**
 
 The library, and the wiki, aren't complete. This is an open-source project, so everyone can contribute and add stuff
 that is missing and (s)he needs for her/his plugin. You can even contribute by just logging issues, requesting things,
