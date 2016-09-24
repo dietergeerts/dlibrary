@@ -101,11 +101,11 @@ def update_or_install_dlibrary(required_version: str):
             vs.ProgressDlgClose()
 
     def get_unzipped_dir(libraries_folder: str):
-        unzipped_repo_folders = [f for f in os.listdir(libraries_folder) if f.startswith('dieterdworks-vw-dlibrary')]
+        unzipped_repo_folders = [f for f in os.listdir(libraries_folder) if f.startswith('dlibrary-')]
         return unzipped_repo_folders[0] if len(unzipped_repo_folders) > 0 else ''
 
     def install_dlibrary(libraries_folder: str):
-        dlibrary_url = 'https://bitbucket.org/dieterdworks/vw-dlibrary/get/%s.zip' % required_version
+        dlibrary_url = 'https://github.com/dietergeerts/dlibrary/archive/%s.zip' % required_version
         dlibrary_zip = os.path.join(libraries_folder, 'dlibrary_repo.zip')
         progress_bar = DLibraryProgressBar(required_version)
         # noinspection PyBroadException
