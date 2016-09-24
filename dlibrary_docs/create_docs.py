@@ -11,6 +11,50 @@ from abc import ABCMeta
 import dlibrary
 
 
+class DLMember(object, metaclass=ABCMeta):
+
+    def __init__(self, module_name: str, name: str, member: object):
+        self.__name = name
+        self.__module_name = module_name
+        self.__pretty_name = MD.tag('small', '.'.join(name.split('.')[:-1]) + '.') + name.split('.')[-1]
+        docs = [TextUtil.strip(l) for l in TextUtil.strip(inspect.getdoc(member)).splitlines()]
+        self.__doc_types = [l for l in docs if l.startswith((':type', ':rtype'))]
+        self.__doc = self.__pretty_info([l for l in docs if l not in self.__doc_types])
+        self.__doc_excerpt = TextUtil.first_line(self.__doc)
+
+    @staticmethod
+    def __pretty_info(docs: list) -> str:
+        return re.sub(re.compile(r'\n(:[^ ])', re.MULTILINE), MD.newline() + r'\1', '\n'.join(docs))
+
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    @property
+    def pretty_name(self) -> str:
+        return self.__pretty_name
+
+    @property
+    def module_name(self) -> str:
+        return self.__module_name
+
+    @property
+    def doc_types(self) -> list:
+        """:rtype: list[str]"""
+        return self.__doc_types
+
+    @property
+    def doc(self) -> str:
+        return self.__doc
+
+    @property
+    def doc_excerpt(self) -> str:
+        return self.__doc_excerpt
+
+    def generate_excerpt(self) -> str:
+        return '%s - %s' % (MD.strong(self.name), self.doc_excerpt)
+
+
 class FileUtil(object):
 
     @staticmethod
@@ -18,6 +62,26 @@ class FileUtil(object):
         os.makedirs(os.path.sep.join(filename.split(os.path.sep)[:-1]), exist_ok=True)
         with open(filename, 'w', encoding='utf-8') as file:
             file.write(content)
+
+    @staticmethod
+    def get_api_member_name(member: DLMember) -> str:
+        return '%s-API-%s.%s' % (FileUtil.get_version_name(), member.module_name, member.name)
+
+    @staticmethod
+    def get_api_index_name() -> str:
+        return '%s-API-dlibrary' % FileUtil.get_version_name()
+
+    @staticmethod
+    def get_example_name(filename: str) -> str:
+        return '%s-Example-%s' % (FileUtil.get_version_name(), filename[:-3].replace('_', '-').capitalize())
+
+    @staticmethod
+    def get_example_index_name():
+        return '%s-Examples' % FileUtil.get_version_name()
+
+    @staticmethod
+    def get_version_name():
+        return dlibrary.__version__.split('.')[0]
 
 
 class TextUtil(object):
@@ -85,49 +149,10 @@ class MD(object):
         return '\n---\n\n'
 
 
-class DLMember(object, metaclass=ABCMeta):
-
-    def __init__(self, name: str, member: object):
-        self.__name = name
-        self.__pretty_name = MD.tag('small', '.'.join(name.split('.')[:-1]) + '.') + name.split('.')[-1]
-        docs = [TextUtil.strip(l) for l in TextUtil.strip(inspect.getdoc(member)).splitlines()]
-        self.__doc_types = [l for l in docs if l.startswith((':type', ':rtype'))]
-        self.__doc = self.__pretty_info([l for l in docs if l not in self.__doc_types])
-        self.__doc_excerpt = TextUtil.first_line(self.__doc)
-
-    @staticmethod
-    def __pretty_info(docs: list) -> str:
-        return re.sub(re.compile(r'\n(:[^ ])', re.MULTILINE), MD.newline() + r'\1', '\n'.join(docs))
-
-    @property
-    def name(self) -> str:
-        return self.__name
-
-    @property
-    def pretty_name(self) -> str:
-        return self.__pretty_name
-
-    @property
-    def doc_types(self) -> list:
-        """:rtype: list[str]"""
-        return self.__doc_types
-
-    @property
-    def doc(self) -> str:
-        return self.__doc
-
-    @property
-    def doc_excerpt(self) -> str:
-        return self.__doc_excerpt
-
-    def generate_excerpt(self) -> str:
-        return '%s - %s' % (MD.strong(self.name), self.doc_excerpt)
-
-
 class DLConstant(DLMember):
 
-    def __init__(self, name: str, member: object):
-        super().__init__(name, member)
+    def __init__(self, module_name: str, name: str, member: object):
+        super().__init__(module_name, name, member)
         self.__value = member
 
     @property
@@ -140,9 +165,9 @@ class DLConstant(DLMember):
 
 class DLMethod(DLMember):
 
-    def __init__(self, name: str, member: object):
+    def __init__(self, module_name: str, name: str, member: object):
         method = member if inspect.isfunction(member) else member.__func__
-        super().__init__(name, method)
+        super().__init__(module_name, name, method)
         self.__is_static_method = isinstance(member, staticmethod)
         self.__is_class_method = isinstance(member, classmethod)
         self.__is_constructor = self.name == '__init__'
@@ -191,8 +216,8 @@ class DLMethod(DLMember):
 
 class DLProperty(DLMethod):
 
-    def __init__(self, name: str, member: property):
-        super().__init__(name, member.fget)
+    def __init__(self, module_name: str, name: str, member: property):
+        super().__init__(module_name, name, member.fget)
         self.__has_setter = member.fset is not None
 
     @property
@@ -208,18 +233,18 @@ class DLProperty(DLMethod):
 
 class DLClass(DLMember):
 
-    def __init__(self, name: str, member: object):
-        super().__init__(name, member)
+    def __init__(self, module_name: str, name: str, member: object):
+        super().__init__(module_name, name, member)
         self.__module = member.__module__
-        self.__link = os.path.join(self.__module, '%s.md' % self.name) if 'dlibrary' in self.__module else ''
-        self.__base_classes = [DLClass(m.__name__, m) for m in member.__bases__]
+        self.__link = FileUtil.get_api_member_name(self) if 'dlibrary' in self.__module else ''
+        self.__base_classes = [DLClass(module_name, m.__name__, m) for m in member.__bases__]
         members = [m for m in inspect.getmembers(member) if self.__is_visible(m[0])]
-        methods = [DLMethod(m[0], m[1]) for m in members if self.__is_method(m[1])]
-        self.__constants = [DLConstant(m[0], m[1]) for m in members if m[0].isupper()]
+        methods = [DLMethod(module_name, m[0], m[1]) for m in members if self.__is_method(m[1])]
+        self.__constants = [DLConstant(module_name, m[0], m[1]) for m in members if m[0].isupper()]
         self.__static_methods = [m for m in methods if m.is_static_method]
         self.__class_methods = [m for m in methods if m.is_class_method]
         self.__constructors = [m for m in methods if m.is_constructor]
-        self.__properties = [DLProperty(m[0], m[1]) for m in members if isinstance(m[1], property)]
+        self.__properties = [DLProperty(module_name, m[0], m[1]) for m in members if isinstance(m[1], property)]
         self.__methods = [m for m in methods if m.is_method]
 
     @staticmethod
@@ -274,7 +299,7 @@ class DLClass(DLMember):
         return self.__methods
 
     def generate(self, path: str):
-        FileUtil.write_file(os.path.join(path, '%s.md' % self.name), self.generate_docs())
+        FileUtil.write_file(os.path.join(path, '%s.md' % FileUtil.get_api_member_name(self)), self.generate_docs())
 
     def generate_excerpt(self) -> str:
         return '%s %s' % (
@@ -308,9 +333,9 @@ class DLClass(DLMember):
 
 class DLModule(DLMember):
 
-    def __init__(self, name: str, module: object):
-        super().__init__(name, module)
-        self.__classes = [DLClass(m[0], m[1]) for m in inspect.getmembers(module, inspect.isclass)]
+    def __init__(self, module_name: str, name: str, module: object):
+        super().__init__(module_name, name, module)
+        self.__classes = [DLClass(module_name, m[0], m[1]) for m in inspect.getmembers(module, inspect.isclass)]
         self.__classes = [cls for cls in self.__classes if cls.module == self.name]
 
     @property
@@ -333,7 +358,7 @@ class ApiDocs(object):
 
     def __init__(self):
         self.__modules = [
-            DLModule(name, pydoc.resolve(name)[0])
+            DLModule(name, name, pydoc.resolve(name)[0])
             for _, name, _ in pkgutil.walk_packages(dlibrary.__path__, '%s.' % dlibrary.__name__)
             if 'libs' not in name]  # We don't document libs!
 
@@ -343,7 +368,7 @@ class ApiDocs(object):
         return self.__modules
 
     def generate(self, path: str):
-        FileUtil.write_file(os.path.join(path, 'index.md'), self.generate_index())
+        FileUtil.write_file(os.path.join(path, '%s.md' % FileUtil.get_api_index_name()), self.generate_index())
         [m.generate(path) for m in self.modules]
 
     def generate_index(self) -> str:
@@ -361,9 +386,23 @@ class ExampleDocs(object):
 
     def generate(self, path: str):
         examples_src = os.path.join('.', 'examples')
+        all_examples = []
+
         for filename in os.listdir(examples_src):
+            all_examples.append(filename)
             with open(os.path.join(examples_src, filename)) as src:
-                FileUtil.write_file(os.path.join(path, '%s.md' % filename), '```\n#!python\n\n%s\n```' % src.read())
+                FileUtil.write_file(
+                    os.path.join(path, '%s.md' % FileUtil.get_example_name(filename)),
+                    '```python\n\n%s\n```' % src.read())
+
+        FileUtil.write_file(os.path.join(path, '%s.md' % FileUtil.get_example_index_name()),
+                            self.generate_index(all_examples))
+
+    def generate_index(self, examples: list) -> str:
+        return '%s'*2 % (
+            MD.header('Examples', 1),
+            ''.join(MD.list_item(MD.link(FileUtil.get_example_name(e), e[:-3].replace('_', ' ').capitalize()))
+                    for e in examples))
 
 
 # Setup paths.
