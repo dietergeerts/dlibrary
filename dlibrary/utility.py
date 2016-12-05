@@ -59,16 +59,21 @@ class AbstractXmlFile(object, metaclass=ABCMeta):
     So the contents will start with a dict and contains only dicts and lists down the road with no lists in lists!
     """
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, encoding: str='UTF-8'):
         self.__path = path
+        self.__encoding = encoding
 
     @property
     def path(self) -> str:
         return self.__path
 
+    @property
+    def encoding(self) -> str:
+        return self.__encoding
+
     def load(self, create_if_not_found: bool=False) -> dict:
         try:
-            with open(self.path, encoding='UTF-8') as file:
+            with open(self.path, encoding=self.encoding) as file:
                 return self.__correct(xmltodict.parse(file.read()))
         except FileNotFoundError:
             if create_if_not_found:

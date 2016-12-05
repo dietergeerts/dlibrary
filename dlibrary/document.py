@@ -526,6 +526,9 @@ class Document(IDocumentAttributes, metaclass=SingletonABCMeta):
 
 class Units(object, metaclass=SingletonMeta):
 
+    # TODO: Add utility methods to convert to commonly used units, like m, cm, ...
+    # Otherwise, we only have to use inches, and it would make code more readable.
+
     @staticmethod
     def __get_length_units_per_inch() -> float:
         return vs.GetPrefReal(152)
